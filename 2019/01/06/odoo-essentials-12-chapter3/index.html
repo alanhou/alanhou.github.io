@@ -39,7 +39,7 @@
 <meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e8b05164b5ac434abac25ac495ce3bd9~tplv-k3u1fbpfcp-zoom-1.image">
 <meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/73e3abf18e604b82b0a0aeff1e6e83f4~tplv-k3u1fbpfcp-zoom-1.image">
 <meta property="article:published_time" content="2019-01-05T16:00:00.000Z">
-<meta property="article:modified_time" content="2023-02-03T05:35:22.516Z">
+<meta property="article:modified_time" content="2023-02-03T06:02:38.539Z">
 <meta property="article:author" content="Alan Hou">
 <meta property="article:tag" content="Odoo,Odoo12">
 <meta name="twitter:card" content="summary">
@@ -200,7 +200,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-02-03 13:35:22" itemprop="dateModified" datetime="2023-02-03T13:35:22+08:00">2023-02-03</time>
+      <time title="Modified: 2023-02-03 14:02:38" itemprop="dateModified" datetime="2023-02-03T14:02:38+08:00">2023-02-03</time>
     </span>
 
   
@@ -571,8 +571,8 @@
 <p>QWeb模板是一个视图类型，应放在&#x2F;views子目录下，我们来创建views&#x2F;book_list_template.xml文件：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span><br><span class="line">&lt;odoo&gt;</span><br><span class="line">    &lt;template id=&quot;book_list_template&quot; name=&quot;Book List&quot;&gt;</span><br><span class="line">        &lt;div id=&quot;wrap&quot; class=&quot;container&quot;&gt;</span><br><span class="line">            &lt;h1&gt;Books&lt;/h1&gt;</span><br><span class="line">            &lt;t t-foreach=&quot;books&quot; t-as=&quot;book&quot;&gt;</span><br><span class="line">                &lt;div class=&quot;row&quot;&gt;</span><br><span class="line">                    &lt;span t-field=&quot;book.name&quot; /&gt;,</span><br><span class="line">                    &lt;span t-field=&quot;book.date_published&quot; /&gt;,</span><br><span class="line">                    &lt;span t-field=&quot;book.publisher_id&quot; /&gt;</span><br><span class="line">                &lt;/div&gt;</span><br><span class="line">            &lt;/t&gt;</span><br><span class="line">        &lt;/div&gt;</span><br><span class="line">    &lt;/template&gt;</span><br><span class="line">&lt;/odoo&gt;</span><br></pre></td></tr></table></figure>
 
-<p><template>元素用于声明 QWeb 模板，它事实上是一个存储模块的 base 模型 - ir.ui.view记录的快捷方式。模板中包含要使用的 HTML，并使用 Qweb 的特定属性：t-foreach用于遍历变量 books的每一项，通过控制器的http.request.render()调用来获取；t-field用于渲染记录字段的内容。这里仅简单地使用 QWeb，更多详情见第十三章 <a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-frontend/">Odoo 12开发之创建网站前端功能</a>。</p>
-<p>在模块的 manifest 中需要声明该 XML 文件来供加载和使用。进行模块升级即可通过http:&#x2F;&#x2F;<my-server>:8069&#x2F;library&#x2F;books来访问有效图书的简单列表。</p>
+<p><code>&lt;template&gt;</code>元素用于声明 QWeb 模板，它事实上是一个存储模块的 base 模型 - ir.ui.view记录的快捷方式。模板中包含要使用的 HTML，并使用 Qweb 的特定属性：t-foreach用于遍历变量 books的每一项，通过控制器的http.request.render()调用来获取；t-field用于渲染记录字段的内容。这里仅简单地使用 QWeb，更多详情见第十三章 <a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-frontend/">Odoo 12开发之创建网站前端功能</a>。</p>
+<p>在模块的 manifest 中需要声明该 XML 文件来供加载和使用。进行模块升级即可通过<code>http://&lt;my-server&gt;:8069/library/books</code>来访问有效图书的简单列表。</p>
 <p><a target="_blank" rel="noopener" href="http://alanhou.org/homepage/wp-content/uploads/2019/01/book-list.jpg"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/73e3abf18e604b82b0a0aeff1e6e83f4~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12图书项目图书列表"></a></p>
 <p>注：以上数据为从 Packt 的 Top 20中添加了当前前3</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文中我们从0开始创建了一个新模块，了解了模块中常用的元素：模型、三个基础视图类型（表单视图、列表视图和搜索视图）、模型方法中的业务逻辑和访问权限。我们还学习了访问权限控制，包括记录规则以及如何使用网页控制器和 Qweb 模板来创建网页。</p>

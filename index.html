@@ -180,7 +180,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-02-03 13:55:30" itemprop="dateModified" datetime="2023-02-03T13:55:30+08:00">2023-02-03</time>
+      <time title="Modified: 2023-02-03 13:56:32" itemprop="dateModified" datetime="2023-02-03T13:56:32+08:00">2023-02-03</time>
     </span>
 
   
@@ -2546,7 +2546,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-02-03 13:38:22" itemprop="dateModified" datetime="2023-02-03T13:38:22+08:00">2023-02-03</time>
+      <time title="Modified: 2023-02-03 14:06:00" itemprop="dateModified" datetime="2023-02-03T14:06:00+08:00">2023-02-03</time>
     </span>
 
   
@@ -2705,7 +2705,7 @@
 
 <p>类似 CSV 文件，该文件也会将数据加载到图书模型中。</p>
 <p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/c410cd7e7cab42018513571b5cab4c7b~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12使用 XML 导入数据"></p>
-<p>XML文件包含一个外层<odoo>元素，内部可包含多个<record>元素与对应 CSV 数据行。</p>
+<p>XML文件包含一个外层<code>&lt;odoo&gt;</code>元素，内部可包含多个<code>&lt;record&gt;</code>元素与对应 CSV 数据行。</p>
 <blockquote>
 <p><strong>ℹ️</strong>数据文件中的外层<odoo>元素在9.0中才引入用于替换此前的<openerp>标签。现在仍支持外层元素内的<data>标签，为可选项。事实上现在<odoo>和<data>是等价的，我们可以在数据文件中使用任意一个作为外层元素。</p>
 </blockquote>
@@ -2715,9 +2715,9 @@
 <blockquote>
 <p><strong>小贴士：</strong> 值得注意的是，手动对视图所做的自定义修改会在下一次模块升级时丢失。避免这一问题正确的方法是创建继承视图来引入要做的修改。</p>
 </blockquote>
-<p>这种重写行为是默认的，但可以修改有些数据仅在安装时导入，后续模块更新时则予以忽略，这正是通过<odoo>或<data>元素中的noupdate&#x3D;”1”来实现的。</p>
+<p>这种重写行为是默认的，但可以修改有些数据仅在安装时导入，后续模块更新时则予以忽略，这正是通过<code>&lt;odoo&gt;</code>或<code>&lt;data&gt;</code>元素中的noupdate&#x3D;”1”来实现的。</p>
 <p>这对于需初始化配置且预期需自定义的数据来说非常有用，因为这些手动修改在模块更新时是安全的。例如在记录访问规则中经常使用，可以适应具体的实施需求。</p>
-<p>在同一 XML 文件中可以有多个<data>版块。可通过这个来分隔仅需导入一次的数据（noupdate&#x3D;”1”）和需在每次更新时重新导入的数据（noupdate&#x3D;”0”）。noupdate&#x3D;”0”是默认值，所以可以省略不写。注意还必须要有一个外层 XML 元素，就这个例子而言，使用两个<data>标签，并在外层包裹一个<odoo>或<data>元素。</p>
+<p>在同一 XML 文件中可以有多个<code>&lt;data&gt;</code>版块。可通过这个来分隔仅需导入一次的数据（noupdate&#x3D;”1”）和需在每次更新时重新导入的数据（noupdate&#x3D;”0”）。noupdate&#x3D;”0”是默认值，所以可以省略不写。注意还必须要有一个外层 XML 元素，就这个例子而言，使用两个<code>&lt;data&gt;</code>标签，并在外层包裹一个<code>&lt;odoo&gt;</code>或<code>&lt;data&gt;</code>元素。</p>
 <blockquote>
 <p><strong>小贴士：</strong> noupdate属性在开发模块时可能会引起不适，因为会忽略后续修改。一个解决方案是，使用-i 参数重新安装模块而不是使用-u 参数进行更新。命令行中使用-i 参数重新安装会忽略数据记录中的noupdate标记。</p>
 </blockquote>
@@ -2725,7 +2725,7 @@
 <blockquote>
 <p><strong>ℹ️Odoo 12中的修改</strong><br>点击开发者菜单中的View Metadata时，现在在弹出的对话框中 XML ID 下面还会显示No Update的值。并且在该处可通过点击来修改该标记的值。</p>
 </blockquote>
-<h3 id="在-XML-中定义记录"><a href="#在-XML-中定义记录" class="headerlink" title="在 XML 中定义记录"></a>在 XML 中定义记录</h3><p>在 XML 文件中，每个<record>元素有两个基本属性：id 和 model，并包含为对应列设置的值。 id 属性对应记录外部标识符，model 对应目标模型。<field>元素有几种分配值的方法，下面一起来看看。</p>
+<h3 id="在-XML-中定义记录"><a href="#在-XML-中定义记录" class="headerlink" title="在 XML 中定义记录"></a>在 XML 中定义记录</h3><p>在 XML 文件中，每个<code>&lt;record&gt;</code>元素有两个基本属性：id 和 model，并包含为对应列设置的值。 id 属性对应记录外部标识符，model 对应目标模型。<field>元素有几种分配值的方法，下面一起来看看。</p>
 <h3 id="直接为字段设置值"><a href="#直接为字段设置值" class="headerlink" title="直接为字段设置值"></a>直接为字段设置值</h3><p><field>元素的 name 属性标识要写入的字段。写入的值是元素内容：字段开、闭标签之间的文本。对于 date 和datetime，带有返回 date 或 datetime 对象表达式的 eval 属性可进行设置。返回的”YYYY-mm-dd”和”YYYY-mm-dd HH:MM:SS”字符串会进行转化。对于布尔字段，”0” and “False”都会转换成 False，而任意非空值都会转换成 True。</p>
 <blockquote>
 <p><strong>小贴士：Odoo 10中的修改</strong><br>Odoo 10中改进了从数据文件中读取布尔值 False的方式。在老版本中，包含”0” and “False”在内的非空值都会转换成 True，直至 Odoo 9，布尔值仍需使用 eval 属性进行设置，如 eval&#x3D;”False”。</p>
@@ -2764,26 +2764,26 @@
 <blockquote>
 <p><strong>小贴士：</strong> 后面的非关联值可以放心地省略掉，如(4, id, _) 可使用(4, id)</p>
 </blockquote>
-<h3 id="常用模型的简写"><a href="#常用模型的简写" class="headerlink" title="常用模型的简写"></a>常用模型的简写</h3><p>如果回到第三章 <a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-first-application/">Odoo 12 开发之创建第一个 Odoo 应用</a>，我们在 XML 中还发现<record>之外的元素，如<act_window>和<menuitem>。这些是常用模型的简写方式，是比常用的<record>更为简练的符号。它们用于向 base 模型加载数据、组成用户界面，在第十章 <a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-backend-views/">Odoo 12开发之后台视图 - 设计用户界面</a>会作更详细的探讨。</p>
+<h3 id="常用模型的简写"><a href="#常用模型的简写" class="headerlink" title="常用模型的简写"></a>常用模型的简写</h3><p>如果回到第三章 <a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-first-application/">Odoo 12 开发之创建第一个 Odoo 应用</a>，我们在 XML 中还发现<code>&lt;record&gt;</code>之外的元素，如<code>&lt;act_window&gt;</code>和<code>&lt;menuitem&gt;</code>。这些是常用模型的简写方式，是比常用的<code>&lt;record&gt;</code>更为简练的符号。它们用于向 base 模型加载数据、组成用户界面，在第十章 <a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-backend-views/">Odoo 12开发之后台视图 - 设计用户界面</a>会作更详细的探讨。</p>
 <p>为便于查看，以下是可用的简写元素以及加载数据的对应模型：</p>
 <ul>
-<li><act_window>是窗口操作模型ir.actions.act_window</li>
-<li><menuitem>是菜单项模型ir.ui.menu</li>
-<li><report>是报表操作模型ir.actions.report.xml</li>
-<li><template>是存储在ir.ui.view模型中的 QWeb 模板</li>
+<li><code>&lt;act_window&gt;</code>是窗口操作模型ir.actions.act_window</li>
+<li><code>&lt;menuitem&gt;</code>是菜单项模型ir.ui.menu</li>
+<li><code>&lt;report&gt;</code>是报表操作模型ir.actions.report.xml</li>
+<li><code>&lt;template&gt;</code>是存储在ir.ui.view模型中的 QWeb 模板</li>
 </ul>
 <blockquote>
-<p><strong>ℹ️Odoo 11中的修改</strong><br><url>标签已被淘汰并删除。此前的版本中它用作为 URL 操作模型ir.actions.act_url加载记录。</p>
+<p><strong>ℹ️Odoo 11中的修改</strong><br><code>&lt;url&gt;</code>标签已被淘汰并删除。此前的版本中它用作为 URL 操作模型ir.actions.act_url加载记录。</p>
 </blockquote>
-<p>应当注意在用于修改已有记录时，简写元素会覆盖所有字段。这与仅写入所提供字段的<record>基础元素不同。因此在需修改用户界面元素指定字段时，应使用<record>元素。</p>
+<p>应当注意在用于修改已有记录时，简写元素会覆盖所有字段。这与仅写入所提供字段的<code>&lt;record&gt;</code>基础元素不同。因此在需修改用户界面元素指定字段时，应使用<code>&lt;record&gt;</code>元素。</p>
 <h2 id="XML-文件中的其它操作"><a href="#XML-文件中的其它操作" class="headerlink" title="XML 文件中的其它操作"></a>XML 文件中的其它操作</h2><p>截至目前我们了解了如何使用 XML 文件添加和更新数据。但也可以通过 XML 文件删除数据以及执行指定模型方法。对更复杂的数据场景会非常有用。</p>
-<h3 id="删除记录"><a href="#删除记录" class="headerlink" title="删除记录"></a>删除记录</h3><p>我们可以使用<delete>元素删除数据记录，使用 ID 或搜索域来定位要删除的记录。例如，使用搜索域查找记录并删除：</p>
+<h3 id="删除记录"><a href="#删除记录" class="headerlink" title="删除记录"></a>删除记录</h3><p>我们可以使用<code>&lt;delete&gt;</code>元素删除数据记录，使用 ID 或搜索域来定位要删除的记录。例如，使用搜索域查找记录并删除：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;delete</span><br><span class="line">    model=&quot;res.partner&quot;</span><br><span class="line">    search=&quot;[(&#x27;id&#x27;,&#x27;=&#x27;,ref(&#x27;library_app.res_partner_daniel&#x27;))]&quot;</span><br><span class="line">/&gt;</span><br></pre></td></tr></table></figure>
 
 <p>如果知道要删除记录的具体 ID，可使用 id 属性。上例还可以写成这样：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;delete model=&quot;res.partner&quot; id=&quot;library_app.res_partner_daniel&quot; /&gt;</span><br></pre></td></tr></table></figure>
 
-<h3 id="调用模型方法"><a href="#调用模型方法" class="headerlink" title="调用模型方法"></a>调用模型方法</h3><p>XML 文件还可以通过<function>元素在加载过程中执行任意方法，可用于设定演示和测试数据。比如 Odoo 捆绑的 Notes 应用，使用它来设定演示数据：</p>
+<h3 id="调用模型方法"><a href="#调用模型方法" class="headerlink" title="调用模型方法"></a>调用模型方法</h3><p>XML 文件还可以通过<code>&lt;function&gt;</code>元素在加载过程中执行任意方法，可用于设定演示和测试数据。比如 Odoo 捆绑的 Notes 应用，使用它来设定演示数据：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;data noupdate=&quot;1&quot;&gt;</span><br><span class="line">&lt;function</span><br><span class="line">    model=&quot;res.users&quot;</span><br><span class="line">    name=&quot;_init_data_user_note_stages&quot;</span><br><span class="line">    eval=&quot;[]&quot; /&gt;</span><br><span class="line">&lt;/data&gt;</span><br></pre></td></tr></table></figure>
 
 <p>这会调用res.users模型中的_init_data_user_note_stages方法，不传任何参数。由参数列表eval传递，此处为空列表。</p>
@@ -3214,7 +3214,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-02-03 13:35:22" itemprop="dateModified" datetime="2023-02-03T13:35:22+08:00">2023-02-03</time>
+      <time title="Modified: 2023-02-03 14:02:38" itemprop="dateModified" datetime="2023-02-03T14:02:38+08:00">2023-02-03</time>
     </span>
 
   
@@ -3585,8 +3585,8 @@
 <p>QWeb模板是一个视图类型，应放在&#x2F;views子目录下，我们来创建views&#x2F;book_list_template.xml文件：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span><br><span class="line">&lt;odoo&gt;</span><br><span class="line">    &lt;template id=&quot;book_list_template&quot; name=&quot;Book List&quot;&gt;</span><br><span class="line">        &lt;div id=&quot;wrap&quot; class=&quot;container&quot;&gt;</span><br><span class="line">            &lt;h1&gt;Books&lt;/h1&gt;</span><br><span class="line">            &lt;t t-foreach=&quot;books&quot; t-as=&quot;book&quot;&gt;</span><br><span class="line">                &lt;div class=&quot;row&quot;&gt;</span><br><span class="line">                    &lt;span t-field=&quot;book.name&quot; /&gt;,</span><br><span class="line">                    &lt;span t-field=&quot;book.date_published&quot; /&gt;,</span><br><span class="line">                    &lt;span t-field=&quot;book.publisher_id&quot; /&gt;</span><br><span class="line">                &lt;/div&gt;</span><br><span class="line">            &lt;/t&gt;</span><br><span class="line">        &lt;/div&gt;</span><br><span class="line">    &lt;/template&gt;</span><br><span class="line">&lt;/odoo&gt;</span><br></pre></td></tr></table></figure>
 
-<p><template>元素用于声明 QWeb 模板，它事实上是一个存储模块的 base 模型 - ir.ui.view记录的快捷方式。模板中包含要使用的 HTML，并使用 Qweb 的特定属性：t-foreach用于遍历变量 books的每一项，通过控制器的http.request.render()调用来获取；t-field用于渲染记录字段的内容。这里仅简单地使用 QWeb，更多详情见第十三章 <a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-frontend/">Odoo 12开发之创建网站前端功能</a>。</p>
-<p>在模块的 manifest 中需要声明该 XML 文件来供加载和使用。进行模块升级即可通过http:&#x2F;&#x2F;<my-server>:8069&#x2F;library&#x2F;books来访问有效图书的简单列表。</p>
+<p><code>&lt;template&gt;</code>元素用于声明 QWeb 模板，它事实上是一个存储模块的 base 模型 - ir.ui.view记录的快捷方式。模板中包含要使用的 HTML，并使用 Qweb 的特定属性：t-foreach用于遍历变量 books的每一项，通过控制器的http.request.render()调用来获取；t-field用于渲染记录字段的内容。这里仅简单地使用 QWeb，更多详情见第十三章 <a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-frontend/">Odoo 12开发之创建网站前端功能</a>。</p>
+<p>在模块的 manifest 中需要声明该 XML 文件来供加载和使用。进行模块升级即可通过<code>http://&lt;my-server&gt;:8069/library/books</code>来访问有效图书的简单列表。</p>
 <p><a target="_blank" rel="noopener" href="http://alanhou.org/homepage/wp-content/uploads/2019/01/book-list.jpg"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/73e3abf18e604b82b0a0aeff1e6e83f4~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12图书项目图书列表"></a></p>
 <p>注：以上数据为从 Packt 的 Top 20中添加了当前前3</p>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文中我们从0开始创建了一个新模块，了解了模块中常用的元素：模型、三个基础视图类型（表单视图、列表视图和搜索视图）、模型方法中的业务逻辑和访问权限。我们还学习了访问权限控制，包括记录规则以及如何使用网页控制器和 Qweb 模板来创建网页。</p>
@@ -3674,7 +3674,7 @@
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-02-03 13:32:03" itemprop="dateModified" datetime="2023-02-03T13:32:03+08:00">2023-02-03</time>
+      <time title="Modified: 2023-02-03 14:01:02" itemprop="dateModified" datetime="2023-02-03T14:01:02+08:00">2023-02-03</time>
     </span>
 
   
@@ -3687,8 +3687,7 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>本文为<a target="_blank" rel="noopener" href="https://alanhou.org/developer-mode-odoo12">最好用的免费ERP系统Odoo 12开发手册</a>系列文章第一篇。</p>
-<p>本文为<a target="_blank" rel="noopener" href="https://alanhou.org/odoo-12-development/">最好用的免费ERP系统Odoo 12开发手册</a>系列文章第二篇。</p>
+          <p>本文为<a target="_blank" rel="noopener" href="https://alanhou.org/odoo-12-development/">最好用的免费ERP系统Odoo 12开发手册</a>系列文章第二篇。</p>
 <p>在更深入了解 Odoo 开发之前，我们应配置好开发环境并学习相关的基础管理任务。本文中，我们将学习创建 Odoo 应用所需用到的工具和环境配置。这里采用 Ubuntu 系统来作为开发服务器实例的主机，可以是云服务器、本地服务器或者PC 上的虚拟机。</p>
 <p>本文主要内容有：</p>
 <ul>
