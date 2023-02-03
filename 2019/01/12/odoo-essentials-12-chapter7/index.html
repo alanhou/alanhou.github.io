@@ -22,7 +22,7 @@
 <script class="next-config" data-name="main" type="application/json">{"hostname":"alanhou.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="本文为最好用的免费ERP系统Odoo 12开发手册系列文章第七篇。 在上一篇文章中，我们概览了模型创建以及如何从模型中载入和导出数据。现在我们已有数据模型和相关数据，是时候学习如何编程与其进行交互 了。模型的 ORM（Object-Relational Mapping）提供了一些交互数据的方法，称为 API（Application Programming Interface）。这包括基本的增删改查">
-<meta property="og:type" content="article">
+<meta property="og:type" content="blog">
 <meta property="og:title" content="第七章 Odoo 12开发之记录集 – 使用模型数据">
 <meta property="og:url" content="https://alanhou.github.io/2019/01/12/odoo-essentials-12-chapter7/index.html">
 <meta property="og:site_name" content="Alan Hou的个人博客">
@@ -48,7 +48,12 @@
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>第七章 Odoo 12开发之记录集 – 使用模型数据 | Alan Hou的个人博客</title>
   
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-53450398-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-53450398-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
 
+  <script src="/js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?c6d32d47881743b193f462b65f69d37f"></script>
 
 
 
@@ -69,6 +74,9 @@
       <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
   <div class="site-nav-toggle">
     <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
     </div>
   </div>
 
@@ -91,6 +99,10 @@
 
 
 
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-odoo"><a href="/tags/Odoo/" rel="section"><i class="fa fa-th fa-fw"></i>Odoo</a></li>
+  </ul>
+</nav>
 
 
 

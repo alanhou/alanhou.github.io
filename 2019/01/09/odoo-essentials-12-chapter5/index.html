@@ -22,7 +22,7 @@
 <script class="next-config" data-name="main" type="application/json">{"hostname":"alanhou.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
 
     <meta name="description" content="本文为最好用的免费ERP系统Odoo 12开发手册系列文章第五篇。 大多数Odoo 模块的定义，如用户界面和安全规则，实际是存储在对应数据表中的数据记录。模块中的 XML 和 CSV 文件不是 Odoo 应用运行时使用，而是载入数据表的手段。正是因为这个原因，Odoo 模块的一个重要部分是在文件中放入数据以在插件安装时将其载入数据库。 模块可以包含初始数据和演示数据，可通过数据文件将它们加入模块。">
-<meta property="og:type" content="article">
+<meta property="og:type" content="blog">
 <meta property="og:title" content="第五章 Odoo 12开发之导入、导出以及模块数据">
 <meta property="og:url" content="https://alanhou.github.io/2019/01/09/odoo-essentials-12-chapter5/index.html">
 <meta property="og:site_name" content="Alan Hou的个人博客">
@@ -57,7 +57,12 @@
 <script class="next-config" data-name="calendar" type="application/json">""</script>
 <title>第五章 Odoo 12开发之导入、导出以及模块数据 | Alan Hou的个人博客</title>
   
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-53450398-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-53450398-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
 
+  <script src="/js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?c6d32d47881743b193f462b65f69d37f"></script>
 
 
 
@@ -78,6 +83,9 @@
       <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
   <div class="site-nav-toggle">
     <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
     </div>
   </div>
 
@@ -100,6 +108,10 @@
 
 
 
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-odoo"><a href="/tags/Odoo/" rel="section"><i class="fa fa-th fa-fw"></i>Odoo</a></li>
+  </ul>
+</nav>
 
 
 
