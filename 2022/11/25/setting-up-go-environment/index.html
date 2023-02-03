@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"alanhou.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="本文来自正在规划的Go语言&amp;云原生自我提升系列，欢迎关注后续文章。 每种编程语言都需要有开发环境，Go自然也不例外。如果读者之前已经写过Go程序，那么一定已经有环境了，但可能会漏掉一些最新技术和工具。如果是第一次在电脑上配置Go，也不必担心，Go及其支持工具非常简单。在配置好环境并验证后，我们会构建一个简单程序，学习几种构建和运行Go的方式，然后涉足一些简化Go开发的工具和技巧。 安装Go">
+<meta property="og:type" content="article">
+<meta property="og:title" content="云原生系列Go语言篇-Go环境配置">
+<meta property="og:url" content="https://alanhou.github.io/2022/11/25/setting-up-go-environment/index.html">
+<meta property="og:site_name" content="Alan Hou的个人博客">
+<meta property="og:description" content="本文来自正在规划的Go语言&amp;云原生自我提升系列，欢迎关注后续文章。 每种编程语言都需要有开发环境，Go自然也不例外。如果读者之前已经写过Go程序，那么一定已经有环境了，但可能会漏掉一些最新技术和工具。如果是第一次在电脑上配置Go，也不必担心，Go及其支持工具非常简单。在配置好环境并验证后，我们会构建一个简单程序，学习几种构建和运行Go的方式，然后涉足一些简化Go开发的工具和技巧。 安装Go">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/0470bea202f642dbaf5ba2b97e11ff82~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/da28747ee01b4d9c8447f5392e62c7e4~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e209e4d75b304d3597ddd4f4f026356c~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8c8f68596c184455a77c6af1726c2acd~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="article:published_time" content="2022-11-24T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-02-03T06:25:27.796Z">
+<meta property="article:author" content="Alan Hou">
+<meta property="article:tag" content="Golang">
+<meta property="article:tag" content="Go 语言">
+<meta property="article:tag" content="云原生">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/0470bea202f642dbaf5ba2b97e11ff82~tplv-k3u1fbpfcp-zoom-1.image">
+
+
+<link rel="canonical" href="https://alanhou.github.io/2022/11/25/setting-up-go-environment/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://alanhou.github.io/2022/11/25/setting-up-go-environment/","path":"2022/11/25/setting-up-go-environment/","title":"云原生系列Go语言篇-Go环境配置"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>云原生系列Go语言篇-Go环境配置 | Alan Hou的个人博客</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Alan Hou的个人博客</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">用行动赢得尊重</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85Go%E5%B7%A5%E5%85%B7"><span class="nav-number">1.</span> <span class="nav-text">安装Go工具</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8E%92%E6%9F%A5-Go-%E5%AE%89%E8%A3%85%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">2.</span> <span class="nav-text">排查 Go 安装的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Go%E7%9A%84%E5%B7%A5%E5%85%B7"><span class="nav-number">2.1.</span> <span class="nav-text">Go的工具</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E4%B8%AAGo%E7%A8%8B%E5%BA%8F"><span class="nav-number">3.</span> <span class="nav-text">第一个Go程序</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BAGo%E6%A8%A1%E5%9D%97"><span class="nav-number">3.1.</span> <span class="nav-text">创建Go模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#go-build"><span class="nav-number">3.2.</span> <span class="nav-text">go build</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%BC%E5%BC%8F%E5%8C%96%E4%BB%A3%E7%A0%81"><span class="nav-number">3.3.</span> <span class="nav-text">格式化代码</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E5%8F%B7%E6%8F%92%E5%85%A5%E8%A7%84%E5%88%99"><span class="nav-number">3.3.1.</span> <span class="nav-text">分号插入规则</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#go-vet"><span class="nav-number">4.</span> <span class="nav-text">go vet</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B7%A5%E5%85%B7%E9%80%89%E6%8B%A9"><span class="nav-number">5.</span> <span class="nav-text">工具选择</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Visual-Studio-Code"><span class="nav-number">5.1.</span> <span class="nav-text">Visual Studio Code</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#GoLand"><span class="nav-number">5.2.</span> <span class="nav-text">GoLand</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#The-Go-Playground"><span class="nav-number">5.3.</span> <span class="nav-text">The Go Playground</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Makefile"><span class="nav-number">6.</span> <span class="nav-text">Makefile</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BF%9D%E6%8C%81%E6%9B%B4%E6%96%B0"><span class="nav-number">7.</span> <span class="nav-text">保持更新</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">8.</span> <span class="nav-text">小结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Alan Hou</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">15</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://alanhou.github.io/2022/11/25/setting-up-go-environment/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Alan Hou">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alan Hou的个人博客">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="云原生系列Go语言篇-Go环境配置 | Alan Hou的个人博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          云原生系列Go语言篇-Go环境配置
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2022-11-25 00:00:00" itemprop="dateCreated datePublished" datetime="2022-11-25T00:00:00+08:00">2022-11-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-02-03 14:25:27" itemprop="dateModified" datetime="2023-02-03T14:25:27+08:00">2023-02-03</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>本文来自正在规划的<a target="_blank" rel="noopener" href="https://alanhou.org/go-cloudnative/">Go语言&amp;云原生自我提升系列</a>，欢迎关注后续文章。</p>
+<p>每种编程语言都需要有开发环境，Go自然也不例外。如果读者之前已经写过Go程序，那么一定已经有环境了，但可能会漏掉一些最新技术和工具。如果是第一次在电脑上配置Go，也不必担心，Go及其支持工具非常简单。在配置好环境并验证后，我们会构建一个简单程序，学习几种构建和运行Go的方式，然后涉足一些简化Go开发的工具和技巧。</p>
+<h2 id="安装Go工具"><a href="#安装Go工具" class="headerlink" title="安装Go工具"></a>安装Go工具</h2><p>要编写Go代码，首先要下载、安装Go开发工具。工具的最新版请见<a target="_blank" rel="noopener" href="https://go.dev/dl/">Go官方网站</a>的下载页面。选择所用平台的下载文件并执行安装。Mac的安装包 <em>.pkg</em>及Windows的安装包 <em>.msi</em>可自动在相应的位置安装Go、移除旧的安装版本，并将Go二进制文件放到默认的执行路径下。</p>
+<p>小贴士：如果读者是Mac开发者，可以通过<code>brew install go</code>命令来使用<a target="_blank" rel="noopener" href="https://brew.sh/">Homebrew</a>安装Go。使用<a target="_blank" rel="noopener" href="https://chocolatey.org/">Chocolatey</a>的Windows开发者可以通过<code>choco install golang</code>命令安装Go。</p>
+<p>各类Linux和FreeBSD安装包是gzip压缩的tar文件，解压为名为<em>go</em>的目录。将该目录拷贝到 <em>&#x2F;usr&#x2F;local</em> ，再将 <em>&#x2F;usr&#x2F;local&#x2F;go&#x2F;bin</em>添加到<code>$PATH</code>，这样就可以访问<code>go</code>命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ tar -C /usr/local -xzf go1.18.4.linux-amd64.tar.gz</span><br><span class="line">$ echo &#x27;export PATH=$PATH:/usr/local/go/bin&#x27; &gt;&gt; $HOME/.profile</span><br><span class="line">$ source $HOME/.profile</span><br></pre></td></tr></table></figure>
+
+<p>注：Go程序编译为单个原生二进制，无需安装其它软件即可直接运行。这与Java、Python和JavaScript这样要求安装虚拟机才能运行程序的语言不同。使用单原生二进制利于Go编写语言的分发。</p>
+<p>可以打开命令行输入如下命令验证环境配置是否正确：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ go version</span><br></pre></td></tr></table></figure>
+
+<p>如果配置正确应该会打印出如下内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">go version go1.18.4 darwin/arm64</span><br></pre></td></tr></table></figure>
+
+<p>这表明它是在macOS上Go版本为1.18.4。（Darwin是macOS内部的操作系统，arm64是基于ARM的64位芯片。）</p>
+<h2 id="排查-Go-安装的问题"><a href="#排查-Go-安装的问题" class="headerlink" title="排查 Go 安装的问题"></a>排查 Go 安装的问题</h2><p>如果显示的不是版本信息而是报错了，很可能是<code>go</code>不在执行路径下，或者是路径中有另一个名为<code>go</code>的程序。在macOS或其它类Unix系统中，可使用<code>which go</code>来查看所执行的<code>go</code>命令。如果未返回任何内容，则需要处理执行路径。</p>
+<p>如果使用Linux或FreeBSD，则可能是在32位系统中安装了64位开发工具，或者是使用了错误的芯片架构的开发工具。</p>
+<h3 id="Go的工具"><a href="#Go的工具" class="headerlink" title="Go的工具"></a>Go的工具</h3><p>所有的Go开发工具都可使用<code>go</code>命令来访问。除了<code>go version</code>，还有编译器(<code>go build</code>)、代码格式化工具(<code>go fmt</code>)、依赖管理工具(<code>go mod</code>)、测试运行工具(<code>go test</code>)以及扫描常见代码错误的工具(<code>go vet</code>)等。在后面的文章中会进行详细讲解。现在我们通过第一个程序Hello World来快速查看最常用的一些工具。</p>
+<p>注：自Go语言2009年发布以来，代码组织和依赖管理的方式发生过多次变化。因此读者可能在网上看到一些过时的建议，请注意甄别。</p>
+<p>对于现在而言，Go语言开发的规则很简单：读者可以自由组织项目并放在任何位置。</p>
+<p>注：在中国大陆通常在安装Go之后还应配置代理进行加速，比如使用七牛云的代理：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ go env -w GO111MODULE=on</span><br><span class="line">$ go env -w GOPROXY=https://goproxy.cn,direct</span><br></pre></td></tr></table></figure>
+
+<h2 id="第一个Go程序"><a href="#第一个Go程序" class="headerlink" title="第一个Go程序"></a>第一个Go程序</h2><p>我们学习一些使用Go编写程序的基础。在编写的过程中会不断了解Go程序的基本组成。读者可能还不能掌握所有知识，但不必担心，后续的文章会有进一步的讲解。</p>
+<h3 id="创建Go模块"><a href="#创建Go模块" class="headerlink" title="创建Go模块"></a>创建Go模块</h3><p>首先需要创建放程序的目录。命名为<em>ch1</em>。在命令行中进行创建：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ mkdir ch1 </span><br><span class="line">$ cd ch1</span><br></pre></td></tr></table></figure>
+
+<p>在该目录中，运行<code>go mod init</code>命令将该目录标记为一个Go模块：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ go mod init hello_world</span><br><span class="line">go: creating new go.mod: module hello_world</span><br></pre></td></tr></table></figure>
+
+<p>在第10章中会更深入地讨论模块，但现在读者只需知道Go项目被称为模块，每个模块在根目录下都有一个<code>go.mod</code>文件。运行<code>go mod init</code>会为我们创建该文件。<code>go.mod</code>中内容如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">module hello_world</span><br><span class="line"></span><br><span class="line">go 1.19</span><br></pre></td></tr></table></figure>
+
+<p><code>go.mod</code>文件声明了模块的名称以及该模块所支持的最小Go版本，还有模块依赖的其它模块。可将其类比Python中的<code>requirements.txt</code>或Ruby中的<code>Gemfile</code>。</p>
+<p>不应直接编辑<code>go.mod</code>文件。而是使用<code>go get</code>和<code>go mod tidy</code>命令来管理对该文件的修改。</p>
+<h3 id="go-build"><a href="#go-build" class="headerlink" title="go build"></a>go build</h3><p>下面开始打码！打开文本编辑器，键入如下内容，保存到<em>ch1</em>目录的<em>hello.go</em>文件中：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">package main</span><br><span class="line"></span><br><span class="line">import &quot;fmt&quot;</span><br><span class="line"></span><br><span class="line">func main() &#123;</span><br><span class="line">fmt.Println(&quot;Hello, world!&quot;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注：这里的缩进存在问题，但稍后读者就会明白为什么会这样了。</p>
+<p>我们来快速看下创建的Go文件中的各部分。第一行是包声明。在Go模块中，代码由一个或多个包组成。模块中的<code>main</code>包含启动Go程序的代码。</p>
+<p>接下来的是导入语句。<code>import</code>语句列出文件中所引用的包。我们这里使用的是标准库中的<code>fmt</code>（读作fumpt）包。不同于其它语言，Go中只导入整包。不能限定包中的具体类型、函数、常量或变量。</p>
+<p>所有的Go程序由<code>main</code>包中的<code>main</code>函数启动。我们使用<code>func main() &#123;</code>声明该函数。和Java、JavaScript及C一样，Go使用花括号标记代码块的起始和结束。<br>函数体由一行代码组成。表明调用<code>fmt</code>包中的<code>Println</code>函数，参数为<code>&quot;Hello, world!&quot;</code>。有过编程经验的读者应该能猜到该函数的作用。</p>
+<p>保存好文件后，回到命令行输入如下命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ go build</span><br></pre></td></tr></table></figure>
+
+<p>它会在当前目录创建一个名为<code>hello_world</code>的可执行文件（Windows下为<em>hello_world.exe</em>）。运行该命令，会在屏幕中输出<code>Hello, world!</code>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ ./hello_world</span><br><span class="line">Hello, world!</span><br></pre></td></tr></table></figure>
+
+<p>二进制文件的名称与模块中声明一致。若想使用其它名称或是存储在其它位置，使用<code>-o</code>参数。例如，我们希望将代码编译为二进制文件hello，可使用：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ go build -o hello</span><br></pre></td></tr></table></figure>
+
+<h3 id="格式化代码"><a href="#格式化代码" class="headerlink" title="格式化代码"></a>格式化代码</h3><p>Go的一大主要设计目录是创建一种高效编写代码的语言。这表示语法要简洁、编译要快速。同时也导致Go的作者们重新考虑了代码格式化。大部分语言在代码的格式上留有巨大的灵活性。但Go不是。强制标准的格式让编写规范源代码的工具相当容易。它简化了编译器并允许创建有一些生成代码的智能工具。</p>
+<p>还有另一个好处。开发人员过去在格式之争上浪费了大量的时间。因为Go语言定义了代码格式化的标准方式。Go开发者就无需争论<a target="_blank" rel="noopener" href="https://wiki.c2.com/?WhereDoTheBracesGo">花括号样式</a>和<a target="_blank" rel="noopener" href="https://www.jwz.org/doc/tabs-vs-spaces.html">Tab还是空格</a>。例如，Go使用tab进行缩进，并在起始花括号与声明或代码块起始命令不在同一行时会报语法错误。</p>
+<p>注：很多Go开发人员觉得Go团队定义了一套标准格式，是为了避免争论后来才发现了工具的优势。但Go语言开发负责人Russ Cox曾公开说过更好的工具化才是最初的动机。</p>
+<p>Go开发工具包含有一个命令<code>go fmt</code>，它会自动修复代码空白匹配标准格式。但是，它无法修复错误行中的花括号。运行命令如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ go fmt ./...</span><br><span class="line">hello.go</span><br></pre></td></tr></table></figure>
+
+<p>使用<code>./…</code>告诉Go工具对当前目录及其子目录下的所有文件应用该命令。我们在进一步学习Go的工具时它还会出现。</p>
+<p>此时如果打开<code>hello.go</code>，会看到<code>fmt.Println</code>已经采用单制表符进行了缩进。</p>
+<p>小贴士：在编译代码前请记得运行<code>go fmt</code>，至少在将修改的代码提交到仓库前要运行该命令。如果忘记，单独提交一次只运行了**<code>go fmt ./…</code>**的修改。对使用 IDE 的读者更简单的方法是对 VSCode 和 GoLand 这些编辑器提前做好配置，这样在每次保存代码时都会自动执行该命令。</p>
+<h4 id="分号插入规则"><a href="#分号插入规则" class="headerlink" title="分号插入规则"></a>分号插入规则</h4><p><code>go fmt</code>命令不会修复错误行的花括号问题，这背后的原因是分号插入规则。类似C或Java，Go需要在每条语句后添加分号。但Go开发者不需要自己添加这一分号。Go编译器按照一套极简单的规则自动插入，参见《<a target="_blank" rel="noopener" href="https://go.dev/doc/effective_go#semicolons">Effective Go</a>》中的描述：</p>
+<p>如果新行之前最后的符号(token )是以下中的一个，词法分析器(lexer)会在其后添加一个分号：</p>
+<ul>
+<li>标识符（包含int和float64这样的保留字）</li>
+<li>基本字面量，如数字或字符串常量</li>
+<li>以下符号之一：break、continue、fallthrough、return、++、–、)或}</li>
+</ul>
+<p>有了这一简单规则，可以了解到为会花括号放到错误的位置时会出错。如果这样写代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">func main()</span><br><span class="line">&#123;</span><br><span class="line">    fmt.Println(&quot;Hello, world!&quot;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>分号插入规则发现在<code>func main()</code>中以“)”结尾，会将其变成：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">func main();</span><br><span class="line">&#123;</span><br><span class="line">    fmt.Println(&quot;Hello, world!&quot;);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>这样就不是有效的Go代码了。</p>
+<p>分号插入规则及其对花括号的限制让Go编译器变得更简单、快速，同时也限制定了代码风格。这是睿智的做法。</p>
+<h2 id="go-vet"><a href="#go-vet" class="headerlink" title="go vet"></a>go vet</h2><p>有一批bug在代码语法上没有问题，但却很可能是错误的。<code>go</code>工具含有一个<code>go vet</code>命令来检测这类错误。我们修改程序来看它是如何检测到的。修改<code>hello.go</code>中的<code>fmt.Println</code>代码行如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fmt.Printf(&quot;Hello, %s!\n&quot;)</span><br></pre></td></tr></table></figure>
+
+<p><code>fmt.Printf</code>非常类似于C、Java、Ruby及其它语言中的<code>printf</code> 。如果之前没见过<code>printf</code> ，这个函数的第一个参数是一个模板，剩余的参数是模板中占位符的值。</p>
+<p><code>go vet</code>可以检测到的是格式化模板中的每个占位符是否有对应的值。对修改后的代码运行<code>go vet</code>，它会发现其中的错误：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ go vet ./...</span><br><span class="line"># hello_world</span><br><span class="line">./hello.go:6:2: fmt.Printf format %s reads arg #1, but call has 0 args</span><br></pre></td></tr></table></figure>
+
+<p>这里<code>go vet</code>发现了我们的bug，可以很简单地进行修复。修改<code>hello.go</code>中的第6行如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fmt.Printf(&quot;Hello, %s!\n&quot;, &quot;world&quot;)</span><br></pre></td></tr></table></figure>
+
+<p>虽然<code>go vet</code>可以捕获一些觉的编程错误，但有些问题无法监测到。所幸有一些第三方的Go代码智能工具弥补了这一缺陷。其中一些知名的质量工具会在第11章中进行讲解。</p>
+<p>小贴士：就像我们应该运行<code>go fmt</code>来确保代码的格式正确，运行<code>go vet</code>可扫描到有效代码中的一些bug。它是只是保障高质量代码的第一步。除了本系列文章中的建议，所有的Go开发人员都应当读读<a target="_blank" rel="noopener" href="https://go.dev/doc/effective_go">Effective Go</a>和<a target="_blank" rel="noopener" href="https://github.com/golang/go/wiki/CodeReviewComments">Go语言文档中的代码审核评论</a>来理解地道的Go代码应该是什么样的。</p>
+<h2 id="工具选择"><a href="#工具选择" class="headerlink" title="工具选择"></a>工具选择</h2><p>虽然我们在这个小程序时只用到了普通的文本编辑器和<code>go</code>命令，但在写更大的项目时最好使用更高级的工具。大部分编辑器和IDE都有优秀的<a target="_blank" rel="noopener" href="https://github.com/golang/go/wiki/IDEsAndTextEditorPlugins">Go开发工具</a>。如果读者没有个人偏好的工具，最主流的两个Go开发环境是VS Code和GoLand。</p>
+<h3 id="Visual-Studio-Code"><a href="#Visual-Studio-Code" class="headerlink" title="Visual Studio Code"></a>Visual Studio Code</h3><p>如果希望使用免费的开发环境，微软所出的<a target="_blank" rel="noopener" href="https://code.visualstudio.com/">Visual Studio Code</a> 是最佳的选择。自2015年发布以来， VS Code已成为最流行开源代码编辑器。它并没有自带对Go的支持，但可以通过在插件库中下载Go插件来变成Go开发环境。</p>
+<p>VS Code对Go的支持依赖于第三方工具。包含Go开发工具、<a target="_blank" rel="noopener" href="https://github.com/go-delve/delve">Delve调试器</a>和<a target="_blank" rel="noopener" href="https://github.com/golang/tools/blob/master/gopls/README.md">gopls</a>，后者是由Go团队开发的Go语言服务端。在安装Go开发工具包时，Go插件会安装Delve和gopls。</p>
+<p>注：什么是语言的服务端？这是一种API标准规范，用于实现智能编辑行为，如代码补全、质量检查或查找代码中所有使用变量或函数之处。可以阅读<a target="_blank" rel="noopener" href="https://microsoft.github.io/language-server-protocol/">语言服务端协议</a>来了解语言服务端及其能力的详细知识。</p>
+<p>一旦配置好的工具，就可以打开项目使用了。图1-1中展示了项目窗口的外观。<a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=1MXIGYrMk80">Getting started with VS Code Go</a>视频中演示了 VS Code的Go插件。</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/0470bea202f642dbaf5ba2b97e11ff82~tplv-k3u1fbpfcp-zoom-1.image" alt="VS Code"></p>
+<p>图1-1 Visual Studio Code</p>
+<h3 id="GoLand"><a href="#GoLand" class="headerlink" title="GoLand"></a>GoLand</h3><p><a target="_blank" rel="noopener" href="https://www.jetbrains.com/go/">GoLand</a>是JetBrains专门为Go推出的IDE。虽然JetBrains是出了名的以Java为中心的工具，但丝毫不影响GoLand是一款优秀的Go开发环境。参见图1-2中的GoLand用户界面，它和 IntelliJ、PyCharm、RubyMine、WebStorm、Android Studio或其它JetBrains IDE都很像。它对Go的支持有重合名、语法高亮、代码补全、代码导航、文档弹窗、调试器、代码覆盖率等。除了支持Go，GoLand还包含JavaScript&#x2F;HTML&#x2F;CSS和SQL数据库工具。不同于VS Code，GoLand不需要用户下载其它工具就可正常使用。</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/da28747ee01b4d9c8447f5392e62c7e4~tplv-k3u1fbpfcp-zoom-1.image" alt="GoLand窗口"></p>
+<p>图1-2 GoLand<br>如果已订阅了IntelliJ Ultimate（或是符合免费证书申请），可通过插件来添加对Go的支持。不然的话就需要付费使用GoLand，并没有免费版。</p>
+<h3 id="The-Go-Playground"><a href="#The-Go-Playground" class="headerlink" title="The Go Playground"></a>The Go Playground</h3><p>Go开发还有一个重要的工具，但无需安装。访问<a target="_blank" rel="noopener" href="http://go.dev/play">The Go Playground</a> 就可以看到类似图1-3中的界面。如果使用过<code>irb</code>、<code>node</code>或<code>python</code>这些命令行环境，会发现The Go Playground的使用体验非常类似。它可用于测试和分享简单程序。在窗口中输入代码，点击Run按钮运行代码。Format按钮对程序运行<code>go fmt</code>同时更新导入包。Share按钮创建一个唯一URL，可发送给其他人查看该程序或是你自己在未来回来查看代码（这些URL验证下来可保存很长时间，但不要把它用成代码仓库）。</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e209e4d75b304d3597ddd4f4f026356c~tplv-k3u1fbpfcp-zoom-1.image" alt="Go Playground"></p>
+<p>图1-3 The Go Playground</p>
+<p>在图1-4中可以看到，可以通过在每个文件之间添加<code>-- filename.go --</code>这样的代码来模拟多文件。甚至可以通过在文件名中添加<code>/</code>来模拟子目录，如<code>-- subdir/my_code.go --</code>。</p>
+<p>注意The Go Playground实际上是别人的电脑（具体来说是Google的电脑），所有自由度受限。它提供了几种Go版本（通常是当前发行版、上一版和最新的开发版）。只能发起对<code>localhost</code>的网络连接，运行太长或占用过多内存时会停止掉进程。如果程序中用到时间的话，需要考虑到时钟设置为November 10, 2009, 23:00:00 UTC（Go首次发布的日期）。虽然有这些限制，Go Playground对于测试新想法很有用，而且不需要在本地新建项目。在本系列文章中，读者会看到很多The Go Playground的链接，可直接运行代码，无需拷贝到本地。</p>
+<p>警告：不要在其中使用敏感信息（如个人身份信息、密码或私钥）！如果点击Share按钮，这些信息会保存到Google的服务器，其他有分享链接的人都可以访问到。如果不慎这么干了，写一封邮件把URL和需要删除的原因发送给<a href="mailto:&#x73;&#x65;&#99;&#117;&#x72;&#105;&#x74;&#121;&#x40;&#x67;&#111;&#108;&#x61;&#110;&#103;&#46;&#x6f;&#114;&#x67;">&#x73;&#x65;&#99;&#117;&#x72;&#105;&#x74;&#121;&#x40;&#x67;&#111;&#108;&#x61;&#110;&#103;&#46;&#x6f;&#114;&#x67;</a>。</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8c8f68596c184455a77c6af1726c2acd~tplv-k3u1fbpfcp-zoom-1.image" alt="Go Playground多文件"></p>
+<p>图1-4 The Go Playground支持多文件</p>
+<h2 id="Makefile"><a href="#Makefile" class="headerlink" title="Makefile"></a>Makefile</h2><p>IDE很好使用，不易于自动化。现代软件开发依赖于反复的自动化构建，可在任何地方、任意时间由任何运行。这类工具是很好的软件工程化实践。它避免了一个历史问题，开发者不对构建问题负责并抛出那句经典台词：“在我的电脑上是好的!”实现的方式是通过脚本指定构建步骤。Go开发者使用<code>make</code> 进行解决。开发者通过它指定一系列构建程序所需要的操作以及它们执行的顺序。读者可能不熟悉<code>make</code> ，它1976年就在Unix系统上用于构建程序了。</p>
+<p>在<em>ch1</em>目录下创建一个文件<code>Makefile</code> ，添加如下内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">.DEFAULT_GOAL := build</span><br><span class="line"></span><br><span class="line">.PHONY:fmt vet build</span><br><span class="line">fmt:</span><br><span class="line">        go fmt ./...</span><br><span class="line"></span><br><span class="line">vet: fmt</span><br><span class="line">        go vet ./...</span><br><span class="line"></span><br><span class="line">build: vet</span><br><span class="line">        go build</span><br></pre></td></tr></table></figure>
+
+<p>即使读者之前没用过Makefile ，也不难get到其作用。每个操作被称为一个<em>target</em>。<code>.DEFAULT_GOAL</code>定义了在没有运行目标时所运行的操作。上例中运行的是<code>build</code>目标命令。接下来就是目标命令的定义，每个冒号(<code>:</code>)前为目标名。目标名后的单词 (<code>build: vet</code>中的<code>vet</code> ) 是在运行该目标之前所需要运行的目标命令。该目标所执行的任务放在之后的缩进行。<code>.PHONY</code>让<code>make</code> 命令在项目中有同名目录时不至于混淆。</p>
+<p>运行<code>make</code> 命令后会输出：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ make</span><br><span class="line">go fmt ./...</span><br><span class="line">go vet ./...</span><br><span class="line">go build</span><br></pre></td></tr></table></figure>
+
+<p>通过这条命令，我们格式化了代码、检查了隐藏的错误并执行了编译。我们可以通过<code>make vet</code>来检查代码，或是只运行<code>make fmt</code>来完成格式化。看起来并没有多大改进 ，但构建前代码及检查代码（或是执行持续集成构建服务中的脚本）可以保障不丢失任何步骤。</p>
+<p>Makefile的一个缺点是要求有些严格。必须使用制表符来缩进这些步骤。并且在Windows系统中没有原生支持。如果在Windows电脑上进行Go开发，需要先安装<code>make</code>。最简单的安装方式是先安装包管理工具如 <a target="_blank" rel="noopener" href="https://chocolatey.org/">Chocolatey</a>，然后使用它来安装<code>make</code> （对于Chocolatey，命令为<code>choco install make</code>）。</p>
+<p>如果想要学习更多有关Makefile的知识，<a target="_blank" rel="noopener" href="https://makefiletutorial.com/">Chase Lambert</a>有一个很好的教程，但使用了一小部分C讲解了相关概念。</p>
+<h2 id="保持更新"><a href="#保持更新" class="headerlink" title="保持更新"></a>保持更新</h2><p>像其它编程语言一样，Go开发工具会做定期更新。Go程序编译为单独的原生二进制文件，无需担心开发环境的升级引起已部署程序的崩溃。可以在同一台电脑或虚拟机上同时运行多个Go版本编译的程序。</p>
+<p>从Go 1.2开始，大约每6个月会发布一个大版本。还有一些按需发布的bug和安全问题修复的小版本。因快速的开发周期以及Go团队对于向后兼容的承诺，Go的发行版倾向于递增而不是扩散的做法。<a target="_blank" rel="noopener" href="https://go.dev/doc/go1compat">Go兼容性承诺</a>详细描述了Go团队如何规划避免引起崩溃的Go代码。其中说到不会从1开始Go版本不会出现任何语言和标准库层面的向后不兼容，除非涉及到bug或安全问题修复。这一承诺不适用于<code>go</code>命令。<code>go</code>命令的参数和功能有过向后不兼容的修改，且很有可能同样在未来出现。</p>
+<p>准备好在电脑上更新Go开发工具时，Mac和Windows用户拥有快速的方法。安装了<code>brew</code>和<code>chocolatey</code>的用户可以使用该工具升级。使用安装包安装的用户可在<a target="_blank" rel="noopener" href="https://go.dev/dl/">https://go.dev/dl/</a>下载最新版本，它会删除掉老版本并安装新版本。</p>
+<p>Linux和BSD用户需要下载最新版本，将老版本移至备份目录，解压新版本，然后再删除老版本：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ mv /usr/local/go /usr/local/old-go</span><br><span class="line">$ tar -C /usr/local -xzf go1.18.4.linux-amd64.tar.gz</span><br><span class="line">$ rm -rf /usr/local/old-go</span><br></pre></td></tr></table></figure>
+
+<p>注：从技术上来说，无需移动已有安装，只需要删除它再安装新版本即可。但这不能保证“万无一失”。如果在安装新版本时出现问题，最好还有旧版本可以使用。</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>本文中，我们学习了如何安装、配置Go开发环境。同时讨论了构建Go程序及保障代码质量的一些工具。至此我们已准备好了环境，下一篇文章中我们就开始探讨Go语言的内置类型以及如何声明变量。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Golang/" rel="tag"># Golang</a>
+              <a href="/tags/Go-%E8%AF%AD%E8%A8%80/" rel="tag"># Go 语言</a>
+              <a href="/tags/%E4%BA%91%E5%8E%9F%E7%94%9F/" rel="tag"># 云原生</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/01/23/odoo-essentials-12-chapter14/" rel="prev" title="第十四章 Odoo 12开发之部署和维护生产实例">
+                  <i class="fa fa-chevron-left"></i> 第十四章 Odoo 12开发之部署和维护生产实例
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Alan Hou</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

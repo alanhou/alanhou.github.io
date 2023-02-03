@@ -113,12 +113,12 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-count">15</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">2</span>
+        <span class="site-state-item-count">5</span>
         <span class="site-state-item-name">tags</span>
       </div>
   </nav>
@@ -135,6 +135,205 @@
     </div>
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://alanhou.github.io/2022/11/25/setting-up-go-environment/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Alan Hou">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alan Hou的个人博客">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Alan Hou的个人博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2022/11/25/setting-up-go-environment/" class="post-title-link" itemprop="url">云原生系列Go语言篇-Go环境配置</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2022-11-25 00:00:00" itemprop="dateCreated datePublished" datetime="2022-11-25T00:00:00+08:00">2022-11-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-02-03 14:25:27" itemprop="dateModified" datetime="2023-02-03T14:25:27+08:00">2023-02-03</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>本文来自正在规划的<a target="_blank" rel="noopener" href="https://alanhou.org/go-cloudnative/">Go语言&amp;云原生自我提升系列</a>，欢迎关注后续文章。</p>
+<p>每种编程语言都需要有开发环境，Go自然也不例外。如果读者之前已经写过Go程序，那么一定已经有环境了，但可能会漏掉一些最新技术和工具。如果是第一次在电脑上配置Go，也不必担心，Go及其支持工具非常简单。在配置好环境并验证后，我们会构建一个简单程序，学习几种构建和运行Go的方式，然后涉足一些简化Go开发的工具和技巧。</p>
+<h2 id="安装Go工具"><a href="#安装Go工具" class="headerlink" title="安装Go工具"></a>安装Go工具</h2><p>要编写Go代码，首先要下载、安装Go开发工具。工具的最新版请见<a target="_blank" rel="noopener" href="https://go.dev/dl/">Go官方网站</a>的下载页面。选择所用平台的下载文件并执行安装。Mac的安装包 <em>.pkg</em>及Windows的安装包 <em>.msi</em>可自动在相应的位置安装Go、移除旧的安装版本，并将Go二进制文件放到默认的执行路径下。</p>
+<p>小贴士：如果读者是Mac开发者，可以通过<code>brew install go</code>命令来使用<a target="_blank" rel="noopener" href="https://brew.sh/">Homebrew</a>安装Go。使用<a target="_blank" rel="noopener" href="https://chocolatey.org/">Chocolatey</a>的Windows开发者可以通过<code>choco install golang</code>命令安装Go。</p>
+<p>各类Linux和FreeBSD安装包是gzip压缩的tar文件，解压为名为<em>go</em>的目录。将该目录拷贝到 <em>&#x2F;usr&#x2F;local</em> ，再将 <em>&#x2F;usr&#x2F;local&#x2F;go&#x2F;bin</em>添加到<code>$PATH</code>，这样就可以访问<code>go</code>命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ tar -C /usr/local -xzf go1.18.4.linux-amd64.tar.gz</span><br><span class="line">$ echo &#x27;export PATH=$PATH:/usr/local/go/bin&#x27; &gt;&gt; $HOME/.profile</span><br><span class="line">$ source $HOME/.profile</span><br></pre></td></tr></table></figure>
+
+<p>注：Go程序编译为单个原生二进制，无需安装其它软件即可直接运行。这与Java、Python和JavaScript这样要求安装虚拟机才能运行程序的语言不同。使用单原生二进制利于Go编写语言的分发。</p>
+<p>可以打开命令行输入如下命令验证环境配置是否正确：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ go version</span><br></pre></td></tr></table></figure>
+
+<p>如果配置正确应该会打印出如下内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">go version go1.18.4 darwin/arm64</span><br></pre></td></tr></table></figure>
+
+<p>这表明它是在macOS上Go版本为1.18.4。（Darwin是macOS内部的操作系统，arm64是基于ARM的64位芯片。）</p>
+<h2 id="排查-Go-安装的问题"><a href="#排查-Go-安装的问题" class="headerlink" title="排查 Go 安装的问题"></a>排查 Go 安装的问题</h2><p>如果显示的不是版本信息而是报错了，很可能是<code>go</code>不在执行路径下，或者是路径中有另一个名为<code>go</code>的程序。在macOS或其它类Unix系统中，可使用<code>which go</code>来查看所执行的<code>go</code>命令。如果未返回任何内容，则需要处理执行路径。</p>
+<p>如果使用Linux或FreeBSD，则可能是在32位系统中安装了64位开发工具，或者是使用了错误的芯片架构的开发工具。</p>
+<h3 id="Go的工具"><a href="#Go的工具" class="headerlink" title="Go的工具"></a>Go的工具</h3><p>所有的Go开发工具都可使用<code>go</code>命令来访问。除了<code>go version</code>，还有编译器(<code>go build</code>)、代码格式化工具(<code>go fmt</code>)、依赖管理工具(<code>go mod</code>)、测试运行工具(<code>go test</code>)以及扫描常见代码错误的工具(<code>go vet</code>)等。在后面的文章中会进行详细讲解。现在我们通过第一个程序Hello World来快速查看最常用的一些工具。</p>
+<p>注：自Go语言2009年发布以来，代码组织和依赖管理的方式发生过多次变化。因此读者可能在网上看到一些过时的建议，请注意甄别。</p>
+<p>对于现在而言，Go语言开发的规则很简单：读者可以自由组织项目并放在任何位置。</p>
+<p>注：在中国大陆通常在安装Go之后还应配置代理进行加速，比如使用七牛云的代理：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ go env -w GO111MODULE=on</span><br><span class="line">$ go env -w GOPROXY=https://goproxy.cn,direct</span><br></pre></td></tr></table></figure>
+
+<h2 id="第一个Go程序"><a href="#第一个Go程序" class="headerlink" title="第一个Go程序"></a>第一个Go程序</h2><p>我们学习一些使用Go编写程序的基础。在编写的过程中会不断了解Go程序的基本组成。读者可能还不能掌握所有知识，但不必担心，后续的文章会有进一步的讲解。</p>
+<h3 id="创建Go模块"><a href="#创建Go模块" class="headerlink" title="创建Go模块"></a>创建Go模块</h3><p>首先需要创建放程序的目录。命名为<em>ch1</em>。在命令行中进行创建：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ mkdir ch1 </span><br><span class="line">$ cd ch1</span><br></pre></td></tr></table></figure>
+
+<p>在该目录中，运行<code>go mod init</code>命令将该目录标记为一个Go模块：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ go mod init hello_world</span><br><span class="line">go: creating new go.mod: module hello_world</span><br></pre></td></tr></table></figure>
+
+<p>在第10章中会更深入地讨论模块，但现在读者只需知道Go项目被称为模块，每个模块在根目录下都有一个<code>go.mod</code>文件。运行<code>go mod init</code>会为我们创建该文件。<code>go.mod</code>中内容如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">module hello_world</span><br><span class="line"></span><br><span class="line">go 1.19</span><br></pre></td></tr></table></figure>
+
+<p><code>go.mod</code>文件声明了模块的名称以及该模块所支持的最小Go版本，还有模块依赖的其它模块。可将其类比Python中的<code>requirements.txt</code>或Ruby中的<code>Gemfile</code>。</p>
+<p>不应直接编辑<code>go.mod</code>文件。而是使用<code>go get</code>和<code>go mod tidy</code>命令来管理对该文件的修改。</p>
+<h3 id="go-build"><a href="#go-build" class="headerlink" title="go build"></a>go build</h3><p>下面开始打码！打开文本编辑器，键入如下内容，保存到<em>ch1</em>目录的<em>hello.go</em>文件中：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">package main</span><br><span class="line"></span><br><span class="line">import &quot;fmt&quot;</span><br><span class="line"></span><br><span class="line">func main() &#123;</span><br><span class="line">fmt.Println(&quot;Hello, world!&quot;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注：这里的缩进存在问题，但稍后读者就会明白为什么会这样了。</p>
+<p>我们来快速看下创建的Go文件中的各部分。第一行是包声明。在Go模块中，代码由一个或多个包组成。模块中的<code>main</code>包含启动Go程序的代码。</p>
+<p>接下来的是导入语句。<code>import</code>语句列出文件中所引用的包。我们这里使用的是标准库中的<code>fmt</code>（读作fumpt）包。不同于其它语言，Go中只导入整包。不能限定包中的具体类型、函数、常量或变量。</p>
+<p>所有的Go程序由<code>main</code>包中的<code>main</code>函数启动。我们使用<code>func main() &#123;</code>声明该函数。和Java、JavaScript及C一样，Go使用花括号标记代码块的起始和结束。<br>函数体由一行代码组成。表明调用<code>fmt</code>包中的<code>Println</code>函数，参数为<code>&quot;Hello, world!&quot;</code>。有过编程经验的读者应该能猜到该函数的作用。</p>
+<p>保存好文件后，回到命令行输入如下命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ go build</span><br></pre></td></tr></table></figure>
+
+<p>它会在当前目录创建一个名为<code>hello_world</code>的可执行文件（Windows下为<em>hello_world.exe</em>）。运行该命令，会在屏幕中输出<code>Hello, world!</code>：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ ./hello_world</span><br><span class="line">Hello, world!</span><br></pre></td></tr></table></figure>
+
+<p>二进制文件的名称与模块中声明一致。若想使用其它名称或是存储在其它位置，使用<code>-o</code>参数。例如，我们希望将代码编译为二进制文件hello，可使用：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ go build -o hello</span><br></pre></td></tr></table></figure>
+
+<h3 id="格式化代码"><a href="#格式化代码" class="headerlink" title="格式化代码"></a>格式化代码</h3><p>Go的一大主要设计目录是创建一种高效编写代码的语言。这表示语法要简洁、编译要快速。同时也导致Go的作者们重新考虑了代码格式化。大部分语言在代码的格式上留有巨大的灵活性。但Go不是。强制标准的格式让编写规范源代码的工具相当容易。它简化了编译器并允许创建有一些生成代码的智能工具。</p>
+<p>还有另一个好处。开发人员过去在格式之争上浪费了大量的时间。因为Go语言定义了代码格式化的标准方式。Go开发者就无需争论<a target="_blank" rel="noopener" href="https://wiki.c2.com/?WhereDoTheBracesGo">花括号样式</a>和<a target="_blank" rel="noopener" href="https://www.jwz.org/doc/tabs-vs-spaces.html">Tab还是空格</a>。例如，Go使用tab进行缩进，并在起始花括号与声明或代码块起始命令不在同一行时会报语法错误。</p>
+<p>注：很多Go开发人员觉得Go团队定义了一套标准格式，是为了避免争论后来才发现了工具的优势。但Go语言开发负责人Russ Cox曾公开说过更好的工具化才是最初的动机。</p>
+<p>Go开发工具包含有一个命令<code>go fmt</code>，它会自动修复代码空白匹配标准格式。但是，它无法修复错误行中的花括号。运行命令如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ go fmt ./...</span><br><span class="line">hello.go</span><br></pre></td></tr></table></figure>
+
+<p>使用<code>./…</code>告诉Go工具对当前目录及其子目录下的所有文件应用该命令。我们在进一步学习Go的工具时它还会出现。</p>
+<p>此时如果打开<code>hello.go</code>，会看到<code>fmt.Println</code>已经采用单制表符进行了缩进。</p>
+<p>小贴士：在编译代码前请记得运行<code>go fmt</code>，至少在将修改的代码提交到仓库前要运行该命令。如果忘记，单独提交一次只运行了**<code>go fmt ./…</code>**的修改。对使用 IDE 的读者更简单的方法是对 VSCode 和 GoLand 这些编辑器提前做好配置，这样在每次保存代码时都会自动执行该命令。</p>
+<h4 id="分号插入规则"><a href="#分号插入规则" class="headerlink" title="分号插入规则"></a>分号插入规则</h4><p><code>go fmt</code>命令不会修复错误行的花括号问题，这背后的原因是分号插入规则。类似C或Java，Go需要在每条语句后添加分号。但Go开发者不需要自己添加这一分号。Go编译器按照一套极简单的规则自动插入，参见《<a target="_blank" rel="noopener" href="https://go.dev/doc/effective_go#semicolons">Effective Go</a>》中的描述：</p>
+<p>如果新行之前最后的符号(token )是以下中的一个，词法分析器(lexer)会在其后添加一个分号：</p>
+<ul>
+<li>标识符（包含int和float64这样的保留字）</li>
+<li>基本字面量，如数字或字符串常量</li>
+<li>以下符号之一：break、continue、fallthrough、return、++、–、)或}</li>
+</ul>
+<p>有了这一简单规则，可以了解到为会花括号放到错误的位置时会出错。如果这样写代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">func main()</span><br><span class="line">&#123;</span><br><span class="line">    fmt.Println(&quot;Hello, world!&quot;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>分号插入规则发现在<code>func main()</code>中以“)”结尾，会将其变成：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">func main();</span><br><span class="line">&#123;</span><br><span class="line">    fmt.Println(&quot;Hello, world!&quot;);</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>这样就不是有效的Go代码了。</p>
+<p>分号插入规则及其对花括号的限制让Go编译器变得更简单、快速，同时也限制定了代码风格。这是睿智的做法。</p>
+<h2 id="go-vet"><a href="#go-vet" class="headerlink" title="go vet"></a>go vet</h2><p>有一批bug在代码语法上没有问题，但却很可能是错误的。<code>go</code>工具含有一个<code>go vet</code>命令来检测这类错误。我们修改程序来看它是如何检测到的。修改<code>hello.go</code>中的<code>fmt.Println</code>代码行如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fmt.Printf(&quot;Hello, %s!\n&quot;)</span><br></pre></td></tr></table></figure>
+
+<p><code>fmt.Printf</code>非常类似于C、Java、Ruby及其它语言中的<code>printf</code> 。如果之前没见过<code>printf</code> ，这个函数的第一个参数是一个模板，剩余的参数是模板中占位符的值。</p>
+<p><code>go vet</code>可以检测到的是格式化模板中的每个占位符是否有对应的值。对修改后的代码运行<code>go vet</code>，它会发现其中的错误：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ go vet ./...</span><br><span class="line"># hello_world</span><br><span class="line">./hello.go:6:2: fmt.Printf format %s reads arg #1, but call has 0 args</span><br></pre></td></tr></table></figure>
+
+<p>这里<code>go vet</code>发现了我们的bug，可以很简单地进行修复。修改<code>hello.go</code>中的第6行如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fmt.Printf(&quot;Hello, %s!\n&quot;, &quot;world&quot;)</span><br></pre></td></tr></table></figure>
+
+<p>虽然<code>go vet</code>可以捕获一些觉的编程错误，但有些问题无法监测到。所幸有一些第三方的Go代码智能工具弥补了这一缺陷。其中一些知名的质量工具会在第11章中进行讲解。</p>
+<p>小贴士：就像我们应该运行<code>go fmt</code>来确保代码的格式正确，运行<code>go vet</code>可扫描到有效代码中的一些bug。它是只是保障高质量代码的第一步。除了本系列文章中的建议，所有的Go开发人员都应当读读<a target="_blank" rel="noopener" href="https://go.dev/doc/effective_go">Effective Go</a>和<a target="_blank" rel="noopener" href="https://github.com/golang/go/wiki/CodeReviewComments">Go语言文档中的代码审核评论</a>来理解地道的Go代码应该是什么样的。</p>
+<h2 id="工具选择"><a href="#工具选择" class="headerlink" title="工具选择"></a>工具选择</h2><p>虽然我们在这个小程序时只用到了普通的文本编辑器和<code>go</code>命令，但在写更大的项目时最好使用更高级的工具。大部分编辑器和IDE都有优秀的<a target="_blank" rel="noopener" href="https://github.com/golang/go/wiki/IDEsAndTextEditorPlugins">Go开发工具</a>。如果读者没有个人偏好的工具，最主流的两个Go开发环境是VS Code和GoLand。</p>
+<h3 id="Visual-Studio-Code"><a href="#Visual-Studio-Code" class="headerlink" title="Visual Studio Code"></a>Visual Studio Code</h3><p>如果希望使用免费的开发环境，微软所出的<a target="_blank" rel="noopener" href="https://code.visualstudio.com/">Visual Studio Code</a> 是最佳的选择。自2015年发布以来， VS Code已成为最流行开源代码编辑器。它并没有自带对Go的支持，但可以通过在插件库中下载Go插件来变成Go开发环境。</p>
+<p>VS Code对Go的支持依赖于第三方工具。包含Go开发工具、<a target="_blank" rel="noopener" href="https://github.com/go-delve/delve">Delve调试器</a>和<a target="_blank" rel="noopener" href="https://github.com/golang/tools/blob/master/gopls/README.md">gopls</a>，后者是由Go团队开发的Go语言服务端。在安装Go开发工具包时，Go插件会安装Delve和gopls。</p>
+<p>注：什么是语言的服务端？这是一种API标准规范，用于实现智能编辑行为，如代码补全、质量检查或查找代码中所有使用变量或函数之处。可以阅读<a target="_blank" rel="noopener" href="https://microsoft.github.io/language-server-protocol/">语言服务端协议</a>来了解语言服务端及其能力的详细知识。</p>
+<p>一旦配置好的工具，就可以打开项目使用了。图1-1中展示了项目窗口的外观。<a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=1MXIGYrMk80">Getting started with VS Code Go</a>视频中演示了 VS Code的Go插件。</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/0470bea202f642dbaf5ba2b97e11ff82~tplv-k3u1fbpfcp-zoom-1.image" alt="VS Code"></p>
+<p>图1-1 Visual Studio Code</p>
+<h3 id="GoLand"><a href="#GoLand" class="headerlink" title="GoLand"></a>GoLand</h3><p><a target="_blank" rel="noopener" href="https://www.jetbrains.com/go/">GoLand</a>是JetBrains专门为Go推出的IDE。虽然JetBrains是出了名的以Java为中心的工具，但丝毫不影响GoLand是一款优秀的Go开发环境。参见图1-2中的GoLand用户界面，它和 IntelliJ、PyCharm、RubyMine、WebStorm、Android Studio或其它JetBrains IDE都很像。它对Go的支持有重合名、语法高亮、代码补全、代码导航、文档弹窗、调试器、代码覆盖率等。除了支持Go，GoLand还包含JavaScript&#x2F;HTML&#x2F;CSS和SQL数据库工具。不同于VS Code，GoLand不需要用户下载其它工具就可正常使用。</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/da28747ee01b4d9c8447f5392e62c7e4~tplv-k3u1fbpfcp-zoom-1.image" alt="GoLand窗口"></p>
+<p>图1-2 GoLand<br>如果已订阅了IntelliJ Ultimate（或是符合免费证书申请），可通过插件来添加对Go的支持。不然的话就需要付费使用GoLand，并没有免费版。</p>
+<h3 id="The-Go-Playground"><a href="#The-Go-Playground" class="headerlink" title="The Go Playground"></a>The Go Playground</h3><p>Go开发还有一个重要的工具，但无需安装。访问<a target="_blank" rel="noopener" href="http://go.dev/play">The Go Playground</a> 就可以看到类似图1-3中的界面。如果使用过<code>irb</code>、<code>node</code>或<code>python</code>这些命令行环境，会发现The Go Playground的使用体验非常类似。它可用于测试和分享简单程序。在窗口中输入代码，点击Run按钮运行代码。Format按钮对程序运行<code>go fmt</code>同时更新导入包。Share按钮创建一个唯一URL，可发送给其他人查看该程序或是你自己在未来回来查看代码（这些URL验证下来可保存很长时间，但不要把它用成代码仓库）。</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e209e4d75b304d3597ddd4f4f026356c~tplv-k3u1fbpfcp-zoom-1.image" alt="Go Playground"></p>
+<p>图1-3 The Go Playground</p>
+<p>在图1-4中可以看到，可以通过在每个文件之间添加<code>-- filename.go --</code>这样的代码来模拟多文件。甚至可以通过在文件名中添加<code>/</code>来模拟子目录，如<code>-- subdir/my_code.go --</code>。</p>
+<p>注意The Go Playground实际上是别人的电脑（具体来说是Google的电脑），所有自由度受限。它提供了几种Go版本（通常是当前发行版、上一版和最新的开发版）。只能发起对<code>localhost</code>的网络连接，运行太长或占用过多内存时会停止掉进程。如果程序中用到时间的话，需要考虑到时钟设置为November 10, 2009, 23:00:00 UTC（Go首次发布的日期）。虽然有这些限制，Go Playground对于测试新想法很有用，而且不需要在本地新建项目。在本系列文章中，读者会看到很多The Go Playground的链接，可直接运行代码，无需拷贝到本地。</p>
+<p>警告：不要在其中使用敏感信息（如个人身份信息、密码或私钥）！如果点击Share按钮，这些信息会保存到Google的服务器，其他有分享链接的人都可以访问到。如果不慎这么干了，写一封邮件把URL和需要删除的原因发送给<a href="mailto:&#x73;&#x65;&#99;&#117;&#x72;&#105;&#x74;&#121;&#x40;&#x67;&#111;&#108;&#x61;&#110;&#103;&#46;&#x6f;&#114;&#x67;">&#x73;&#x65;&#99;&#117;&#x72;&#105;&#x74;&#121;&#x40;&#x67;&#111;&#108;&#x61;&#110;&#103;&#46;&#x6f;&#114;&#x67;</a>。</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8c8f68596c184455a77c6af1726c2acd~tplv-k3u1fbpfcp-zoom-1.image" alt="Go Playground多文件"></p>
+<p>图1-4 The Go Playground支持多文件</p>
+<h2 id="Makefile"><a href="#Makefile" class="headerlink" title="Makefile"></a>Makefile</h2><p>IDE很好使用，不易于自动化。现代软件开发依赖于反复的自动化构建，可在任何地方、任意时间由任何运行。这类工具是很好的软件工程化实践。它避免了一个历史问题，开发者不对构建问题负责并抛出那句经典台词：“在我的电脑上是好的!”实现的方式是通过脚本指定构建步骤。Go开发者使用<code>make</code> 进行解决。开发者通过它指定一系列构建程序所需要的操作以及它们执行的顺序。读者可能不熟悉<code>make</code> ，它1976年就在Unix系统上用于构建程序了。</p>
+<p>在<em>ch1</em>目录下创建一个文件<code>Makefile</code> ，添加如下内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">.DEFAULT_GOAL := build</span><br><span class="line"></span><br><span class="line">.PHONY:fmt vet build</span><br><span class="line">fmt:</span><br><span class="line">        go fmt ./...</span><br><span class="line"></span><br><span class="line">vet: fmt</span><br><span class="line">        go vet ./...</span><br><span class="line"></span><br><span class="line">build: vet</span><br><span class="line">        go build</span><br></pre></td></tr></table></figure>
+
+<p>即使读者之前没用过Makefile ，也不难get到其作用。每个操作被称为一个<em>target</em>。<code>.DEFAULT_GOAL</code>定义了在没有运行目标时所运行的操作。上例中运行的是<code>build</code>目标命令。接下来就是目标命令的定义，每个冒号(<code>:</code>)前为目标名。目标名后的单词 (<code>build: vet</code>中的<code>vet</code> ) 是在运行该目标之前所需要运行的目标命令。该目标所执行的任务放在之后的缩进行。<code>.PHONY</code>让<code>make</code> 命令在项目中有同名目录时不至于混淆。</p>
+<p>运行<code>make</code> 命令后会输出：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ make</span><br><span class="line">go fmt ./...</span><br><span class="line">go vet ./...</span><br><span class="line">go build</span><br></pre></td></tr></table></figure>
+
+<p>通过这条命令，我们格式化了代码、检查了隐藏的错误并执行了编译。我们可以通过<code>make vet</code>来检查代码，或是只运行<code>make fmt</code>来完成格式化。看起来并没有多大改进 ，但构建前代码及检查代码（或是执行持续集成构建服务中的脚本）可以保障不丢失任何步骤。</p>
+<p>Makefile的一个缺点是要求有些严格。必须使用制表符来缩进这些步骤。并且在Windows系统中没有原生支持。如果在Windows电脑上进行Go开发，需要先安装<code>make</code>。最简单的安装方式是先安装包管理工具如 <a target="_blank" rel="noopener" href="https://chocolatey.org/">Chocolatey</a>，然后使用它来安装<code>make</code> （对于Chocolatey，命令为<code>choco install make</code>）。</p>
+<p>如果想要学习更多有关Makefile的知识，<a target="_blank" rel="noopener" href="https://makefiletutorial.com/">Chase Lambert</a>有一个很好的教程，但使用了一小部分C讲解了相关概念。</p>
+<h2 id="保持更新"><a href="#保持更新" class="headerlink" title="保持更新"></a>保持更新</h2><p>像其它编程语言一样，Go开发工具会做定期更新。Go程序编译为单独的原生二进制文件，无需担心开发环境的升级引起已部署程序的崩溃。可以在同一台电脑或虚拟机上同时运行多个Go版本编译的程序。</p>
+<p>从Go 1.2开始，大约每6个月会发布一个大版本。还有一些按需发布的bug和安全问题修复的小版本。因快速的开发周期以及Go团队对于向后兼容的承诺，Go的发行版倾向于递增而不是扩散的做法。<a target="_blank" rel="noopener" href="https://go.dev/doc/go1compat">Go兼容性承诺</a>详细描述了Go团队如何规划避免引起崩溃的Go代码。其中说到不会从1开始Go版本不会出现任何语言和标准库层面的向后不兼容，除非涉及到bug或安全问题修复。这一承诺不适用于<code>go</code>命令。<code>go</code>命令的参数和功能有过向后不兼容的修改，且很有可能同样在未来出现。</p>
+<p>准备好在电脑上更新Go开发工具时，Mac和Windows用户拥有快速的方法。安装了<code>brew</code>和<code>chocolatey</code>的用户可以使用该工具升级。使用安装包安装的用户可在<a target="_blank" rel="noopener" href="https://go.dev/dl/">https://go.dev/dl/</a>下载最新版本，它会删除掉老版本并安装新版本。</p>
+<p>Linux和BSD用户需要下载最新版本，将老版本移至备份目录，解压新版本，然后再删除老版本：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ mv /usr/local/go /usr/local/old-go</span><br><span class="line">$ tar -C /usr/local -xzf go1.18.4.linux-amd64.tar.gz</span><br><span class="line">$ rm -rf /usr/local/old-go</span><br></pre></td></tr></table></figure>
+
+<p>注：从技术上来说，无需移动已有安装，只需要删除它再安装新版本即可。但这不能保证“万无一失”。如果在安装新版本时出现问题，最好还有旧版本可以使用。</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>本文中，我们学习了如何安装、配置Go开发环境。同时讨论了构建Go程序及保障代码质量的一些工具。至此我们已准备好了环境，下一篇文章中我们就开始探讨Go语言的内置类型以及如何声明变量。</p>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
@@ -3437,328 +3636,6 @@
 <p>一旦我们创建了数据模型，就应该为它提供一些默认和演示数据。在下一篇文章中我们将学习如何使用数据文件在系统中导入、导出和加载数据。</p>
 <p> </p>
 <p>☞☞☞第七章 <a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-recordsets/">Odoo 12开发之记录集 - 使用模型数据</a></p>
-<p>本文首发地址：<a target="_blank" rel="noopener" href="https://alanhou.org/developer-mode-odoo12/">Alan Hou 的个人博客</a></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://alanhou.github.io/2019/01/09/odoo-essentials-12-chapter5/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Alan Hou">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Alan Hou的个人博客">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Alan Hou的个人博客">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2019/01/09/odoo-essentials-12-chapter5/" class="post-title-link" itemprop="url">第五章 Odoo 12开发之导入、导出以及模块数据</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2019-01-09 00:00:00" itemprop="dateCreated datePublished" datetime="2019-01-09T00:00:00+08:00">2019-01-09</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-02-03 14:19:10" itemprop="dateModified" datetime="2023-02-03T14:19:10+08:00">2023-02-03</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>本文为<a target="_blank" rel="noopener" href="https://alanhou.org/odoo-12-development/">最好用的免费ERP系统Odoo 12开发手册</a>系列文章第五篇。</p>
-<p>大多数Odoo 模块的定义，如用户界面和安全规则，实际是存储在对应数据表中的数据记录。模块中的 XML 和 CSV 文件不是 Odoo 应用运行时使用，而是载入数据表的手段。正是因为这个原因，Odoo 模块的一个重要部分是在文件中放入数据以在插件安装时将其载入数据库。</p>
-<p>模块可以包含初始数据和演示数据，可通过数据文件将它们加入模块。此外，了解 Odoo 数据的格式对于在项目实施上下文中导入导出业务数据也非常重要。</p>
-<p>本文的主要内容有：</p>
-<ul>
-<li>理解外部标识符的概念</li>
-<li>导入导出数据文件</li>
-<li>使用 CSV 文件</li>
-<li>添加模块数据</li>
-<li>使用 XML 数据文件</li>
-</ul>
-<h2 id="开发准备"><a href="#开发准备" class="headerlink" title="开发准备"></a>开发准备</h2><p>本文要求读者可以运行Odoo 服务并已安装前面我们此前开发的图书应用。相关代码请见<a target="_blank" rel="noopener" href="https://github.com/alanhou/odoo12-development/tree/master/custom-addons">GitHub 仓库</a>。你可能也同时安装了第四章 <a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-extending-modules/">Odoo 12 开发之模块继承</a>中创建的library_member模块，但本文并不要求使用该模型。</p>
-<p>本文的更新后的代码请见<a target="_blank" rel="noopener" href="https://github.com/alanhou/odoo12-development/tree/master/chapter5">GitHub 仓库</a>。</p>
-<h2 id="理解外部标识符的概念"><a href="#理解外部标识符的概念" class="headerlink" title="理解外部标识符的概念"></a>理解外部标识符的概念</h2><p>外部标识符，也称为XML ID，是用于唯一标识 Odoo 中特定记录的有可读性的字符串标识符。在Odoo 中加载数据时它们就很重要了，这样可以对已有数据记录进行修改或在其它数据记录中引用它。</p>
-<p>首先我们将讨论外部标识符的工作原理以及如何对其进行检查。然后我们会学习如何使用网页客户端来查找指定数据记录的外部标识符，在创建插件模块或继承已有模块时需要经常用到。</p>
-<h3 id="外部标识符的工作原理"><a href="#外部标识符的工作原理" class="headerlink" title="外部标识符的工作原理"></a>外部标识符的工作原理</h3><p>记录在数据库中的真实标识符是自动分配的序列号，在安装模块时没法预先知道将要分配的具体ID的。外部标识符让我们无需知道真实的数据库 ID便可以引用一条相关记录。XML ID 为数据库 ID 提供了一个方便的别名，藉于此我们可以在任何时刻引用某一指定记录。</p>
-<p>Odoo 模块数据文件中使用XML ID来定义记录。其中一个原因是避免在升级模块时创建重复的记录，在升级时会再次将数据文件加载到数据库中。我们要检测已有记录来进行更新，而不是重复创建记录。另一个原因是使用XML ID来支持交叉数据：即需引用其它数据记录的数据记录。因为我们无法知道真实数据库 ID，使用XML ID来由 Odoo 框架来进行相应的转换。</p>
-<p>Odoo 处理由外部标识符向所分配的真实数据库 ID 的转换。背后的机制相当简单：Odoo 维护一张外部标识符和对应数据库 ID 的映射表：ir.model.data model。</p>
-<p>我们需启用开发者模式才能访问下文中的菜单。可通过在右上角头像左侧查看是否有调试图标，如果没有需在 Settings菜单页启用，具体方法可参照第一章 <a target="_blank" rel="noopener" href="https://alanhou.org/developer-mode-odoo12/">使用开发者模式快速入门 Odoo 12</a>中的内容。</p>
-<p>通过菜单访问Settings &gt; Technical &gt; Sequences &amp; Identifiers &gt; External Identifiers可查看已有映射。例如访问外部标识符列表并过滤出library_app模块，将可以看到该模块生成的外部标识符：</p>
-<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/186832112e504016871929f26e0f2e41~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12图书项目外部标识符"></p>
-<p>可以看到外部标识符有Complete ID标签。注意其组成部分为：模块名+.+标识符名，如library_app.action_library_book。</p>
-<p>外部标识符仅需在 Odoo 模块内唯一，两个模块中使用相同标识符不会产生冲突。全局唯一标识符是由模块名和外部标识符共同组成的，在上图Complete ID项中可以看到。</p>
-<p>在数据文件中使用外部标识符，我们可以选择完整的标识符或仅外部标识符部分。通常仅使用外部标识符会更简单，但使用完整标识符时我们可以引用其它模块中的数据记录。做引用时不要忘记在模块依赖中加入这些模块以确保在我们的记录之前加载这些记录。</p>
-<blockquote>
-<p><strong>小贴士：</strong> 有时即便引用相同模块中的XML ID也需使用完整标识符</p>
-</blockquote>
-<p>在上图列表最上方可以看到library_app.action_library_book完整标识符。这是我们在模块中创建的菜单操作，在相应的菜单项中引用。点击进入表单视图查看详情。图中可以看出library_app模块中的action_library_book外部标识符映射到ir.actions.act_window模型中的记录 ID，此处为85：</p>
-<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/6c21eb08750b429eae7cbadc544a39f3~tplv-k3u1fbpfcp-zoom-1.image" alt=" Odoo 12图书项目外部标识符视图表单"></p>
-<p>除了作为其它应用引用记录的一种方式外，外部标识符还可以避免重复导入带来的重复数据。一旦外部标识符已存在，则会在原有记录上更新，避免了重复数据的新建。</p>
-<h3 id="查找外部标识符"><a href="#查找外部标识符" class="headerlink" title="查找外部标识符"></a>查找外部标识符</h3><p>在为我们的模块写入数据记录时，经常需要查找已有外部标识符来作引用。一种方式是访问菜单Settings &gt; Technical &gt; Sequences &amp; Identifiers &gt; External Identifiers，前面已经演示过。另一种方法是使用开发者菜单。在第一章 <a target="_blank" rel="noopener" href="https://alanhou.org/developer-mode-odoo12/">使用开发者模式快速入门 Odoo 12</a>中介绍了如何激开发者模式。</p>
-<p>要查找一个数据记录的外部标识符，我们应打开对应的表单视图，在开发者菜单中选择View Metadata选项。此时会显示一个带有记录数据库 ID 和外部标识符（也称作XML ID）的对话框。比如要查看 demo 用户 ID，需通过 Settings &gt; Users &amp; Companies &gt; Users 进入用户表单视图，然后点击开发者工具菜单中的View Metadata选项。此时可以看到XML ID是base.user_demo，数据库 ID 是6：</p>
-<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/01e294e652c14e129b2ab6e8b30ff3c2~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12图书项目 demo 用户 Metadata"></p>
-<p>查看表单、列表、搜索或 action 视图中的外部标识符，都可以使用开发者菜单。下面我们通过Edit View选项来打开相应视图的详情表单。此时可以查看到External ID字段，其值即为外部标识符。例如在下图中，可以看到图书表单视图的External ID为library_app.view_form_book：</p>
-<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/15cafabd62bb47959244858bb7e9d5d7~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 图书项目图书表单视图"></p>
-<h2 id="导入导出-CSV-数据文件"><a href="#导入导出-CSV-数据文件" class="headerlink" title="导入导出 CSV 数据文件"></a>导入导出 CSV 数据文件</h2><p>导出数据文件并查看文件结构的简易方式是使用内置的导出功能。通过生成 CSV 文件，我们可以了解手动导入系统所需的格式，或编辑该文件批量导入，甚至是使用它生成我们插件模块的演示数据。</p>
-<p>下面我们一起来学习从 Odoo 用户界面导入和导出的基础知识。</p>
-<h3 id="导出数据"><a href="#导出数据" class="headerlink" title="导出数据"></a>导出数据</h3><p>数据导出是表单视图中的标准功能。要使用该功能， 需要勾选左侧的复选框来选择需导出的行，然后在上方的 Action 菜单中点击 Export 选项。首先我们要在图书应用中添加一些带有出版商和作者的图书。下例中我使用此前添加的书籍。</p>
-<p>我们还需要安装 Contacts 应用，这样可以看到 Partner 的列表视图，可从该处导出记录。注意其默认视图为带有名片的看板视图，需要先切换为列表视图：</p>
-<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/962764030a2a4405b9bbfe3a1e8042a2~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12 Contacts导出"></p>
-<p>可通过勾选列头的筛选框来选择所有匹配当前搜索条件的记录。</p>
-<blockquote>
-<p><strong>ℹ️Odoo 9中的修改</strong><br>在 Odoo 更早的版本中，只有屏幕上显示（当页）的记录能被导出。Odoo 9做出了修改，勾选列头的复选框可导出当前过滤的所有匹配记录，而不仅仅是当前显示。这对导出屏幕上无法展示全的大量记录非常有用。</p>
-</blockquote>
-<p>点击 Export 选项进入Export Data 对话表单，可选择导出方式。我们比较关注的是导出方式可以让我们通过手动或插件模块来导入该文件：</p>
-<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d9255180f05142cb81e08bdd844e6a4f~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12导出数据对话框"></p>
-<p> </p>
-<p>在对话表单最上方，有两个选项：</p>
-<ul>
-<li>What do you want do do?（老版本中为Export type），选择Import-Compatible Export选项，这样导出数据在以后导入时格式更友好。</li>
-<li>Export formats：可选择CSV或Excel，我们将选择 CSV 格式来更好理解原始导出格式，在很多表单应用中都能被读取。</li>
-</ul>
-<p>下一步选取要导出的列，本例中简化操作，仅选择External ID和Name。如果我们点击Export To File按钮，就会下载带有导出数据的文件。最终的 CSV 内容类似：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&quot;id&quot;,&quot;name&quot;</span><br><span class="line">&quot;__export__.res_partner_45_5b73e404&quot;,&quot;Kaiwan N Billimoria&quot;</span><br><span class="line">&quot;__export__.res_partner_42_49816b0d&quot;,&quot;Packt&quot;</span><br><span class="line">&quot;__export__.res_partner_44_9e374a59&quot;,&quot;Russ McKendrick&quot;</span><br><span class="line">&quot;__export__.res_partner_43_e38db1b7&quot;,&quot;Scott Gallagher&quot;</span><br></pre></td></tr></table></figure>
-
-<p><strong>补充：</strong> 伸手党请注意这里及后续的 ID 字段都与导出的系统有关，不应直接使用</p>
-<p>第一行中包含列名，导入时会使用它们自动匹配目录列。导出内容有两列：</p>
-<ul>
-<li>id：为每条记录分配的外部 ID，如果不存在，会在模块名处使用__export__ 作为前缀自动生成一条新ID。</li>
-<li>name： 联系人&#x2F;Partner 名称</li>
-</ul>
-<p>带有外部 ID 使我们可以编辑导出数据并重新导入来把修改更新到记录中。</p>
-<blockquote>
-<p><strong>小贴士：</strong> 由于会自动生成记录 id，导出或导入功能可用于批量编辑 Odoo 数据：将数据导出至 CSV，使用表单软件批量编辑数据，再导入 Odoo。</p>
-</blockquote>
-<h3 id="导入数据"><a href="#导入数据" class="headerlink" title="导入数据"></a>导入数据</h3><p>首先应确认开启了导入功能，默认是开启的。如果没有，进入Settings &gt; General Settings，在 Users 版块下勾选Import &amp; Export选项即可。启用该选项后，列表视图上方 Create 按钮旁就会显示一个 Import按钮。</p>
-<blockquote>
-<p><strong>注意：</strong> Import &amp; Export 设置安装base_import模块，该模块用于提供这一功能。</p>
-</blockquote>
-<p>下面我们尝试批量编辑Contact或Partner数据。使用电子表单或文本编辑器打开CSV并修改几个值。将 id 栏留空即可新增行。前文已经提到第一列 id 作为每行的唯一标识符，这让已有记录可以被更新，而不会因重新导入数据重复创建。我们在导出表中编辑任意字段在导入时对应记录就会被更新。</p>
-<p>对于要加入 CSV 文件的新行，我们可以自己添加外部标识符或将 id 列留空。两种方式都会创建新的记录。作为示例，我们添加一行id 留空、name 为Phillip K. Dick，来在数据库中新建这一记录。在 CSV文件中进行保存，点击 Import(Create 按钮旁)，然后点击 Load File 按钮选择磁盘中 CSV 的路径就出会出现如下导入助手：</p>
-<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d6306ec230a244928f37b883d02d300a~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12图书项目 Test Import"></p>
-<p>点击右上角的Test Import按钮，检查数据正确性。由于导入的文件是在 Odoo 中导出文件基础上修改的，正常会有效并且各列会自动与数据库中对应字段匹配。因编辑所使用的软件各异，有可能需对分隔符和编码进行处理。现在可以点击 Import 按钮，修改和新建记录就会被载入到 Odoo 中。</p>
-<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/7488f94a50054a76a3ed88ad67a0051e~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12 CSV 新增数据"></p>
-<h3 id="CSV-数据文件中的关联记录"><a href="#CSV-数据文件中的关联记录" class="headerlink" title="CSV 数据文件中的关联记录"></a>CSV 数据文件中的关联记录</h3><p>前面的示例非常简单，一旦我们开使用关联多张表的关联字段时，数据文件就会变得更为复杂。我们处理过图书中的 Partner 记录，下面就看一下如何在图书 CSV 文件中表示对这些 Partner 的引用。具体来说，有一个出版商(publisher_id字段)的many-to-one(或外键)关联，以及一个作者(author_ids字段)的many-to-many关联。</p>
-<p>CSV 文件的表头行中关联列应在名称后添加一个&#x2F;id。它将使用外部标识符来引用关联记录。本例中，我们将在publisher_id&#x2F;id字段中加载图书出版商，使用关联 Partner 的外部 ID 作为其值。</p>
-<blockquote>
-<p><strong>注意：</strong> 可使用&#x2F;.id来进行替代来使用数据库中的真实 ID（自动分配的数字 id），但极少使用到。除非有特别原因，否则请使用外部 ID 而非数据库ID。同时要记住数据库 ID 针对具体的数据库，所以如果导入到非原始数据库中这种操作大多数情况下都会失败。</p>
-</blockquote>
-<p>CSV 数据文件中也可导入many-to-many字段，这和添加带双引号并由逗号分隔的外部 ID 列表一样简单。例如，要载入图书作者，将需要一个author_ids&#x2F;id列，并使用一个关联 Partner外部 ID 的逗号分隔列表作为其值：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">id, name, author_ids/id</span><br><span class="line">book_docker, &quot;Mastering Docker - Third Edition&quot;,&quot;__export__.res_partner_44_767f4606,__export__.res_partner_43_b97c9264&quot;</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/774cee73213444f5824e5f2edd91ed4f~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12 CSV 导入 Many2many"></p>
-<p>One-to-many 字段通常是表头和行或父子关系，对于这类关系有特别的支持方式：对于同一条父记录可以有多个关联行。此处我们在 Partner 模型中有一个 one-to-many字段的例子：公司可带有多个联系人。如果从 Partner 模型中导出数据并包含Contacts&#x2F;Name 字段，就可以看到要导入此类型数据的格式(Contacts 中选择Azure Interior：默认应为第一条，并执行前述的导出步骤)：</p>
-<table>
-<thead>
-<tr>
-<th>id</th>
-<th>name</th>
-<th>child_ids&#x2F;id</th>
-<th>child_ids&#x2F;name</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>base.res_partner_12</td>
-<td>Azure Interior</td>
-<td>base.res_partner_address_15</td>
-<td>Brandon Freeman</td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td>base.res_partner_address_28</td>
-<td>Colleen Diaz</td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td>base.res_partner_address_16</td>
-<td>Nicole Ford</td>
-</tr>
-</tbody></table>
-<h2 id=""><a href="#" class="headerlink" title=""></a><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/ff6583bafd784f14bcaccd26fbc5c551~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12 Partner 模型导出"></h2><p>id和 name 列为父记录的，child_ids两列为子记录的。注意第一行记录以下父记录部分留空。上表中CSV 文件形式显示为：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&quot;id&quot;,&quot;name&quot;,&quot;child_ids/id&quot;,&quot;child_ids/name&quot;</span><br><span class="line">&quot;base.res_partner_12&quot;,&quot;Azure Interior&quot;,&quot;base.res_partner_address_15&quot;,&quot;Brandon Freeman&quot;</span><br><span class="line">&quot;&quot;,&quot;&quot;,&quot;base.res_partner_address_28&quot;,&quot;Colleen Diaz&quot;</span><br><span class="line">&quot;&quot;,&quot;&quot;,&quot;base.res_partner_address_16&quot;,&quot;Nicole Ford&quot;</span><br></pre></td></tr></table></figure>
-
-<p>可以看到id和name这两列第一行有值，后两行都为空。其中的父记录为联系人的公司信息。另两行的前缀都是child_ids&#x2F;并且在三行中都有数据。这些是父公司的联系人信息。第一行包含公司和第一个联系人，其余行仅包含联系人这一子信息。</p>
-<h2 id="添加模块数据"><a href="#添加模块数据" class="headerlink" title="添加模块数据"></a>添加模块数据</h2><p>模块使用数据文件来加载默认数据、演示数据、用户界面定义和其它需存入数据库的配置。可以选择使用 CSV 或 XML 文件。</p>
-<blockquote>
-<p><strong>ℹ️Odoo 12中的修改</strong><br>Odoo 11及之前版本支持YAML格式文件，但在 Odoo 12移除了相关支持。相关使用示例可参考 Odoo 11官方模块l10n_be，更多YAML格式相关信息，可访问<a target="_blank" rel="noopener" href="http://yaml.org/%E3%80%82">http://yaml.org/。</a></p>
-</blockquote>
-<p>模块所使用的 CSV 和我们前述使用导入功能时用的文件是一样的。在模块中使用这些文件时，文件名须与要导入数据的模型名一致。例如，导入library.book模型的 CSV 数据文件名应为library.book.csv。CSV 数据文件经常用作导入ir.model.access模型来获取权限定义，通常放在security&#x2F;子目录下并命名为ir.model.access.csv。</p>
-<h3 id="演示数据"><a href="#演示数据" class="headerlink" title="演示数据"></a>演示数据</h3><p>Odoo插件模块可安装演示数据，推荐支持该安装。为模块提示使用示例和测试用的数据集会非常有用。模块的演示数据通过__manifest__.py文件中的 demo 属性来声明。和 data 属性一样，后接一个包含模块相对路径的文件名列表。我们应为library.book模块添加一些演示数据，一个简易方式是从安装了模块的开发数据库中导出数据。</p>
-<p>按惯例数据文件放在data&#x2F;子目录下，应以data&#x2F;library.book.csv保存在library_app模块下。因这个数据为模块所有，应在导出的数据中将标识符的前缀__export__去除。</p>
-<p>例如res.partner.csv文件可能长这样：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">id,name</span><br><span class="line">res_partner_alexandre,&quot;Alexandre Fayolle&quot;</span><br><span class="line">res_partner_daniel,&quot;Daniel Reis&quot;</span><br><span class="line">res_partner_holger,&quot;Holger Brunn&quot;</span><br><span class="line">res_partner_packt,&quot;Packt Publishing&quot;</span><br></pre></td></tr></table></figure>
-
-<p>那么图书演示数据文件library.book.csv就应该是这样的：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&quot;id&quot;,&quot;name&quot;,&quot;date_published&quot;,&quot;publisher_id/id&quot;,&quot;author_ids/id&quot;</span><br><span class="line">library_book_ode11,&quot;Odoo Development Essentials 11&quot;,&quot;2018-03-01&quot;,res_partner_packt,res_partner_daniel</span><br><span class="line">library_book_odc11,&quot;Odoo 11 Development Cookbook&quot;,&quot;2018-01-01&quot;,res_partner_packt,&quot;res_partner_alexandre,res_partner</span><br><span class="line">_holger&quot;</span><br></pre></td></tr></table></figure>
-
-<p>注意文件中同一条数据因显示原因可能在不同行中，但实际是不能换行的。还应记得在__manifest__.py的 demo 属性中声明数据文件：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#x27;demo&#x27;: [</span><br><span class="line"> &#x27;data/res.partner.csv&#x27;,</span><br><span class="line"> &#x27;data/library.book.csv&#x27;,</span><br><span class="line">],</span><br></pre></td></tr></table></figure>
-
-<p>文件会以声明的顺序来加载，这个很重要，因为文件可能会因为未被安装而无法引用其记录。只要启用了安装演示数据，下次更新时，这些内容就会被导入。</p>
-<blockquote>
-<p><strong>ℹ️</strong>数据文件会在模块升级时重新导入，但演示文件则并非如此，它们仅在安装时导入。</p>
-</blockquote>
-<p>当然 XML 文件也可用于加载或初始化数据，还可使用普通 CSV 文件所不具备的功能。</p>
-<h2 id="使用-XML-数据文件"><a href="#使用-XML-数据文件" class="headerlink" title="使用 XML 数据文件"></a>使用 XML 数据文件</h2><p>CSV 文件是一种展示数据方便简洁的格式，但 XML 文件更为强大，可在加载过程中提供更多的控制。比如，其文件名无需与所导入到的模型名称一致。因为XML格式通过文件内的XML元素可以提供更丰富的信息、更多的内容。</p>
-<p>在前面的文章中我们已经使用过XML数据文件。视图和菜单项这类用户界面组件实际上都是存储在系统模型中的记录。模块中的XML文件是将这些记录加载到实例数据库的方式。我们将在library_app模块中添加一个数据文件data&#x2F;book_demo.xml来作为展示，文件内容如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot;?&gt;</span><br><span class="line">&lt;odoo noupdate=&quot;1&quot;&gt;</span><br><span class="line">    &lt;!-- Data to load --&gt;</span><br><span class="line">    &lt;record model=&quot;res.partner&quot; id=&quot;res_partner_huxley&quot;&gt;</span><br><span class="line">        &lt;field name=&quot;name&quot;&gt;Aldous Huxley&lt;/field&gt;</span><br><span class="line">    &lt;/record&gt;</span><br><span class="line">    &lt;record model=&quot;library.book&quot; id=&quot;library_book_bnw&quot;&gt;</span><br><span class="line">        &lt;field name=&quot;name&quot;&gt;Brave New World&lt;/field&gt;</span><br><span class="line">        &lt;field name=&quot;author_ids&quot;</span><br><span class="line">                eval=&quot;[(4, ref(&#x27;res_partner_huxley&#x27;))]&quot; /&gt;</span><br><span class="line">        &lt;field name=&quot;date_published&quot;&gt;1932-01-01&lt;/field&gt;</span><br><span class="line">    &lt;/record&gt;</span><br><span class="line">&lt;/odoo&gt;</span><br></pre></td></tr></table></figure>
-
-<p>老规矩，新的数据文件应在__manifest__.py中声明：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">    &#x27;demo&#x27;: [</span><br><span class="line">...</span><br><span class="line">        &#x27;data/book_demo.xml&#x27;,</span><br><span class="line">    ],</span><br></pre></td></tr></table></figure>
-
-<p>类似 CSV 文件，该文件也会将数据加载到图书模型中。</p>
-<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/c410cd7e7cab42018513571b5cab4c7b~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12使用 XML 导入数据"></p>
-<p>XML文件包含一个外层<code>&lt;odoo&gt;</code>元素，内部可包含多个<code>&lt;record&gt;</code>元素与对应 CSV 数据行。</p>
-<blockquote>
-<p><strong>ℹ️</strong>数据文件中的外层<odoo>元素在9.0中才引入用于替换此前的<openerp>标签。现在仍支持外层元素内的<data>标签，为可选项。事实上现在<odoo>和<data>是等价的，我们可以在数据文件中使用任意一个作为外层元素。</p>
-</blockquote>
-<p><record>元素有两个强制属性： model 和作为记录外部标识符的 id，每个字段使用一个<field>标签来进行写入。注意此处字段名内不可使用斜杠标记，如不可使用<field name="publisher_id/id">。应使用 ref 属性来引用外部标识符，一会儿就会讨论到关联 to-many 字段。</p>
-<p>你可能注意到在外层元素中使用了noupdate&#x3D;”1”属性。这防止了在模块升级时数据记录的载入，不至于在后续编辑中丢失数据。</p>
-<h3 id="noupdate-数据属性"><a href="#noupdate-数据属性" class="headerlink" title="noupdate 数据属性"></a>noupdate 数据属性</h3><p>升级模块时，会重新加载数据并重写模块记录。要谨记这可能意味着在升级模块时会重写任何对模块数据的手动更改。</p>
-<blockquote>
-<p><strong>小贴士：</strong> 值得注意的是，手动对视图所做的自定义修改会在下一次模块升级时丢失。避免这一问题正确的方法是创建继承视图来引入要做的修改。</p>
-</blockquote>
-<p>这种重写行为是默认的，但可以修改有些数据仅在安装时导入，后续模块更新时则予以忽略，这正是通过<code>&lt;odoo&gt;</code>或<code>&lt;data&gt;</code>元素中的noupdate&#x3D;”1”来实现的。</p>
-<p>这对于需初始化配置且预期需自定义的数据来说非常有用，因为这些手动修改在模块更新时是安全的。例如在记录访问规则中经常使用，可以适应具体的实施需求。</p>
-<p>在同一 XML 文件中可以有多个<code>&lt;data&gt;</code>版块。可通过这个来分隔仅需导入一次的数据（noupdate&#x3D;”1”）和需在每次更新时重新导入的数据（noupdate&#x3D;”0”）。noupdate&#x3D;”0”是默认值，所以可以省略不写。注意还必须要有一个外层 XML 元素，就这个例子而言，使用两个<code>&lt;data&gt;</code>标签，并在外层包裹一个<code>&lt;odoo&gt;</code>或<code>&lt;data&gt;</code>元素。</p>
-<blockquote>
-<p><strong>小贴士：</strong> noupdate属性在开发模块时可能会引起不适，因为会忽略后续修改。一个解决方案是，使用-i 参数重新安装模块而不是使用-u 参数进行更新。命令行中使用-i 参数重新安装会忽略数据记录中的noupdate标记。</p>
-</blockquote>
-<p>noupdate标记存储在每条记录的外部标识符信息中。可通过 Technical 菜单中的External Identifiers表单手动编辑，勾选Non Updatable 复选框即可。</p>
-<blockquote>
-<p><strong>ℹ️Odoo 12中的修改</strong><br>点击开发者菜单中的View Metadata时，现在在弹出的对话框中 XML ID 下面还会显示No Update的值。并且在该处可通过点击来修改该标记的值。</p>
-</blockquote>
-<h3 id="在-XML-中定义记录"><a href="#在-XML-中定义记录" class="headerlink" title="在 XML 中定义记录"></a>在 XML 中定义记录</h3><p>在 XML 文件中，每个<code>&lt;record&gt;</code>元素有两个基本属性：id 和 model，并包含为对应列设置的值。 id 属性对应记录外部标识符，model 对应目标模型。<field>元素有几种分配值的方法，下面一起来看看。</p>
-<h3 id="直接为字段设置值"><a href="#直接为字段设置值" class="headerlink" title="直接为字段设置值"></a>直接为字段设置值</h3><p><field>元素的 name 属性标识要写入的字段。写入的值是元素内容：字段开、闭标签之间的文本。对于 date 和datetime，带有返回 date 或 datetime 对象表达式的 eval 属性可进行设置。返回的”YYYY-mm-dd”和”YYYY-mm-dd HH:MM:SS”字符串会进行转化。对于布尔字段，”0” and “False”都会转换成 False，而任意非空值都会转换成 True。</p>
-<blockquote>
-<p><strong>小贴士：Odoo 10中的修改</strong><br>Odoo 10中改进了从数据文件中读取布尔值 False的方式。在老版本中，包含”0” and “False”在内的非空值都会转换成 True，直至 Odoo 9，布尔值仍需使用 eval 属性进行设置，如 eval&#x3D;”False”。</p>
-</blockquote>
-<h3 id="通过表达式设置值"><a href="#通过表达式设置值" class="headerlink" title="通过表达式设置值"></a>通过表达式设置值</h3><p>设置字段值更复杂的方式是通过 eval 属性，它会运行 Python 表达式并将结果分配给字段。表达式通过 Python 内置的以及一些其它可创建表达式标识符的上下文求值。</p>
-<p>可使用如下 Python 模块来处理日期：time, datetime, timedelta和relativedelta。通过它们可以计算日期值，在演示和测试数据经常会用到，以让日期和模块安装日期较近。关于 Python 模块更多这类知识，请参考<a target="_blank" rel="noopener" href="https://docs.python.org/3/library/datatypes.html">官方文档</a>。</p>
-<p>比如，把值设为前一天，可使用如下代码：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;field name=&quot;date_published&quot;</span><br><span class="line">    eval=&quot;(datetime.now() + timedelta(-1))&quot; /&gt;</span><br></pre></td></tr></table></figure>
-
-<p>求值上下文还可使用ref()函数，用于将外部标识符转换为对应的数据库 ID。这可用于为关联字段设置值。比如，可以使用它为publisher_id设置值：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;field name=&quot;publisher_id&quot; eval=&quot;ref(&#x27;res_partner_packt&#x27;)&quot; /&gt;</span><br></pre></td></tr></table></figure>
-
-<h3 id="在-many-to-one-关联字段上设置值"><a href="#在-many-to-one-关联字段上设置值" class="headerlink" title="在 many-to-one 关联字段上设置值"></a>在 many-to-one 关联字段上设置值</h3><p>对于many-to-one关联字段，要写入的是关联记录的数据库 ID。在 XML 文件中，我们一般会知道记录的XML ID，然后就需要把它转换成实际的数据库 ID。</p>
-<p>一种方式是像前文那样使用带有 ref()函数的 eval 属性。更简单的替代方式是使用在元素中可用的ref 属性，使用它设置publisher_id many-to-one字段的值，我们可以这么写：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;field name=&quot;publisher_id&quot; ref=&quot;res_partner_packt&quot; /&gt;</span><br></pre></td></tr></table></figure>
-
-<h3 id="在-to-many-关联字段上设置值"><a href="#在-to-many-关联字段上设置值" class="headerlink" title="在 to-many 关联字段上设置值"></a>在 to-many 关联字段上设置值</h3><p>对于one-to-many和many-to-many字段，设置的不是单个 ID，而是一组关联 ID。并且还进行几种操作-我们可能需要将当前的关联记录列表替换成另外一个，或为其添加几次记录，甚至是删除其中的一些记录。</p>
-<p>要让to-many字段支持写操作，我们要在 eval 属性中使用一种特殊的语法。我们使用一个元组组成的列表来写入to-many字段。每个元组有三个元素，构成一个写入命令，根据第一个元素中的代码进行对应操作。要重写图书作者列表，要使用如下代码：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;field</span><br><span class="line">    name = &quot;author_ids&quot;</span><br><span class="line">    eval = &quot;[(6, 0,</span><br><span class="line">        [ref(&#x27;res_partner_alexandre&#x27;),</span><br><span class="line">        ref(&#x27;res_partner_holger&#x27;)]</span><br><span class="line">    )]&quot;</span><br><span class="line">/&gt;</span><br></pre></td></tr></table></figure>
-
-<p>要往当前图书作者列表添加关联记录，需要添加如下代码：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;field name=&quot;author_ids&quot;</span><br><span class="line">    eval=&quot;[(4, ref(&#x27;res_partner_daniel&#x27;))]&quot;</span><br><span class="line">/&gt;</span><br></pre></td></tr></table></figure>
-
-<p>上述的例子非常常见。这里仅使用了一个命令，但在外层列中可以串联多条命令。添加(4)和 替换(6)是最常用的命令。在进行添加(4)时，不需要使用最后一个元素，因此在以上代码中省略了。</p>
-<p>完整的可用命令如下：</p>
-<ul>
-<li>(0, _ , {‘field’: value})新建一条记录并将其与之关联</li>
-<li>(1, id, {‘field’: value})更新已关联记录的值</li>
-<li>(2, id, _)移除关联并删除 id 关联的记录</li>
-<li>(3, id, _)移除关联但不删除 id 关联的记录。通常使用它来删除many-to-many字段的关联记录</li>
-<li>(4, id, _)关联已存在记录，仅适用于many-to-many字段</li>
-<li>(5, _, _)删除所有关联，但不删除关联记录</li>
-<li>(6, _, [ids])替换已关联记录列表为此处的列表</li>
-</ul>
-<p>上述下划线_字符代表非关联值，通常填入 o 或 False。</p>
-<blockquote>
-<p><strong>小贴士：</strong> 后面的非关联值可以放心地省略掉，如(4, id, _) 可使用(4, id)</p>
-</blockquote>
-<h3 id="常用模型的简写"><a href="#常用模型的简写" class="headerlink" title="常用模型的简写"></a>常用模型的简写</h3><p>如果回到第三章 <a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-first-application/">Odoo 12 开发之创建第一个 Odoo 应用</a>，我们在 XML 中还发现<code>&lt;record&gt;</code>之外的元素，如<code>&lt;act_window&gt;</code>和<code>&lt;menuitem&gt;</code>。这些是常用模型的简写方式，是比常用的<code>&lt;record&gt;</code>更为简练的符号。它们用于向 base 模型加载数据、组成用户界面，在第十章 <a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-backend-views/">Odoo 12开发之后台视图 - 设计用户界面</a>会作更详细的探讨。</p>
-<p>为便于查看，以下是可用的简写元素以及加载数据的对应模型：</p>
-<ul>
-<li><code>&lt;act_window&gt;</code>是窗口操作模型ir.actions.act_window</li>
-<li><code>&lt;menuitem&gt;</code>是菜单项模型ir.ui.menu</li>
-<li><code>&lt;report&gt;</code>是报表操作模型ir.actions.report.xml</li>
-<li><code>&lt;template&gt;</code>是存储在ir.ui.view模型中的 QWeb 模板</li>
-</ul>
-<blockquote>
-<p><strong>ℹ️Odoo 11中的修改</strong><br><code>&lt;url&gt;</code>标签已被淘汰并删除。此前的版本中它用作为 URL 操作模型ir.actions.act_url加载记录。</p>
-</blockquote>
-<p>应当注意在用于修改已有记录时，简写元素会覆盖所有字段。这与仅写入所提供字段的<code>&lt;record&gt;</code>基础元素不同。因此在需修改用户界面元素指定字段时，应使用<code>&lt;record&gt;</code>元素。</p>
-<h2 id="XML-文件中的其它操作"><a href="#XML-文件中的其它操作" class="headerlink" title="XML 文件中的其它操作"></a>XML 文件中的其它操作</h2><p>截至目前我们了解了如何使用 XML 文件添加和更新数据。但也可以通过 XML 文件删除数据以及执行指定模型方法。对更复杂的数据场景会非常有用。</p>
-<h3 id="删除记录"><a href="#删除记录" class="headerlink" title="删除记录"></a>删除记录</h3><p>我们可以使用<code>&lt;delete&gt;</code>元素删除数据记录，使用 ID 或搜索域来定位要删除的记录。例如，使用搜索域查找记录并删除：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;delete</span><br><span class="line">    model=&quot;res.partner&quot;</span><br><span class="line">    search=&quot;[(&#x27;id&#x27;,&#x27;=&#x27;,ref(&#x27;library_app.res_partner_daniel&#x27;))]&quot;</span><br><span class="line">/&gt;</span><br></pre></td></tr></table></figure>
-
-<p>如果知道要删除记录的具体 ID，可使用 id 属性。上例还可以写成这样：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;delete model=&quot;res.partner&quot; id=&quot;library_app.res_partner_daniel&quot; /&gt;</span><br></pre></td></tr></table></figure>
-
-<h3 id="调用模型方法"><a href="#调用模型方法" class="headerlink" title="调用模型方法"></a>调用模型方法</h3><p>XML 文件还可以通过<code>&lt;function&gt;</code>元素在加载过程中执行任意方法，可用于设定演示和测试数据。比如 Odoo 捆绑的 Notes 应用，使用它来设定演示数据：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;data noupdate=&quot;1&quot;&gt;</span><br><span class="line">&lt;function</span><br><span class="line">    model=&quot;res.users&quot;</span><br><span class="line">    name=&quot;_init_data_user_note_stages&quot;</span><br><span class="line">    eval=&quot;[]&quot; /&gt;</span><br><span class="line">&lt;/data&gt;</span><br></pre></td></tr></table></figure>
-
-<p>这会调用res.users模型中的_init_data_user_note_stages方法，不传任何参数。由参数列表eval传递，此处为空列表。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文中我们学习了如何在文件文中展示数据。可用作手动向 Odoo 导入数据，或放在插件模块中作为默认或演示数据。通过学习我们可以通过网页界面导出并导入 CSV 数据文件了，以及通过外部 ID 来检测并更新数据库中已有的记录。也可用作批量编辑数据，只需编辑导出的 CSV 文件再重新导入即可。</p>
-<p>我们还详细学习了 XML 数据文件的结构以及所提供功能。不仅可以为字段设置值，还可以执行删除记录和调用方法一类的操作。</p>
-<p>下一篇文章中，我们将集中学习如何使用记录来与模型中所含数据协作。这些工具可供我们实现应用的业务逻辑和规则。</p>
-<p>☞☞☞第六章 <a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-structuring-data/">Odoo 12开发之模型 - 结构化应用数据</a></p>
-<h2 id="学霸专区"><a href="#学霸专区" class="headerlink" title="学霸专区"></a>学霸专区</h2><ol>
-<li><p>XML ID 与外部 ID 的区别是什么？</p>
-</li>
-<li><p>插件模块中可使用什么类型的数据文件？</p>
-</li>
-<li><p>以下 XML 片段有什么问题？  </p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;field name=&quot;user_id&quot;&gt;[(4, 0, [ref(base.user_demo)])]&lt;/field&gt;?</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>一个插件模块中的数据文件是否可以覆盖另一个模块中创建的记录？</p>
-</li>
-<li><p>插件模块升级时，是否所有数据记录都会被重写为模块默认值？</p>
-</li>
-</ol>
-<h2 id="扩展阅读"><a href="#扩展阅读" class="headerlink" title="扩展阅读"></a>扩展阅读</h2><p>Odoo <a target="_blank" rel="noopener" href="https://www.odoo.com/documentation/12.0/reference/data.html">官方文档</a>中提供了有关数据文件的更多资料。</p>
 <p>本文首发地址：<a target="_blank" rel="noopener" href="https://alanhou.org/developer-mode-odoo12/">Alan Hou 的个人博客</a></p>
 
       
