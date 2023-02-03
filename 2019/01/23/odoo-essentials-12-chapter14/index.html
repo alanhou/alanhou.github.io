@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"alanhou.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="本文为最好用的免费ERP系统Odoo 12开发手册系列文章第十四篇暨完结篇。 本文中将学习将 Odoo 服务器作为生产环境的基本准备。安装和维护服务器是一个复杂的话题，应该由专业人员完成。本文中所学习的不足以保证普通用户创建应对包含敏感数据和服务的健壮、安全环境。 本文旨在介绍 Odoo 部署的重要配置和最佳实践，这样系统管理员可以更好地准备 Odoo 服务器主机。通过本文的学习，我们将能创建一个">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第十四章 Odoo 12开发之部署和维护生产实例">
+<meta property="og:url" content="https://alanhou.github.io/2019/01/23/odoo-essentials-12-chapter14/index.html">
+<meta property="og:site_name" content="Alan Hou的个人博客">
+<meta property="og:description" content="本文为最好用的免费ERP系统Odoo 12开发手册系列文章第十四篇暨完结篇。 本文中将学习将 Odoo 服务器作为生产环境的基本准备。安装和维护服务器是一个复杂的话题，应该由专业人员完成。本文中所学习的不足以保证普通用户创建应对包含敏感数据和服务的健壮、安全环境。 本文旨在介绍 Odoo 部署的重要配置和最佳实践，这样系统管理员可以更好地准备 Odoo 服务器主机。通过本文的学习，我们将能创建一个">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/89b08b66bd13498e969f67835263a58b~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e700ac8d059d4d749c1d58956cd4c197~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/3e4ed2e165ea469ab7ceecba32f1b42e~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/17946dc3efac4971a92c7d72e199447d~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/5a25b842e8f54186b9ef0ae1004b7125~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="article:published_time" content="2019-01-22T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-02-03T06:14:38.578Z">
+<meta property="article:author" content="Alan Hou">
+<meta property="article:tag" content="Odoo,Odoo12">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/89b08b66bd13498e969f67835263a58b~tplv-k3u1fbpfcp-zoom-1.image">
+
+
+<link rel="canonical" href="https://alanhou.github.io/2019/01/23/odoo-essentials-12-chapter14/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://alanhou.github.io/2019/01/23/odoo-essentials-12-chapter14/","path":"2019/01/23/odoo-essentials-12-chapter14/","title":"第十四章 Odoo 12开发之部署和维护生产实例"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>第十四章 Odoo 12开发之部署和维护生产实例 | Alan Hou的个人博客</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Alan Hou的个人博客</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">用行动赢得尊重</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E5%8F%91%E5%87%86%E5%A4%87"><span class="nav-number">1.</span> <span class="nav-text">开发准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%9A%E8%BF%87%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85-Odoo"><span class="nav-number">2.</span> <span class="nav-text">通过源码安装 Odoo</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E4%BE%9D%E8%B5%96"><span class="nav-number">2.1.</span> <span class="nav-text">安装依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%86%E5%A4%87%E7%8B%AC%E7%AB%8B%E7%9A%84%E7%B3%BB%E7%BB%9F%E7%94%A8%E6%88%B7"><span class="nav-number">2.2.</span> <span class="nav-text">准备独立的系统用户</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E5%AE%89%E8%A3%85"><span class="nav-number">2.3.</span> <span class="nav-text">源码安装</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="nav-number">2.4.</span> <span class="nav-text">设置配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A4%9A%E8%BF%9B%E7%A8%8B%E5%B7%A5%E4%BD%9C%E8%BF%9B%E7%A8%8B"><span class="nav-number">2.5.</span> <span class="nav-text">多进程工作进程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE-Odoo-%E4%B8%BA%E7%B3%BB%E7%BB%9F%E6%9C%8D%E5%8A%A1"><span class="nav-number">3.</span> <span class="nav-text">设置 Odoo 为系统服务</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BAsystemd%E6%9C%8D%E5%8A%A1"><span class="nav-number">3.1.</span> <span class="nav-text">创建systemd服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BAUpstart%E6%88%96sysvinit-%E6%9C%8D%E5%8A%A1"><span class="nav-number">3.2.</span> <span class="nav-text">创建Upstart或sysvinit 服务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E5%91%BD%E4%BB%A4%E8%A1%8C%E6%A3%80%E6%9F%A5-Odoo-%E6%9C%8D%E5%8A%A1"><span class="nav-number">3.3.</span> <span class="nav-text">使用命令行检查 Odoo 服务</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE-Nginx-%E5%8F%8D%E5%90%91%E4%BB%A3%E7%90%86"><span class="nav-number">4.</span> <span class="nav-text">设置 Nginx 反向代理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEHTTPS%E5%AE%89%E5%85%A8%E6%9C%8D%E5%8A%A1"><span class="nav-number">5.</span> <span class="nav-text">配置HTTPS安全服务</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E8%87%AA%E7%AD%BE%E7%BD%B2-SSL-%E8%AF%81%E4%B9%A6"><span class="nav-number">5.1.</span> <span class="nav-text">创建自签署 SSL 证书</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9C%A8-Nginx%E4%B8%8A%E9%85%8D%E7%BD%AEHTTPS%E8%AE%BF%E9%97%AE"><span class="nav-number">5.2.</span> <span class="nav-text">在 Nginx上配置HTTPS访问</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%93%E5%AD%98%E9%9D%99%E6%80%81%E5%86%85%E5%AE%B9"><span class="nav-number">5.3.</span> <span class="nav-text">缓存静态内容</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E5%92%8C%E6%A8%A1%E5%9D%97%E6%9B%B4%E6%96%B0"><span class="nav-number">6.</span> <span class="nav-text">服务和模块更新</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E5%88%86%E9%98%B6%E7%8E%AF%E5%A2%83"><span class="nav-number">6.1.</span> <span class="nav-text">创建分阶环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0-Odoo-%E6%BA%90%E7%A0%81"><span class="nav-number">6.2.</span> <span class="nav-text">更新 Odoo 源码</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A9%E5%B1%95%E9%98%85%E8%AF%BB"><span class="nav-number">8.</span> <span class="nav-text">扩展阅读</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Alan Hou</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://alanhou.github.io/2019/01/23/odoo-essentials-12-chapter14/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Alan Hou">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alan Hou的个人博客">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="第十四章 Odoo 12开发之部署和维护生产实例 | Alan Hou的个人博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          第十四章 Odoo 12开发之部署和维护生产实例
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2019-01-23 00:00:00" itemprop="dateCreated datePublished" datetime="2019-01-23T00:00:00+08:00">2019-01-23</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-02-03 14:14:38" itemprop="dateModified" datetime="2023-02-03T14:14:38+08:00">2023-02-03</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>本文为<a target="_blank" rel="noopener" href="https://alanhou.org/odoo-12-development/">最好用的免费ERP系统Odoo 12开发手册</a>系列文章第十四篇暨完结篇。</p>
+<p>本文中将学习将 Odoo 服务器作为生产环境的基本准备。安装和维护服务器是一个复杂的话题，应该由专业人员完成。本文中所学习的不足以保证普通用户创建应对包含敏感数据和服务的健壮、安全环境。</p>
+<p>本文旨在介绍 Odoo 部署的重要配置和最佳实践，这样系统管理员可以更好地准备 Odoo 服务器主机。通过本文的学习，我们将能创建一个相对安全的 Odoo 服务器，足够应对普通的生产环境使用。本文所述并非部署 Odoo 的唯一方法，其它的方法也会同样适用。</p>
+<p>本文主要内容有：</p>
+<ul>
+<li><p>通过源码安装 Odoo，主要包含：</p>
+<ul>
+<li>安装依赖</li>
+<li>准备一个独立的系统用户</li>
+<li>通过源码安装</li>
+<li>设置配置文件</li>
+<li>多进程</li>
+</ul>
+</li>
+<li><p>设置 Odoo 为系统服务，主要包含：</p>
+<ul>
+<li>创建 systemd 服务</li>
+<li>创建自启动或 sysvinit 服务</li>
+<li>通过命令行查看 Odoo 服务</li>
+</ul>
+</li>
+<li><p>设置 Nginx 反向代理</p>
+</li>
+<li><p>配置HTTPS安全服务, 主要包含 :</p>
+<ul>
+<li>创建自签名SSL证书</li>
+<li>在 Nginx 上配置 HTTPS访问</li>
+<li>缓存静态内容</li>
+</ul>
+</li>
+<li><p>服务器和模块更新，主要包含：</p>
+<ul>
+<li>创建模拟环境</li>
+<li>更新 Odoo 源码</li>
+</ul>
+</li>
+</ul>
+<h2 id="开发准备"><a href="#开发准备" class="headerlink" title="开发准备"></a>开发准备</h2><p>本章无需使用前面开发的代码，相关代码和脚本请见 <a target="_blank" rel="noopener" href="https://github.com/alanhou/odoo12-development">GitHub 仓库</a>。</p>
+<h2 id="通过源码安装-Odoo"><a href="#通过源码安装-Odoo" class="headerlink" title="通过源码安装 Odoo"></a>通过源码安装 Odoo</h2><p>Odoo 有 Debian 或 Ubuntu的安装包，使用它可以实现工作服务进程以及在系统启动时自动开启服务。安装过程按步骤即可，在<a target="_blank" rel="noopener" href="https://nightly.odoo.com/%E4%B8%8A%E5%8F%AF%E4%BB%A5%E6%89%BE%E5%88%B0%E7%9B%B8%E5%85%B3%E4%BF%A1%E6%81%AF%E3%80%82%E4%B8%8A%E9%9D%A2%E8%BF%98%E6%9C%89CentOS%E7%9A%84rpm%E6%96%87%E4%BB%B6%E4%BB%A5%E5%8F%8A">https://nightly.odoo.com/上可以找到相关信息。上面还有CentOS的rpm文件以及</a> Windows 的.exe 安装包。</p>
+<p>虽然这样安装 Odoo 很容易也很方便，大多数人倾向于部署和运行版本控制的源码来进行集成。这样能更好地控制部署内容，并且在生产环境中也更易于管理代码的变更和修复。</p>
+<h3 id="安装依赖"><a href="#安装依赖" class="headerlink" title="安装依赖"></a>安装依赖</h3><p>使用Debian发行版时，默认登录用户为带有管理员权限的 root，这时命令行显示的为#。在Ubuntu系统中，禁用了 root 账号，在安装时配置的初始用户可通过 sudo 来运行 root 权限的命令。首先我们应更新包索引，然后执行升级来确保所有安装的程序是最新的，命令如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt update</span><br><span class="line">sudo apt upgrade -y</span><br></pre></td></tr></table></figure>
+
+<p>下一步，我们将安装PostgreSQL数据库，并让当前用户成为数据库超级用户，命令如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install postgresql -y</span><br><span class="line">sudo su -c &quot;createuser -s $USER&quot; postgres</span><br></pre></td></tr></table></figure>
+
+<p>我们将通过源码运行 Odoo，但在那之前，我们需要安装所需依赖。以下是所需的Debian包：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install git python3-dev python3-pip -y</span><br><span class="line">sudo apt install build-essential libxslt-dev libzip-dev libldap2-dev libsasl2-dev libssl-dev -y</span><br></pre></td></tr></table></figure>
+
+<p>还应记得安装打印报表所需的wkhtmltox，命令如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">wget &quot;https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.xenial_amd64.deb&quot; -O /tmp/wkhtml.deb</span><br><span class="line">sudo dpkg -i /tmp/wkhtml.deb</span><br><span class="line">sudo apt-get -fy install # 处理依赖错误</span><br></pre></td></tr></table></figure>
+
+<p>注意安装包时可能报依赖错误，像这里最一条命令会强制这些依赖的安装并正确完成安装。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"># 错误信息</span><br><span class="line">...</span><br><span class="line">dpkg: error processing package wkhtmltox (--install):</span><br><span class="line"> dependency problems - leaving unconfigured</span><br><span class="line">Errors were encountered while processing:</span><br><span class="line"> wkhtmltox</span><br></pre></td></tr></table></figure>
+
+<p>现在我们就只缺少 Odoo 所需要的 Python 包了，它们大多数都有Debian或Ubuntu系统包。官方Debian安装包使用到这些，可在Odoo 源码debian&#x2F;control文件中找到这些包名。但是这些 Python 依赖也可以通过PyPI（Python Package Index）直接安装。所要求的包和通常基于 Python 的项目一样在 Odoo 的requirements.txt文件中。我们可以使用如下命令安装这些包：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">wget https://raw.githubusercontent.com/odoo/odoo/12.0/requirements.txt</span><br><span class="line">sudo -H pip3 install -r requirements.txt</span><br></pre></td></tr></table></figure>
+
+<p>在Ubuntu 18.04中，最后一条命令可能会打印了红色的警告，内容是PyYAML 和pySerial的卸载，这在系统中通过包安装了老版本时会发生。这种警告可以安全的略过。</p>
+<p>既然我们有了所有的依赖，安装了数据库服务、系统包和 Python 包，我们就可以安装 Odoo 了。</p>
+<h3 id="准备独立的系统用户"><a href="#准备独立的系统用户" class="headerlink" title="准备独立的系统用户"></a>准备独立的系统用户</h3><p>从安全角度建议使用独立的用户运行 Odoo，这一用户不带有任何系统的特权。为此我们需要创建系统和数据库用户，使用命令如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo adduser --disabled-password --gecos &quot;Odoo&quot; odoo</span><br><span class="line">sudo su -c &quot;createuser odoo&quot; postgres</span><br><span class="line">createdb --owner=odoo odoo-prod</span><br></pre></td></tr></table></figure>
+
+<p>以上odoo 为用户名，odoo-prod用于运行 Odoo 实例的数据库名。odoo用户成为了odoo-prod数据库的所有者。也就说它对该数据库有创建和删除的权限，包括删除整个数据库的权限。如果你运行的是多租户服务器，应为每个租户创建一个类似 odoo 的指定系统用户。</p>
+<blockquote>
+<p><strong>小贴士：</strong> Odoo的设计即使在系统用户不是数据库所有者时也可以正确运行。但这可能会让设置变复杂，并且固化安全的好习惯是有一个主系统用户作为数据库的所有者、为每个实例创建一个指定的不带有超级用户权限的系统用户来运行服务。</p>
+</blockquote>
+<p>注意这些是没有管理权限的普通用户，新建系统用户时会自动创建一个家目录。比如&#x2F;home&#x2F;odoo，用户可通过~快捷符号来表示自己的家目录。我们在用户 Odoo 对应的配置和文件中会使用到它。我们可以使用如下命令来以该用户打开一个会话：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo su odoo</span><br><span class="line">exit</span><br></pre></td></tr></table></figure>
+
+<p>exit命令终止会话并回到原用户。</p>
+<h3 id="源码安装"><a href="#源码安装" class="headerlink" title="源码安装"></a>源码安装</h3><p>要不了多久，你的服务就会需要升级、打补丁。这时版本控制仓库会很有帮助。我们使用 git来从仓库中获取代码，就像我们在安装开发环境时的操作一样。下面我将使用 odoo 用户并将代码下载家目录中：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo su odoo</span><br><span class="line">git clone https://github.com/odoo/odoo.git /home/odoo/odoo-12 -b 12.0 --depth=1</span><br></pre></td></tr></table></figure>
+
+<p>-b 选项确保获取的是正确的分支，–depth&#x3D;1选项会忽略修改历史并仅获取最新修订的代码，这样下载内容更精简，速度也更快。</p>
+<blockquote>
+<p><strong>小贴士：</strong> git在管理 Odoo 部署版本时是一个非常有价值的工具。注意本系列文章中仅仅涉及到代码版本管理的冰山一角。想要更加熟悉 git，值得花时间进一步学习，可从<a target="_blank" rel="noopener" href="http://git-scm.com/doc%E5%BC%80%E5%A7%8B%E3%80%82">http://git-scm.com/doc开始。</a></p>
+</blockquote>
+<p>到此为止，我们应该已经拥有源码安装 Odoo 的所有内容。可通过如下命令以指定用户会话检查是否正确启动并退出：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ /home/odoo/odoo-12/odoo-bin --version</span><br><span class="line">Odoo Server 12.0</span><br><span class="line">$ exit</span><br></pre></td></tr></table></figure>
+
+<p>下面我们将设置一些在系统中使用的系统级别的文件和目录。</p>
+<h3 id="设置配置文件"><a href="#设置配置文件" class="headerlink" title="设置配置文件"></a>设置配置文件</h3><p>在启动 Odoo 服务时添加–save参数会将配置保存到~&#x2F;.odoorc文件中。我们将以这个文件作为服务配置的初始文件，将其保存到&#x2F;etc&#x2F;odoo下，使用命令如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo su -c &quot;~/odoo-12/odoo-bin -d odoo-prod --db-filter=&#x27;^odoo-prod$&#x27; --without-demo=all -i base --save --stop-after-init&quot; odoo</span><br></pre></td></tr></table></figure>
+
+<p>这行命令中也会包含服务实例所使用的配置参数。</p>
+<blockquote>
+<p><strong>小贴士：</strong> 老版本中的.openerp_serverrc配置文件还被支持，找到后会进行使用。如果安装 Odoo 10或之后版本的服务器上同时还安装了老版本的 Odoo，可能会引起混淆。这时你会发现–save选项没有更新.odoorc，而是更新了.openerp_serverrc文件。</p>
+</blockquote>
+<p>下一步我们需要将配置文件放到系统的配置文件目录&#x2F;etc 下，命令如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir /etc/odoo</span><br><span class="line">sudo cp /home/odoo/.odoorc /etc/odoo/odoo.conf</span><br><span class="line">sudo chown -R odoo /etc/odoo</span><br><span class="line">sudo chmod u=r,g=rw,o=r /etc/odoo/odoo.conf # 安全加固使用</span><br></pre></td></tr></table></figure>
+
+<p>以上命令最后一行是可选的，但它提升了系统的安全性。它确保运行 Odoo 进程的用户可以读取但无法修改配置文件。这时你将无法修改数据库主密码，但在生产服务下这不是什么问题，因为应使用list_db&#x3D;False服务配置来禁用网页数据库管理员。我们还需为 Odoo 服务创建一个存储日志文件的目录。这通常放在&#x2F;var&#x2F;log目录下，命令如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo mkdir /var/log/odoo</span><br><span class="line">sudo chown odoo /var/log/odoo</span><br></pre></td></tr></table></figure>
+
+<p>现在让我们通过如下命令编辑配置文件并确保已配置了一些重要参数：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo nano /etc/odoo/odoo.conf</span><br></pre></td></tr></table></figure>
+
+<p>以下是大部分重要参数的推荐值：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">[options]</span><br><span class="line">addons_path = /home/odoo/odoo-12/odoo/addons,/home/odoo/odoo-12/addons</span><br><span class="line">admin_passwd = False</span><br><span class="line">db_name = odoo-prod</span><br><span class="line">dbfilter = ^odoo-prod$</span><br><span class="line">http_port = 8069</span><br><span class="line">list_db = False</span><br><span class="line">logfile = /var/log/odoo/odoo-server.log</span><br><span class="line">proxy_mode = True</span><br><span class="line">without_demo = all</span><br><span class="line">workers = 6</span><br></pre></td></tr></table></figure>
+
+<p>下面逐一讲解：</p>
+<ul>
+<li>addons_path是一组逗号分隔的用于查找插件模块的路径。读取顺序为从左到右，最左边目录的优先级最高。</li>
+<li>admin_passwd是访问网页客户端数据库管理功能的主密码。一定要设置复杂的密码，或者最好是设为 False来关闭这一功能。</li>
+<li>db_name是在服务启动时初始化的数据库实例。</li>
+<li>dbfilter用于过滤可访问的数据库，它是一个 Python 解释的正则表达式。为使用户无需弹出窗口选择数据库，并使未经身份验证的 URL 可正常运作，应设置为^dbname$，比如dbfilter&#x3D;^odoo-prod$。它支持%h和%d占位符，由 HTTP 请求主机名和子域名进行替换。</li>
+<li>http_port是服务器监听的端口号，默认使用的是8069</li>
+<li>list_db &#x3D; False在 RPC级别和 UI 上屏蔽数据库列表，并屏蔽数据库管理界面以及相应的 RPC 功能。</li>
+<li>logfile是服务日志写入的位置。对于系统服务，一般位于&#x2F;var&#x2F;log文件夹内。如果留空，日志会转而在标准输出中打印。</li>
+<li>proxy_mode在需要反向代理访问时应设为True，我们需要用到反向代理。</li>
+<li>without_demo在生产环境中应进行设置，这样新建的数据库中不会带有演示数据。</li>
+<li>workers的值在大于等于2时启用多进程，一会儿我们会进一步的讨论。</li>
+</ul>
+<blockquote>
+<p>ℹ️Odoo 10中引入http_port参数来替代老版本中使用但现在已淘汰了的xmlrpc_port参数。</p>
+</blockquote>
+<p>从安全角度看，admin_passwd&#x3D;False和list_db&#x3D;False选项尤为重要。它们屏蔽掉对数据库管理功能的网页端访问，在生产环境和面向外网的 Odoo 服务中都应进行设置。</p>
+<p>以下也是会用到的参数：</p>
+<ul>
+<li>data_dir是会话数据和附件存储的路径，记住将备份放在这里</li>
+<li>http_interface设置监听的地址。默认监听0.0.0.0，但在使用反向代理时应设置为127.0.0.1来仅响应本地请求。Odoo 11中引入它来代替淘汰了的xmlrpc_interface参数。</li>
+</ul>
+<p>我们可通过-c或–config选项来检查运行服务的设置：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo su -c &quot;~/odoo-12/odoo-bin -c /etc/odoo/odoo.conf&quot; odoo</span><br></pre></td></tr></table></figure>
+
+<p>通过上述设置运行 Odoo 不会在终端中有任何输出，因为修改都写到了配置文件中定义的日志文件中了。要追踪服务的操作，我们需要在终端中运行如下命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo tail -f /var/log/odoo/odoo-server.log</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/89b08b66bd13498e969f67835263a58b~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12通过-c 检查配置文件"></p>
+<p>有时可能会需要将日志输出到标准输出中，最好的方法是复制一份不带logfile选项的配置文件。</p>
+<blockquote>
+<p><strong>小贴士：</strong> 要在同一个终端窗口中运行多个终端会话，可以使用tmux这样的应用或者GNU Screen。可以使用<a target="_blank" rel="noopener" href="https://help.ubuntu.com/community/Byobu">Byobu</a>，它基于GNU Screen或Tmux提供了好看的用户界面。</p>
+</blockquote>
+<h3 id="多进程工作进程"><a href="#多进程工作进程" class="headerlink" title="多进程工作进程"></a>多进程工作进程</h3><p>生产实例可能会处理大量的工作负载。默认服务运行单进程并只能使用CPU 的一个核心来处理请求，这是因为Python语言的全局解释器锁（GIL）。但是可使用多进程模式来处理并发请求，来充分利用多核的优势。workers&#x3D;N选项设置使用的工作进程数，作为一个参照，可设置为1+2*P，其中 P为处理器的核数。最佳设置需要根据具体情况进行调优，因为这取决于服务器的负载以及多少其它像PostgreSQL这样大负载服务在运行。</p>
+<p>为负载将workers设置高比低好，最低值应为6，因为这是大多数浏览器的并行连接数，最大值通常受服务器的 RAM 所限。普通使用模式的经验是，Odoo服务应能处理(1+2*P)*6个并发用户。</p>
+<p>还有一些limit-配置参数可用于调优工作进程。在达到这些值时工作进程会被回收，相应的进程会停止并启动一个新进程。这可以防止服务器内存溢出以及防止某一进程过度使用服务器资源。</p>
+<p>官方文档中对工作进程参数调优也给出了一些很好的建议，欲知详情，请参照官方文档<a target="_blank" rel="noopener" href="https://www.odoo.com/documentation/12.0/setup/deploy.html">Odoo 部署</a>。</p>
+<h2 id="设置-Odoo-为系统服务"><a href="#设置-Odoo-为系统服务" class="headerlink" title="设置 Odoo 为系统服务"></a>设置 Odoo 为系统服务</h2><p>现在我们需要将 Odoo 设为系统服务，并在系统启动时自动开启。</p>
+<p>在Ubuntu或Debian中，init程序负责服务的启动。Debian或其分支操作系统曾使用过sysvinit，Ubuntu曾使用过兼容的名为Upstart的启动程序。但最近都进行了修改，最新的Debian和Ubuntu发行版的init程序都使用了systemd。这表示现在有两种方式来安装系统服务，你需要根据操作系统的版本来选择正确的方法。Ubuntu 16.04或之后的版本中应使用systemd，但是很多云服务商还在使用更早的版本，所以很有可能你也会使用到这些老版本。要检查系统中是否使用systemd，可使用如下命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">man init</span><br></pre></td></tr></table></figure>
+
+<p>这条命令会打印当前使用的 init 程序的文档，然后就可以查看所使用的启动服务。</p>
+<blockquote>
+<p>ℹ️Window的子系统(WSL) 中的 Ubuntu环境仅适用于开发，它有可能发生些异常问题，完全不适合用于运行生产环境。在写本文时，man init显示启动服务为systemd，但并不能安装systemd服务，反而安装sysvinit服务时是正常的。</p>
+</blockquote>
+<p>补充：如出现-bash: man: command not found，则通过sudo apt install man -y来执行安装</p>
+<h3 id="创建systemd服务"><a href="#创建systemd服务" class="headerlink" title="创建systemd服务"></a>创建systemd服务</h3><p>如果你使用的是较近的操作系统，如Debian 8或Ubuntu 16.04，你的启动服务就应该是systemd。要在系统中添加服务，只需创建一个描述服务的文件。我们创建&#x2F;lib&#x2F;systemd&#x2F;system&#x2F;odoo.service文件并加入如下内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">[Unit]</span><br><span class="line">Description=Odoo</span><br><span class="line">After=postgresql.service</span><br><span class="line"></span><br><span class="line">[Service]</span><br><span class="line">Type=simple</span><br><span class="line">User=odoo</span><br><span class="line">Group=odoo</span><br><span class="line">ExecStart=/home/odoo/odoo-12/odoo-bin -c /etc/odoo/odoo.conf</span><br><span class="line"></span><br><span class="line">[Install]</span><br><span class="line">WantedBy=multi-user.target</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>小贴士：</strong> Odoo源码中在debian&#x2F;下包含一个odoo.service文件示例。你可以不用新建方件，直接把拷贝该文件然后进行所需修改。至少需要根据设置来修改ExecStart选项。</p>
+</blockquote>
+<p>下一步我们需要使用如下命令来注册这个新服务：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl enable odoo.service</span><br></pre></td></tr></table></figure>
+
+<p>使用如下命令启动该服务：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl start odoo</span><br></pre></td></tr></table></figure>
+
+<p>使用如下命令检查该服务状态：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl status odoo</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e700ac8d059d4d749c1d58956cd4c197~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12服务运行状态"></p>
+<p>最后，如需停止服务，请使用如下命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl stop odoo</span><br></pre></td></tr></table></figure>
+
+<h3 id="创建Upstart或sysvinit-服务"><a href="#创建Upstart或sysvinit-服务" class="headerlink" title="创建Upstart或sysvinit 服务"></a>创建Upstart或sysvinit 服务</h3><p>如果你使用更老的操作系统，如Debian 7或Ubuntu 15.04，那么很有可能需要使用sysvinit或Upstart启动服务。就创建系统服务而言，两者的作用一致。一些虚拟专用服务器(VPS)服务还在使用老的Ubuntu镜像，所以在碰到这种情况时可以通过以下方式部署Odoo服务。</p>
+<p>Odoo源码中有一个init脚本用于Debian发行包，我们仅需做一些小修改来使用它创建启动服务：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo cp /home/odoo/odoo-12/debian/init /etc/init.d/odoo</span><br><span class="line">sudo chmod +x /etc/init.d/odoo</span><br></pre></td></tr></table></figure>
+
+<p>现在你可能需要查看一下init脚本的内容，主要的参数都在文件上方定义的变量中，如下例所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">PATH=/sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin</span><br><span class="line">DAEMON=/usr/bin/odoo</span><br><span class="line">NAME=odoo</span><br><span class="line">DESC=odoo</span><br><span class="line">CONFIG=/etc/odoo/odoo.conf</span><br><span class="line">LOGFILE=/var/log/odoo/odoo-server.log</span><br><span class="line">PIDFILE=/var/run/$&#123;NAME&#125;.pid</span><br><span class="line">USER=odoo</span><br></pre></td></tr></table></figure>
+
+<p>这些变量应该足够使用了，接下来我们将使用它们的默认值进行设置，但你可以根据自己的需要进行修改。变量USER是运行服务的系统用户，我们前面已经创建了一个odoo用户。变量DAEMON是可执行服务的路径，我们启动 Odoo 的文件在不同的路径下，但可创建以下软链接：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo ln -s /home/odoo/odoo-12/odoo-bin /usr/bin/odoo</span><br><span class="line">sudo chown -h odoo /usr/bin/odoo</span><br></pre></td></tr></table></figure>
+
+<p>变量CONFIG是我们需要使用的配置文件。在前面一节中，我们在默认配置的路径&#x2F;etc&#x2F;odoo&#x2F;odoo.conf下创建了配置文件。最后变量LOGFILE是存储日志文件的路径。配置的路径&#x2F;var&#x2F;log&#x2F;odoo我们在定义配置文件时进行了创建。</p>
+<p>现在我们应该可以像下面这样来启动和关闭 Odoo 服务了：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ sudo /etc/init.d/odoo start</span><br><span class="line">Starting odoo: ok</span><br></pre></td></tr></table></figure>
+
+<p>关闭服务方法相似，命令如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ sudo /etc/init.d/odoo stop</span><br><span class="line">Stopping odoo: ok</span><br></pre></td></tr></table></figure>
+
+<p>Ubuntu中可使用 service 命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo service odoo start</span><br><span class="line">sudo service odoo status</span><br><span class="line">sudo service odoo stop</span><br></pre></td></tr></table></figure>
+
+<p>现在我们需要在系统启动时自动开启服务，通过如下命令实现：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo update-rc.d odoo defaults</span><br></pre></td></tr></table></figure>
+
+<p>这时，重启服务器 Odoo 服务就会正常地自动启动了。是时候测试下一切是否都如预期一样了。</p>
+<h3 id="使用命令行检查-Odoo-服务"><a href="#使用命令行检查-Odoo-服务" class="headerlink" title="使用命令行检查 Odoo 服务"></a>使用命令行检查 Odoo 服务</h3><p>现在我们可以确定Odoo实例是否运行以及是否能正常对请求进行响应。如果Odoo正常运行，我们应该可以得到响应并且日志文件中不会报错。在服务器上通过如下命令可检测 Odoo 是否对HTTP请求进行响应：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">curl http://localhost:8069</span><br><span class="line">&lt;html&gt;&lt;head&gt;&lt;script&gt;window.location = &#x27;/web&#x27; + location.hash;&lt;/script&gt;&lt;/head&gt;&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<p>此外通过如下命令可查看日志文件的内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo less /var/log/odoo/odoo-server.log</span><br></pre></td></tr></table></figure>
+
+<p>你还可以使用tail -f 来实时查看日志文件中新增的内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo tail -f /var/log/odoo/odoo-server.log</span><br></pre></td></tr></table></figure>
+
+<h2 id="设置-Nginx-反向代理"><a href="#设置-Nginx-反向代理" class="headerlink" title="设置 Nginx 反向代理"></a>设置 Nginx 反向代理</h2><p>虽然 Odoo 自身可以输出网页，但强烈建议在其上加一层反向代理。反向代理作为一个中间层来管理客户端所发送请求以及 Odoo 服务作出响应之间的数据流。使用反向代理有诸多好处。</p>
+<p>从安全角度考虑，有以下几点：</p>
+<ul>
+<li>处理并加固HTTPS协议来对数据流加密</li>
+<li>隐藏内部网络特征</li>
+<li>作为应用防火墙，限制所接受处理的 URL</li>
+</ul>
+<p>然后从性能角度考虑，反向代理可提供如下显著的改进：</p>
+<ul>
+<li>缓存静态内容，因而降低 Odoo 服务器的负载</li>
+<li>压缩内容来加快加载时间</li>
+<li>作为负载均衡器，在多台服务间分配负载</li>
+</ul>
+<p>Apache是在考虑反向代理时的一个常用选择，Nginx 是近期在技术圈被热议的对其的替代。此处我们使用Nginx作为反向代理，并展示如何使用它来实现上述讨论的安全和性能方面的功能。</p>
+<p>首先，我们应当安装Nginx，我们需要它监听默认的HTTP端口，所以需要确保没有被其它服务所占用。执行如下命令应该会报错：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ curl http://localhost</span><br><span class="line">curl: (7) Failed to connect to localhost port 80: Connection refused</span><br></pre></td></tr></table></figure>
+
+<p>如果没有收到错误，应当禁用相应服务来让Nginx使用该端口。例如，关闭已有的Apache服务，使用sudo service apache2 stop。更好的选择是从服务器上删除该服务或重新配置让其监听其它端口，这样Nginx就可以正常使用HTTP和HTTPS端口(80 and 443) 了。</p>
+<p>一旦完成上述操作，就可以安装Nginx了：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install nginx -y</span><br><span class="line">sudo service nginx start # 如尚未启动，启动Nginx服务</span><br></pre></td></tr></table></figure>
+
+<p>要确定Nginx是否正确运行，通过浏览器访问或在服务上执行curl <a target="_blank" rel="noopener" href="http://localhost应该可以得到一个welcome/">http://localhost应该可以得到一个Welcome</a> to nginx页面。</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/3e4ed2e165ea469ab7ceecba32f1b42e~tplv-k3u1fbpfcp-zoom-1.image" alt="Nginx 欢迎页面"></p>
+<p>Nginx配置文件和Apache的方式基本相同，存储在&#x2F;etc&#x2F;nginx&#x2F;available-sites&#x2F;中，并可通过在&#x2F;etc&#x2F;nginx&#x2F;enabled-sites&#x2F;中添加软链接来激活。注意应同时关闭Nginx安装时默认带有的配置：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo rm /etc/nginx/sites-enabled/default</span><br><span class="line">sudo touch /etc/nginx/sites-available/odoo</span><br><span class="line">sudo ln -s /etc/nginx/sites-available/odoo /etc/nginx/sites-enabled/odoo</span><br></pre></td></tr></table></figure>
+
+<p>使用nano或vi等编辑器来编辑 Nginx配置文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo nano /etc/nginx/sites-available/odoo</span><br></pre></td></tr></table></figure>
+
+<p>一个基本的针对Odoo服务的Nginx配置文件如下例所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">upstream odoo &#123;</span><br><span class="line">    server 127.0.0.1:8069;</span><br><span class="line">&#125;</span><br><span class="line">upstream odoochat &#123;</span><br><span class="line">    server 127.0.0.1:8072;</span><br><span class="line">&#125;</span><br><span class="line">server &#123;</span><br><span class="line">     listen 80;</span><br><span class="line">     # Add Headers for odoo proxy mode</span><br><span class="line">     proxy_set_header X-Forwarded-Host $host;</span><br><span class="line">     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;</span><br><span class="line">     proxy_set_header X-Forwarded-Proto $scheme;</span><br><span class="line">     proxy_set_header X-Real-IP $remote_addr;</span><br><span class="line"></span><br><span class="line">     # log</span><br><span class="line">     access_log /var/log/nginx/odoo.access.log;</span><br><span class="line">     error_log /var/log/nginx/odoo.error.log;</span><br><span class="line">     # Redirect longpoll requests to odoo longpolling port</span><br><span class="line">     location /longpolling &#123;</span><br><span class="line">        proxy_pass http://odoochat;</span><br><span class="line">     &#125;</span><br><span class="line">     # Redirect requests to odoo backend server</span><br><span class="line">     location / &#123;</span><br><span class="line">         proxy_redirect off;</span><br><span class="line">         proxy_pass http://odoo;</span><br><span class="line">     &#125;</span><br><span class="line">     # common gzip</span><br><span class="line">    gzip_types text/css text/scss text/plain text/xml application/xml application/json application/javascript;</span><br><span class="line">    gzip on;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>补充：添加域名请在server 配置区内添加对 server_name 的配置</p>
+<p>首先为Odoo服务添加了upstream配置，监听了默认端口8069和8072。8069用于网页客户端和RPC请求，8072用于多进程时 Odoo 实时消息所需的长轮询(long polling)请求。</p>
+<p>Nginx应在默认HTTP端口80上接收访问流量，然后重定向到upstream odoo服务中。这在server配置区中进行了定义。&#x2F;longpolling 地址的访问流量会传递到upstream odoochat，剩余的流量则传递到upstream odoo。这里我们还添加了一些请求头的信息，这样 Odoo 后台服务就会知道这些是经过代理的流量。</p>
+<p>出于安全考虑，应确保proxy_mode参数设为True。这是因为在Nginx作为代理时，所有的请求都会认为是来自本地而不是远程 IP 地址。在代理中设置X-ForwardedFor头以及启动–proxy-mode可解决这一问题。但是，如果不在代理级别强制header就启用–proxy-mode 会让其他人可以伪装远程地址。</p>
+<p>在配置文件的最后，可以看到两条gzip相关的命令，它们用于对一些文件进行压缩，提升性能。可通过如下命令测试配置是否正确：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ sudo nginx -t</span><br><span class="line">nginx: the configuration file /etc/nginx/nginx.conf syntax is ok</span><br><span class="line">nginx: configuration file /etc/nginx/nginx.conf test is successful</span><br></pre></td></tr></table></figure>
+
+<p>如果出现错误，请检查配置文件中输入是否正确。常见的问题是默认的HTTP被其它服务所占用，如Apache或默认的Nginx网站，所以在重启Nginx服务前先通过本文中的命令确保并没有这种问题。在完成处理后，可使用如下命令重新加载新的配置：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo /etc/init.d/nginx reload</span><br></pre></td></tr></table></figure>
+
+<p>如果操作系统使用的是systemd，上述命令正确的版本应该是：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl reload nginx</span><br></pre></td></tr></table></figure>
+
+<p>通过如下命令可确认 Nginx 是否将访问流量重定向到了后台Odoo服务中：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ curl http://localhost</span><br><span class="line">&lt;html&gt;&lt;head&gt;&lt;script&gt;window.location = &#x27;/web&#x27; + location.hash;&lt;/script&gt;&lt;/head&gt;&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/17946dc3efac4971a92c7d72e199447d~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12登录页面"></p>
+<h2 id="配置HTTPS安全服务"><a href="#配置HTTPS安全服务" class="headerlink" title="配置HTTPS安全服务"></a>配置HTTPS安全服务</h2><p>网站数据不应在因特网中以普通文件进行传输，在将Odoo网页服务暴露在网络中时，我们应使用HTTPS协议来对数据进行加密。有时可使用自签署证书。但注意自签署证书可能会带来安全风险，比如中间人攻击(<em>Man-in-the-Middle</em> Attack)，因此有些浏览器会不接受该证书。</p>
+<p>更健壮的解决方案是使用认证的证书机构所签署的证书，在运行商业或电商网站时这就尤为重要了。</p>
+<blockquote>
+<p><strong>小贴士：</strong> <a target="_blank" rel="noopener" href="https://letsencrypt.org/">Let’s Encrypt</a>服务提供免费的证书。Odoo 有现存插件模块处理对Odoo服务SSL证书的自动请求，但在写本文时，还未移植到Odoo 12中，可访问 <a target="_blank" rel="noopener" href="https://github.com/OCA/server-tools/tree/11.0/letsencrypt">GitHub</a> 进一步了解。</p>
+</blockquote>
+<h3 id="创建自签署-SSL-证书"><a href="#创建自签署-SSL-证书" class="headerlink" title="创建自签署 SSL 证书"></a>创建自签署 SSL 证书</h3><p>下一步，我们应安装证书来启用SSL。创建一个自签署证书，可使用如下命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ sudo mkdir /etc/ssl/nginx &amp;&amp; cd /etc/ssl/nginx</span><br><span class="line">$ sudo openssl req -x509 -newkey rsa:2048 -keyout server.key -out server.crt -days 365 -nodes</span><br><span class="line">$ sudo chmod a-wx * # make files read only</span><br><span class="line">$ sudo chown www-data:root * # access only to www-data group</span><br></pre></td></tr></table></figure>
+
+<p>上述命令创建一个&#x2F;etc&#x2F;ssl&#x2F;nginx目录以及不带密码的自签署SSL证书。在运行openssl命令时，会要求用户输入其它信息，然后会生成一个证书和密钥文件。最后，将这些文件的所有权赋予用于运行网页服务的www-data用户。</p>
+<h3 id="在-Nginx上配置HTTPS访问"><a href="#在-Nginx上配置HTTPS访问" class="headerlink" title="在 Nginx上配置HTTPS访问"></a>在 Nginx上配置HTTPS访问</h3><p>既然我们已经有了SSL证书，就可以配置 Nginx 来使用它了。要强制使用HTTPS，需要将所有的 HTTP 访问重定向到HTTPS。将前面的server区中替换为如下内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">    listen 80;</span><br><span class="line">    rewrite ^(.*) https://$host$1 permanent;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>现在，如果重新加载Nginx配置并在浏览器中访问服务的话，将会看到http:&#x2F;&#x2F;地址被转换成了https:&#x2F;&#x2F; 地址。但该地址不会返回任何内容，我们需要正确地配置HTTPS服务，可通过添加如下服务器配置来实现：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">    listen 443;</span><br><span class="line">    # Add Headers for odoo proxy mode</span><br><span class="line">    proxy_set_header X-Forwarded-Host $host;</span><br><span class="line">    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;</span><br><span class="line">    proxy_set_header X-Forwarded-Proto $scheme;</span><br><span class="line">    proxy_set_header X-Real-IP $remote_addr;</span><br><span class="line"></span><br><span class="line">    # SSL parameters</span><br><span class="line">    ssl on;</span><br><span class="line">    ssl_certificate /etc/ssl/nginx/server.crt;</span><br><span class="line">    ssl_certificate_key /etc/ssl/nginx/server.key;</span><br><span class="line">    ssl_session_timeout 30m;</span><br><span class="line">    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;</span><br><span class="line">    ssl_ciphers &#x27;ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES128-GCMSHA256:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-AES256-GCM-SHA384:DHE-RSAAES128-GCM-SHA256:DHE-DSS-AES128-GCM-SHA256:kEDH+AESGCM:ECDHE-RSA-AES128-</span><br><span class="line">    SHA256:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA:ECDHE-ECDSA-AES128-</span><br><span class="line">    SHA:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-</span><br><span class="line">    SHA:ECDHE-ECDSA-AES256-SHA:DHE-RSA-AES128-SHA256:DHE-RSA-AES128-SHA:DHEDSS-AES128-SHA256:DHE-RSA-AES256-SHA256:DHE-DSS-AES256-SHA:DHE-RSA-AES256-</span><br><span class="line">    SHA:AES128-GCM-SHA256:AES256-GCM-SHA384:AES128-SHA256:AES256-SHA256:AES128-</span><br><span class="line">    SHA:AES256-SHA:AES:CAMELLIA:DES-CBC3-</span><br><span class="line">    SHA:!aNULL:!eNULL:!EXPORT:!DES:!RC4:!MD5:!PSK:!aECDH:!EDH-DSS-DES-CBC3-</span><br><span class="line">    SHA:!EDH-RSA-DES-CBC3-SHA:!KRB5-DES-CBC3-SHA&#x27;;</span><br><span class="line">    ssl_prefer_server_ciphers on;</span><br><span class="line"></span><br><span class="line">    # log</span><br><span class="line">    access_log /var/log/nginx/odoo.access.log;</span><br><span class="line">    error_log /var/log/nginx/odoo.error.log;</span><br><span class="line">    # Redirect longpoll requests to odoo longpolling port</span><br><span class="line">    location /longpolling &#123;</span><br><span class="line">        proxy_pass http://odoochat;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    # Redirect requests to odoo backend server</span><br><span class="line">    location / &#123;</span><br><span class="line">        proxy_redirect off;</span><br><span class="line">        proxy_pass http://odoo;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    # common gzip</span><br><span class="line">    gzip_types text/css text/scss text/plain text/xml application/xml application/json application/javascript;</span><br><span class="line">    gzip on;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>以上配置代码会监听HTTPS端口并使用&#x2F;etc&#x2F;ssl&#x2F;nginx&#x2F; 证书文件来对数据进行加密。这与我们在<a href="#proxy">设置 Nginx 反向代理</a> 中看到的server 配置区相似。如果重新加载配置，我们的 Odoo 服务将通过HTTPS进行运作，如以下命令所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ sudo nginx -t</span><br><span class="line">nginx: the configuration file /etc/nginx/nginx.conf syntax is ok</span><br><span class="line">nginx: configuration file /etc/nginx/nginx.conf test is successful</span><br><span class="line">$ sudo service nginx reload # or: sudo systemctl reload nginx</span><br><span class="line">* Reloading nginx configuration nginx</span><br><span class="line">...done.</span><br><span class="line">$ curl -k https://localhost</span><br><span class="line">&lt;html&gt;&lt;head&gt;&lt;script&gt;window.location = &#x27;/web&#x27; + location.hash;&lt;/script&gt;&lt;/head&gt;&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+
+<p>最后部分的输入可用于确认Odoo客户端正通过HTTPS进行访问。</p>
+<blockquote>
+<p><strong>小贴士：</strong> 在更早的Odoo镜像中，PosBox仅在HTTP模式下生效，这就需要在 Nginx 中添加对&#x2F;pos&#x2F; 链接的例外处理。Odoo 10及之后的镜像中包含了自签署证书来让PosBOx和IoT Box可通过HTTPS进行通讯，这一修改在 <a target="_blank" rel="noopener" href="https://github.com/odoo/odoo/pull/27936">GitHub</a> 中引入。</p>
+</blockquote>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/5a25b842e8f54186b9ef0ae1004b7125~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12自签署证书 Nginx"></p>
+<h3 id="缓存静态内容"><a href="#缓存静态内容" class="headerlink" title="缓存静态内容"></a>缓存静态内容</h3><p>我们可以配置 Nginx 来缓存服务端静态文件，这样再次请求时就可以访问Nginx 中的缓存，而无需将请求传递到upstream odoo服务中。启用静态内容缓存可带来更快的响应时间并减少 Odoo 服务的工作负载。要启用这一设置，在location &#x2F;longpolling区之前加入如下代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"># cache static data</span><br><span class="line">    location ~* /web/static/ &#123;</span><br><span class="line">    proxy_cache_valid 200 60m;</span><br><span class="line">    proxy_buffering on;</span><br><span class="line">    expires 864000;</span><br><span class="line">    proxy_pass http://odoo;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>通过这一些命令，静态数据就可以缓存60分钟了。在这个期间的其它请求Nginx 会直接使用缓存进行响应。</p>
+<h2 id="服务和模块更新"><a href="#服务和模块更新" class="headerlink" title="服务和模块更新"></a>服务和模块更新</h2><p>一旦 Odoo 服务运行了一段时间，就会需要对其进行升级。这包括两个步骤：获取服务或模块的新版本、执行安装。</p>
+<h3 id="创建分阶环境"><a href="#创建分阶环境" class="headerlink" title="创建分阶环境"></a>创建分阶环境</h3><p>如果你按照<a href="#source">通过源码安装 Odoo</a>一节正确地进行了安装，应该就可以在暂存区仓库中获取并测试新版本源码。强烈建议创建一个生产环境数据库的拷贝，并使用它进行升级测试。如果odoo-prod是我们的生产环境数据库，可通过如下命令创建一个拷贝odoo-stage：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">dropdb odoo-stage</span><br><span class="line">createdb --owner=odoo odoo-stage</span><br><span class="line">pg_dump odoo-prod | psql -d odoo-stage</span><br><span class="line">sudo su odoo</span><br><span class="line">cd ~/.local/share/Odoo/filestore/</span><br><span class="line">cp -al odoo-prod odoo-stage # create filestore hardlinks</span><br><span class="line">exit</span><br></pre></td></tr></table></figure>
+
+<p>在使用以上数据库拷贝之前，应进行清理，比如停止计划动作、关闭 email 服务（包含发送和接收消息）。根据你的设置来执行这些指定步骤，但通常可使用自动化脚本来执行。记住psql可用于在命令行直接执行SQL命令，如psql -d odoo-stage -c “&lt;SQL命令&gt;”。</p>
+<blockquote>
+<p> <strong>小贴士：</strong> 可通过createdb命令来更快地创建拷贝：createdb –owner&#x3D;odoo –template&#x3D;odoo-prod odoo-stage。但需要说明的是要运行该命令，不能有任何对odoo-prod数据库的连接，因此需要停止Odoo生产环境的服务。</p>
+</blockquote>
+<h3 id="更新-Odoo-源码"><a href="#更新-Odoo-源码" class="headerlink" title="更新 Odoo 源码"></a>更新 Odoo 源码</h3><p>我们使用git pull 命令来从GitHub仓库获取最新的Odoo源码。在那之前，我们可以使用git tag命令来为当前使用的提交创建一个标签，这样可以可容易的对更新进行撤销，命令如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo su odoo</span><br><span class="line">cd ~/odoo-12</span><br><span class="line">git tag --force 12-last-prod</span><br><span class="line">git pull</span><br></pre></td></tr></table></figure>
+
+<p>要让代码修改生效，我们需要重启Odoo服务。而要使用数据文件的修改生效，需要对模块进行升级。通常对Odoo稳定版本的修改都是代码的修复，因此无需冒险执行模块升级。如果需要对模块升级，可使用-u <module>附加参数，或者是-u base，它将升级所有模块。</p>
+<p>现在可以启动Odoo的分阶服务了，它将使用在分阶数据库上使用升级代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">~/odoo-12/odoo-bin -d odoo-stage --http-port=8080 -c /etc/odoo/odoo.conf # optionally add: -u base</span><br><span class="line">exit</span><br></pre></td></tr></table></figure>
+
+<p>Odoo 分阶服务通过在8080端口上进行配置。可通过浏览器访问<a href="http://xxx:8080来检查升级代码是否正确运作。如果出现了错误，可通过如下命令来返回上一个版本：">http://xxx:8080来检查升级代码是否正确运作。如果出现了错误，可通过如下命令来返回上一个版本：</a></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo su odoo</span><br><span class="line">cd ~/odoo-12</span><br><span class="line">git checkout 12-last-prod</span><br><span class="line">exit</span><br></pre></td></tr></table></figure>
+
+<p>如果一切运行都如预期，则可安全地执行生产环境服务的升级，通常是通过重启来实现。如果想要执行实际的模块升级，建议的方法是停止服务、运行升级、再重启服务，命令如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">sudo service odoo stop</span><br><span class="line">sudo su -c &quot;~/odoo-12/odoo-bin -c /etc/odoo/odoo.conf -u base --stop-after-init&quot; odoo</span><br><span class="line">sudo service odoo start</span><br></pre></td></tr></table></figure>
+
+<p>记住对在用Git 版本进行记录，可通过 git checkout回到修改前，这让我们可以在需要的时候进行回滚。强烈推荐在执行数据库升级前保存备份。在完成之后，可使用 Git 拉取新的版本到生产仓库并完成升级：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">sudo su odoo</span><br><span class="line">cd ~/odoo-12</span><br><span class="line">git tag --force 12-last-prod</span><br><span class="line">git pull</span><br><span class="line">exit</span><br><span class="line">sudo service odoo restart # or: sudo systemctl restart odoo</span><br></pre></td></tr></table></figure>
+
+<p>无需频繁进行升级，但也不建议等上一年再进行升级。每几个月进行一次升级。还要记得重启服务来启用代码升级，但对模块升级则并非如此。但如果需要进行指定的漏洞修复，可以更早的进行升级。还应关注公开渠道对 Odoo 安全漏洞的披露，发 GitHub 上 Odoo 的Issues，具体可查看<a target="_blank" rel="noopener" href="https://github.com/odoo/odoo/issues?q=is:issue+label:Security">Security标签</a>，或者是官方的邮件列表，可通过<a target="_blank" rel="noopener" href="https://www.odoo.com/groups%E8%BF%9B%E8%A1%8C%E8%AE%A2%E9%98%85%E3%80%82">https://www.odoo.com/groups进行订阅。</a></p>
+<p>作为一项服务，企业版用户会更早地收到邮件通知来警报这一类问题。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>在本文中，我们学习了在Debian系生产服务器中设置和运行 Odoo 所需的其它步骤。我们一起了解了配置文件中最重要的设置项，并学习了如何擅用多进程模式。为提升安全性和扩展性，我们还学习了如何使用 Nginx 来作为 Odoo 服务处理之上的反向代理。</p>
+<p>本文涵盖了运行 Odoo 服务并向用户提供稳定、安全服务的基础知识。要更多地了解 Odoo，可参考<a target="_blank" rel="noopener" href="https://www.odoo.com/documentation/12.0/">官方文档</a>。其中更深入的讲解了一些课题，并包含了一些本系列文章未涉及的课题。</p>
+<p>还有一些有关 Odoo 的出版图书还助于你的学习。Packt Publishing中有一些相关书籍，具体来说Odoo Development Cookbook包含了本系列文章未讨论到的高级课题。</p>
+<p>最后，Odoo是一个拥有活跃社区的开源产品。参与、提问并回馈社区不仅有助于学习，还有助于建立人脉。说到这，就不能不提 Odoo 社区联盟(OCA)，它倡导协作并提供高质量的开源代码，可访问<a target="_blank" rel="noopener" href="https://odoo-community.org/%E5%81%9A%E6%9B%B4%E8%BF%9B%E4%B8%80%E6%AD%A5%E4%BA%86%E8%A7%A3%E3%80%82">https://odoo-community.org/做更进一步了解。</a></p>
+<h2 id="扩展阅读"><a href="#扩展阅读" class="headerlink" title="扩展阅读"></a>扩展阅读</h2><p>以下Odoo官方文档的内容可作为本文讨论课程的补充材料，来帮助获取额外的参考：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.odoo.com/documentation/12.0/setup/deploy.html">部署 Odoo</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.odoo.com/documentation/12.0/setup/install.html">安装 Odoo</a></li>
+</ul>
+<p>本文首发地址：<a target="_blank" rel="noopener" href="https://alanhou.org/developer-mode-odoo12/">Alan Hou 的个人博客</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Odoo-Odoo12/" rel="tag"># Odoo,Odoo12</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/01/21/odoo-essentials-12-chapter13/" rel="prev" title="第十三章 Odoo 12开发之创建网站前端功能">
+                  <i class="fa fa-chevron-left"></i> 第十三章 Odoo 12开发之创建网站前端功能
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Alan Hou</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

@@ -21,8 +21,8 @@
 
     <meta name="description" content="本文为最好用的免费ERP系统Odoo 12开发手册系列文章第十一篇。 QWeb 是 Odoo 使用的模板引擎，它基于 XML 来生成 HTML 片断和页面。通过 QWeb可生成内容丰富的看板(Kankan)视图、报表和 CMS 网页。本文中我们将学习QWeb 语法以及如何使用 QWeb 来创建我们自己的看板视图和自定义报表。 本文主要内容有：  看板是什么？ 设计看板视图 QWeb 模板语言 看板">
 <meta property="og:type" content="article">
-<meta property="og:title" content="第十一章 Odoo 12开发之看板视图和用户端 QWeb">
-<meta property="og:url" content="https://alanhou.github.io/2019/01/19/odoo-essentials-12-chapter11/index.html">
+<meta property="og:title" content="第十二章 Odoo 12开发之报表和服务端 QWeb">
+<meta property="og:url" content="https://alanhou.github.io/2019/01/20/odoo-essentials-12-chapter12/index.html">
 <meta property="og:site_name" content="Alan Hou的个人博客">
 <meta property="og:description" content="本文为最好用的免费ERP系统Odoo 12开发手册系列文章第十一篇。 QWeb 是 Odoo 使用的模板引擎，它基于 XML 来生成 HTML 片断和页面。通过 QWeb可生成内容丰富的看板(Kankan)视图、报表和 CMS 网页。本文中我们将学习QWeb 语法以及如何使用 QWeb 来创建我们自己的看板视图和自定义报表。 本文主要内容有：  看板是什么？ 设计看板视图 QWeb 模板语言 看板">
 <meta property="og:locale" content="en_US">
@@ -36,22 +36,22 @@
 <meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/62b207944c9240ef9580c2e0dd46ae33~tplv-k3u1fbpfcp-zoom-1.image">
 <meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/dd2823f9036f4465a39c5e956b743fd9~tplv-k3u1fbpfcp-zoom-1.image">
 <meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/30566f47384743f99269d8d535f13e98~tplv-k3u1fbpfcp-zoom-1.image">
-<meta property="article:published_time" content="2019-01-18T16:00:00.000Z">
-<meta property="article:modified_time" content="2023-02-03T05:56:32.801Z">
+<meta property="article:published_time" content="2019-01-19T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-02-03T06:10:46.512Z">
 <meta property="article:author" content="Alan Hou">
 <meta property="article:tag" content="Odoo,Odoo12">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/c5f76dc3b9984ba08e1738ce9bdfa848~tplv-k3u1fbpfcp-zoom-1.image">
 
 
-<link rel="canonical" href="https://alanhou.github.io/2019/01/19/odoo-essentials-12-chapter11/">
+<link rel="canonical" href="https://alanhou.github.io/2019/01/20/odoo-essentials-12-chapter12/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://alanhou.github.io/2019/01/19/odoo-essentials-12-chapter11/","path":"2019/01/19/odoo-essentials-12-chapter11/","title":"第十一章 Odoo 12开发之看板视图和用户端 QWeb"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://alanhou.github.io/2019/01/20/odoo-essentials-12-chapter12/","path":"2019/01/20/odoo-essentials-12-chapter12/","title":"第十二章 Odoo 12开发之报表和服务端 QWeb"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>第十一章 Odoo 12开发之看板视图和用户端 QWeb | Alan Hou的个人博客</title>
+<title>第十二章 Odoo 12开发之报表和服务端 QWeb | Alan Hou的个人博客</title>
   
 
 
@@ -117,7 +117,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
-            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E5%8F%91%E5%87%86%E5%A4%87"><span class="nav-number">1.</span> <span class="nav-text">开发准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%86%E8%A7%A3%E7%9C%8B%E6%9D%BF"><span class="nav-number">2.</span> <span class="nav-text">了解看板</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9C%8B%E6%9D%BF%E8%A7%86%E5%9B%BE"><span class="nav-number">2.1.</span> <span class="nav-text">看板视图</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A1%E7%9C%8B%E6%9D%BF%E8%A7%86%E5%9B%BE"><span class="nav-number">3.</span> <span class="nav-text">设计看板视图</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E5%85%88%E7%BA%A7%E3%80%81%E7%9C%8B%E6%9D%BF%E7%8A%B6%E6%80%81%E5%92%8C%E9%A2%9C%E8%89%B2"><span class="nav-number">3.1.</span> <span class="nav-text">优先级、看板状态和颜色</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9C%8B%E6%9D%BF%E5%8D%A1%E7%89%87%E5%85%83%E7%B4%A0"><span class="nav-number">3.2.</span> <span class="nav-text">看板卡片元素</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9C%8B%E6%9D%BF%E5%8D%A1%E7%89%87%E5%B8%83%E5%B1%80"><span class="nav-number">3.3.</span> <span class="nav-text">看板卡片布局</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E7%9C%8B%E6%9D%BF%E5%8D%A1%E7%89%87%E6%B7%BB%E5%8A%A0%E9%80%89%E9%A1%B9%E8%8F%9C%E5%8D%95"><span class="nav-number">3.4.</span> <span class="nav-text">为看板卡片添加选项菜单</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9C%8B%E6%9D%BF%E8%A7%86%E5%9B%BE%E4%B8%AD%E7%9A%84%E6%93%8D%E4%BD%9C"><span class="nav-number">3.5.</span> <span class="nav-text">看板视图中的操作</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#QWeb-%E6%A8%A1%E6%9D%BF%E8%AF%AD%E8%A8%80"><span class="nav-number">4.</span> <span class="nav-text">QWeb 模板语言</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#QWeb-JavaScript-%E8%BF%90%E8%A1%8C%E4%B8%8A%E4%B8%8B%E6%96%87"><span class="nav-number">4.1.</span> <span class="nav-text">QWeb JavaScript 运行上下文</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%9B%BF%E6%8D%A2%E5%8A%A8%E6%80%81%E5%B1%9E%E6%80%A7%E2%80%93-t-attf"><span class="nav-number">4.2.</span> <span class="nav-text">字符串替换动态属性– t-attf</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%8A%A8%E6%80%81%E5%B1%9E%E6%80%A7-t-att"><span class="nav-number">4.3.</span> <span class="nav-text">表达式动态属性 - t-att</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%AA%E7%8E%AF-t-foreach"><span class="nav-number">4.4.</span> <span class="nav-text">循环 - t-foreach</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9D%A1%E4%BB%B6%E5%88%A4%E6%96%AD-t-if"><span class="nav-number">4.5.</span> <span class="nav-text">条件判断 - t-if</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B8%B2%E6%9F%93%E5%80%BC-t-esc%E5%92%8Ct-raw"><span class="nav-number">4.6.</span> <span class="nav-text">渲染值 - t-esc和t-raw</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E5%8F%98%E9%87%8F%E8%AE%BE%E7%BD%AE%E5%80%BC-t-set"><span class="nav-number">4.7.</span> <span class="nav-text">为变量设置值 - t-set</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B0%83%E7%94%A8%E5%92%8C%E5%A4%8D%E7%94%A8%E5%85%B6%E5%AE%83%E6%A8%A1%E6%9D%BF-t-call"><span class="nav-number">4.8.</span> <span class="nav-text">调用和复用其它模板 - t-call</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E5%85%B8%E5%92%8C%E5%88%97%E8%A1%A8%E5%8A%A8%E6%80%81%E5%B1%9E%E6%80%A7"><span class="nav-number">4.9.</span> <span class="nav-text">字典和列表动态属性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9C%8B%E6%9D%BF%E8%A7%86%E5%9B%BE%E7%9A%84%E7%BB%A7%E6%89%BF"><span class="nav-number">5.</span> <span class="nav-text">看板视图的继承</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89-CSS-%E5%92%8C-JavaScript"><span class="nav-number">6.</span> <span class="nav-text">自定义 CSS 和 JavaScript</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A9%E5%B1%95%E9%98%85%E8%AF%BB"><span class="nav-number">8.</span> <span class="nav-text">扩展阅读</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A9%E5%B1%95%E9%98%85%E8%AF%BB-1"><span class="nav-number">9.</span> <span class="nav-text">扩展阅读</span></a></li></ol></div>
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E5%8F%91%E5%87%86%E5%A4%87"><span class="nav-number">1.</span> <span class="nav-text">开发准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%86%E8%A7%A3%E7%9C%8B%E6%9D%BF"><span class="nav-number">2.</span> <span class="nav-text">了解看板</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9C%8B%E6%9D%BF%E8%A7%86%E5%9B%BE"><span class="nav-number">2.1.</span> <span class="nav-text">看板视图</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A1%E7%9C%8B%E6%9D%BF%E8%A7%86%E5%9B%BE"><span class="nav-number">3.</span> <span class="nav-text">设计看板视图</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E5%85%88%E7%BA%A7%E3%80%81%E7%9C%8B%E6%9D%BF%E7%8A%B6%E6%80%81%E5%92%8C%E9%A2%9C%E8%89%B2"><span class="nav-number">3.1.</span> <span class="nav-text">优先级、看板状态和颜色</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9C%8B%E6%9D%BF%E5%8D%A1%E7%89%87%E5%85%83%E7%B4%A0"><span class="nav-number">3.2.</span> <span class="nav-text">看板卡片元素</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9C%8B%E6%9D%BF%E5%8D%A1%E7%89%87%E5%B8%83%E5%B1%80"><span class="nav-number">3.3.</span> <span class="nav-text">看板卡片布局</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E7%9C%8B%E6%9D%BF%E5%8D%A1%E7%89%87%E6%B7%BB%E5%8A%A0%E9%80%89%E9%A1%B9%E8%8F%9C%E5%8D%95"><span class="nav-number">3.4.</span> <span class="nav-text">为看板卡片添加选项菜单</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9C%8B%E6%9D%BF%E8%A7%86%E5%9B%BE%E4%B8%AD%E7%9A%84%E6%93%8D%E4%BD%9C"><span class="nav-number">3.5.</span> <span class="nav-text">看板视图中的操作</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#QWeb-%E6%A8%A1%E6%9D%BF%E8%AF%AD%E8%A8%80"><span class="nav-number">4.</span> <span class="nav-text">QWeb 模板语言</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#QWeb-JavaScript-%E8%BF%90%E8%A1%8C%E4%B8%8A%E4%B8%8B%E6%96%87"><span class="nav-number">4.1.</span> <span class="nav-text">QWeb JavaScript 运行上下文</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%9B%BF%E6%8D%A2%E5%8A%A8%E6%80%81%E5%B1%9E%E6%80%A7%E2%80%93-t-attf"><span class="nav-number">4.2.</span> <span class="nav-text">字符串替换动态属性– t-attf</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%8A%A8%E6%80%81%E5%B1%9E%E6%80%A7-t-att"><span class="nav-number">4.3.</span> <span class="nav-text">表达式动态属性 - t-att</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%AA%E7%8E%AF-t-foreach"><span class="nav-number">4.4.</span> <span class="nav-text">循环 - t-foreach</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9D%A1%E4%BB%B6%E5%88%A4%E6%96%AD-t-if"><span class="nav-number">4.5.</span> <span class="nav-text">条件判断 - t-if</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B8%B2%E6%9F%93%E5%80%BC-t-esc%E5%92%8Ct-raw"><span class="nav-number">4.6.</span> <span class="nav-text">渲染值 - t-esc和t-raw</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E5%8F%98%E9%87%8F%E8%AE%BE%E7%BD%AE%E5%80%BC-t-set"><span class="nav-number">4.7.</span> <span class="nav-text">为变量设置值 - t-set</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B0%83%E7%94%A8%E5%92%8C%E5%A4%8D%E7%94%A8%E5%85%B6%E5%AE%83%E6%A8%A1%E6%9D%BF-t-call"><span class="nav-number">4.8.</span> <span class="nav-text">调用和复用其它模板 - t-call</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E5%85%B8%E5%92%8C%E5%88%97%E8%A1%A8%E5%8A%A8%E6%80%81%E5%B1%9E%E6%80%A7"><span class="nav-number">4.9.</span> <span class="nav-text">字典和列表动态属性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9C%8B%E6%9D%BF%E8%A7%86%E5%9B%BE%E7%9A%84%E7%BB%A7%E6%89%BF"><span class="nav-number">5.</span> <span class="nav-text">看板视图的继承</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89-CSS-%E5%92%8C-JavaScript"><span class="nav-number">6.</span> <span class="nav-text">自定义 CSS 和 JavaScript</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A9%E5%B1%95%E9%98%85%E8%AF%BB"><span class="nav-number">8.</span> <span class="nav-text">扩展阅读</span></a></li></ol></div>
         </div>
         <!--/noindex-->
 
@@ -162,7 +162,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
-    <link itemprop="mainEntityOfPage" href="https://alanhou.github.io/2019/01/19/odoo-essentials-12-chapter11/">
+    <link itemprop="mainEntityOfPage" href="https://alanhou.github.io/2019/01/20/odoo-essentials-12-chapter12/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -175,12 +175,12 @@
     </span>
 
     <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="第十一章 Odoo 12开发之看板视图和用户端 QWeb | Alan Hou的个人博客">
+      <meta itemprop="name" content="第十二章 Odoo 12开发之报表和服务端 QWeb | Alan Hou的个人博客">
       <meta itemprop="description" content="">
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          第十一章 Odoo 12开发之看板视图和用户端 QWeb
+          第十二章 Odoo 12开发之报表和服务端 QWeb
         </h1>
 
         <div class="post-meta-container">
@@ -191,14 +191,14 @@
       </span>
       <span class="post-meta-item-text">Posted on</span>
 
-      <time title="Created: 2019-01-19 00:00:00" itemprop="dateCreated datePublished" datetime="2019-01-19T00:00:00+08:00">2019-01-19</time>
+      <time title="Created: 2019-01-20 00:00:00" itemprop="dateCreated datePublished" datetime="2019-01-20T00:00:00+08:00">2019-01-20</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
         <i class="far fa-calendar-check"></i>
       </span>
       <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-02-03 13:56:32" itemprop="dateModified" datetime="2023-02-03T13:56:32+08:00">2023-02-03</time>
+      <time title="Modified: 2023-02-03 14:10:46" itemprop="dateModified" datetime="2023-02-03T14:10:46+08:00">2023-02-03</time>
     </span>
 
   
@@ -309,7 +309,7 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&lt;div class=&quot;o_dropdown_kanban dropdown&quot;&gt;</span><br><span class="line">    &lt;a class=&quot;dropdown-toggle btn&quot;</span><br><span class="line">        data-toggle=&quot;dropdown&quot; role=&quot;button&quot;</span><br><span class="line">        aria-label=&quot;Dropdown menu&quot;</span><br><span class="line">        title=&quot;Dropdown menu&quot;</span><br><span class="line">        href=&quot;#&quot;&gt;</span><br><span class="line">        &lt;span class=&quot;fa fa-ellipsis-v&quot; /&gt;</span><br><span class="line">    &lt;/a&gt;</span><br><span class="line">    &lt;div class=&quot;dropdown-menu&quot; role=&quot;menu&quot;&gt;</span><br><span class="line">        &lt;!-- Edit and Delete actions, if available: --&gt;</span><br><span class="line">        &lt;t t-if=&quot;widget.editable&quot;&gt;</span><br><span class="line">            &lt;a role=&quot;menuitem&quot; type=&quot;edit&quot; class=&quot;dropdown-item&quot;&gt;Edit&lt;/a&gt;</span><br><span class="line">        &lt;/t&gt;</span><br><span class="line">        &lt;t t-if=&quot;widget.deletable&quot;&gt;</span><br><span class="line">            &lt;a role=&quot;menuitem&quot; type=&quot;delete&quot; class=&quot;dropdown-item&quot;&gt;Delete&lt;/a&gt;</span><br><span class="line">        &lt;/t&gt;</span><br><span class="line">        &lt;!-- Color picker option --&gt;</span><br><span class="line">        &lt;ul class=&quot;oe_kanban_colorpicker&quot; data-field=&quot;color&quot; /&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure>
 
 <p>下拉菜单基本上是由带有<code>&lt;a&gt;</code>标签的<code>&lt;li&gt;</code> HTML 列表元素组成。Edit 和 Delete 这类选项需要满足指定条件下才会出现。这通过<a href="">QWeb的</a><a href="">t-if命令来实现。本文后续会详细讲解</a><a href="">QWeb的命令。widget全局变量表示一个KanbanRecord()  JS 对象，负责渲染当前看板卡片。有两个非常有用的属性：widget.editable和widget.deletable，让我们可以检查相应的操作是否可用。</a></p>
-<p>可以看到如何根据记录字段值来显示或隐藏选项，Set as Done仅在未设置is_done 字段时才会显示。最后一个选项添加颜色拾取器组件来使用 color 数据字段选择或修改卡片背景色。因此，除<button>元素外，<code>&lt;a&gt;</code>也可用于运行Odoo 操作。</p>
+<p>可以看到如何根据记录字段值来显示或隐藏选项，Set as Done仅在未设置is_done 字段时才会显示。最后一个选项添加颜色拾取器组件来使用 color 数据字段选择或修改卡片背景色。因此，除<code>&lt;button&gt;</code>元素外，<code>&lt;a&gt;</code>也可用于运行Odoo 操作。</p>
 <p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/a970e9acfd144d05bdc69c10e05e285c~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12看板视图下拉选项"></p>
 <h3 id="看板视图中的操作"><a href="#看板视图中的操作" class="headerlink" title="看板视图中的操作"></a>看板视图中的操作</h3><p>在QWeb模板中，用于超链的<code>&lt;a&gt;</code>标签可带有一个 type 属性。它设置链接执行的操作类型，这样链接和常规表单中的按钮可进行同样的操作。和表单视图一样，操作类型可以是action或object，并应带有一个 name 属性来标识所要执行的具体操作。此外，还有以下操作类型可以使用：</p>
 <ul>
@@ -471,20 +471,6 @@
 <li>Bootstrap<a target="_blank" rel="noopener" href="https://getbootstrap.com/docs/4.1/getting-started/introduction/">样式文档</a></li>
 <li>Font Awesome<a target="_blank" rel="noopener" href="https://fontawesome.com/v4.7.0/icons/">图标索引</a></li>
 </ul>
-<p> </p>
-<p>☞☞☞第十一章 <a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-kanban-qweb/">Odoo 12开发之看板视图和用户端 QWeb</a></p>
-<p> </p>
-<h2 id="扩展阅读-1"><a href="#扩展阅读-1" class="headerlink" title="扩展阅读"></a>扩展阅读</h2><p>以下本文中所讨论的话题的附加参考和补充材料：</p>
-<ul>
-<li><p>Odoo 官方文档</p>
-<ul>
-<li><a target="_blank" rel="noopener" href="https://www.odoo.com/documentation/12.0/reference/actions.html">有关actions</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.odoo.com/documentation/12.0/reference/views.html">有关视图</a></li>
-</ul>
-</li>
-<li><p>Font Awesome<a target="_blank" rel="noopener" href="https://fontawesome.com/v4.7.0/icons/">图标索引</a></p>
-</li>
-</ul>
 <p>本文首发地址：<a target="_blank" rel="noopener" href="https://alanhou.org/developer-mode-odoo12/">Alan Hou 的个人博客</a></p>
 
     </div>
@@ -502,13 +488,13 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2019/01/17/odoo-essentials-12-chapter10/" rel="prev" title="第十章 Odoo 12开发之后台视图 – 设计用户界面">
-                  <i class="fa fa-chevron-left"></i> 第十章 Odoo 12开发之后台视图 – 设计用户界面
+                <a href="/2019/01/19/odoo-essentials-12-chapter11/" rel="prev" title="第十一章 Odoo 12开发之看板视图和用户端 QWeb">
+                  <i class="fa fa-chevron-left"></i> 第十一章 Odoo 12开发之看板视图和用户端 QWeb
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2019/01/20/odoo-essentials-12-chapter12/" rel="next" title="第十二章 Odoo 12开发之报表和服务端 QWeb">
-                  第十二章 Odoo 12开发之报表和服务端 QWeb <i class="fa fa-chevron-right"></i>
+                <a href="/2019/01/21/odoo-essentials-12-chapter13/" rel="next" title="第十三章 Odoo 12开发之创建网站前端功能">
+                  第十三章 Odoo 12开发之创建网站前端功能 <i class="fa fa-chevron-right"></i>
                 </a>
             </div>
           </div>
