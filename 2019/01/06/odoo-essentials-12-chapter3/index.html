@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"alanhou.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="本文为最好用的免费ERP系统Odoo 12开发手册系列文章第三篇。 Odoo 开发通常都需要创建自己的插件模块。本文中我们将通过创建第一个应用来一步步学习如何在 Odoo 中开启和安装这个插件。我们将从基础的开发流学起，即创建和安装新插件，然后在开发迭代中更新代码来进行升级。 Odoo 采用类 MVC(Model-View-Controller)的结构，我们将深入到各层来实施一个图书应用。本文主要">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第三章 Odoo 12 开发之创建第一个 Odoo 应用">
+<meta property="og:url" content="https://alanhou.github.io/2019/01/06/odoo-essentials-12-chapter3/index.html">
+<meta property="og:site_name" content="Alan Hou的个人博客">
+<meta property="og:description" content="本文为最好用的免费ERP系统Odoo 12开发手册系列文章第三篇。 Odoo 开发通常都需要创建自己的插件模块。本文中我们将通过创建第一个应用来一步步学习如何在 Odoo 中开启和安装这个插件。我们将从基础的开发流学起，即创建和安装新插件，然后在开发迭代中更新代码来进行升级。 Odoo 采用类 MVC(Model-View-Controller)的结构，我们将深入到各层来实施一个图书应用。本文主要">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e20a522c396c4716824bbb0591b59c21~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/891d6cece36b4799aa886ebcc5410f80~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/cd1c8a9a071a4fa78bcdb5c5a408379f~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/53878422c0054aa69ebb088ab646b9c5~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/891bda81421c4066ad1235504483dd90~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/9d920852bf054a729ac620149c37de9f~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d121aad0b5234d4fba1b21ebbafe332a~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8d58e130fe774646975a564382dfe071~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/231899c03e2e439fb1e98a4ce61a9078~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/5c10cdf86f3b442abebe3ee603987e8e~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e8b05164b5ac434abac25ac495ce3bd9~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/73e3abf18e604b82b0a0aeff1e6e83f4~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="article:published_time" content="2019-01-05T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-02-03T05:35:22.516Z">
+<meta property="article:author" content="Alan Hou">
+<meta property="article:tag" content="Odoo,Odoo12">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e20a522c396c4716824bbb0591b59c21~tplv-k3u1fbpfcp-zoom-1.image">
+
+
+<link rel="canonical" href="https://alanhou.github.io/2019/01/06/odoo-essentials-12-chapter3/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://alanhou.github.io/2019/01/06/odoo-essentials-12-chapter3/","path":"2019/01/06/odoo-essentials-12-chapter3/","title":"第三章 Odoo 12 开发之创建第一个 Odoo 应用"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>第三章 Odoo 12 开发之创建第一个 Odoo 应用 | Alan Hou的个人博客</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Alan Hou的个人博客</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">用行动赢得尊重</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E5%87%86%E5%A4%87"><span class="nav-number">1.</span> <span class="nav-text">系统准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E8%A7%88%E5%9B%BE%E4%B9%A6%E9%A1%B9%E7%9B%AE"><span class="nav-number">2.</span> <span class="nav-text">概览图书项目</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%96%B0%E7%9A%84%E6%8F%92%E4%BB%B6%E6%A8%A1%E5%9D%97"><span class="nav-number">3.</span> <span class="nav-text">创建新的插件模块</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%87%86%E5%A4%87-addons-%E8%B7%AF%E5%BE%84"><span class="nav-number">3.1.</span> <span class="nav-text">准备 addons 路径</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%A8%A1%E5%9D%97%E7%9B%AE%E5%BD%95%E5%92%8C%E5%A3%B0%E6%98%8E%E6%96%87%E4%BB%B6"><span class="nav-number">3.2.</span> <span class="nav-text">创建模块目录和声明文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E5%9B%BE%E6%A0%87"><span class="nav-number">3.3.</span> <span class="nav-text">添加图标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%89%E6%8B%A9%E8%AF%81%E4%B9%A6-%E5%BC%80%E6%BA%90%E5%8D%8F%E8%AE%AE"><span class="nav-number">3.4.</span> <span class="nav-text">选择证书(开源协议)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E6%96%B0%E6%A8%A1%E5%9D%97"><span class="nav-number">3.5.</span> <span class="nav-text">安装新模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9B%B4%E6%96%B0%E6%A8%A1%E5%9D%97"><span class="nav-number">3.6.</span> <span class="nav-text">更新模块</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%96%B0%E5%BA%94%E7%94%A8"><span class="nav-number">4.</span> <span class="nav-text">创建新应用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E5%BA%94%E7%94%A8%E9%A1%B6%E7%BA%A7%E8%8F%9C%E5%8D%95%E9%A1%B9"><span class="nav-number">4.1.</span> <span class="nav-text">添加应用顶级菜单项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E6%9D%83%E9%99%90%E7%BB%84"><span class="nav-number">4.2.</span> <span class="nav-text">添加权限组</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E8%87%AA%E5%8A%A8%E5%8C%96%E6%B5%8B%E8%AF%95"><span class="nav-number">5.</span> <span class="nav-text">添加自动化测试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91"><span class="nav-number">5.1.</span> <span class="nav-text">测试业务逻辑</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E5%AE%89%E5%85%A8%E6%9D%83%E9%99%90"><span class="nav-number">5.2.</span> <span class="nav-text">测试安全权限</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A8%A1%E5%9E%8B%E5%B1%82"><span class="nav-number">6.</span> <span class="nav-text">模型层</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E6%95%B0%E6%8D%AE%E6%A8%A1%E5%9E%8B"><span class="nav-number">6.1.</span> <span class="nav-text">创建数据模型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E8%AE%BF%E9%97%AE%E6%9D%83%E9%99%90"><span class="nav-number">7.</span> <span class="nav-text">设置访问权限</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E8%AE%BF%E9%97%AE%E6%9D%83%E9%99%90%E6%8E%A7%E5%88%B6"><span class="nav-number">7.1.</span> <span class="nav-text">添加访问权限控制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%8C%E7%BA%A7%E6%9D%83%E9%99%90%E8%A7%84%E5%88%99"><span class="nav-number">7.2.</span> <span class="nav-text">行级权限规则</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%86%E5%9B%BE%E5%B1%82"><span class="nav-number">8.</span> <span class="nav-text">视图层</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E8%8F%9C%E5%8D%95%E9%A1%B9"><span class="nav-number">8.1.</span> <span class="nav-text">添加菜单项</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9B%E5%BB%BA%E8%A1%A8%E5%8D%95%E8%A7%86%E5%9B%BE"><span class="nav-number">8.2.</span> <span class="nav-text">创建表单视图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%9A%E5%8A%A1%E6%96%87%E4%BB%B6%E8%A1%A8%E5%8D%95%E8%A7%86%E5%9B%BE"><span class="nav-number">8.3.</span> <span class="nav-text">业务文件表单视图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E6%93%8D%E4%BD%9C%E6%8C%89%E9%92%AE"><span class="nav-number">8.4.</span> <span class="nav-text">添加操作按钮</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E7%BB%84%E6%9D%A5%E7%BB%84%E7%BB%87%E8%A1%A8%E5%8D%95"><span class="nav-number">8.5.</span> <span class="nav-text">使用组来组织表单</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%8C%E6%95%B4%E8%A1%A8%E5%8D%95%E8%A7%86%E5%9B%BE"><span class="nav-number">8.6.</span> <span class="nav-text">完整表单视图</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E5%88%97%E8%A1%A8%E8%A7%86%E5%9B%BE%E5%92%8C%E6%90%9C%E7%B4%A2%E8%A7%86%E5%9B%BE"><span class="nav-number">8.7.</span> <span class="nav-text">添加列表视图和搜索视图</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91%E5%B1%82"><span class="nav-number">9.</span> <span class="nav-text">业务逻辑层</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B7%BB%E5%8A%A0%E4%B8%9A%E5%8A%A1%E9%80%BB%E8%BE%91"><span class="nav-number">9.1.</span> <span class="nav-text">添加业务逻辑</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BD%91%E9%A1%B5%E5%92%8C%E6%8E%A7%E5%88%B6%E5%99%A8"><span class="nav-number">10.</span> <span class="nav-text">网页和控制器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">11.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%A6%E9%9C%B8%E4%B8%93%E5%8C%BA"><span class="nav-number">12.</span> <span class="nav-text">学霸专区</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A9%E5%B1%95%E9%98%85%E8%AF%BB"><span class="nav-number">13.</span> <span class="nav-text">扩展阅读</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Alan Hou</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://alanhou.github.io/2019/01/06/odoo-essentials-12-chapter3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Alan Hou">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alan Hou的个人博客">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="第三章 Odoo 12 开发之创建第一个 Odoo 应用 | Alan Hou的个人博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          第三章 Odoo 12 开发之创建第一个 Odoo 应用
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2019-01-06 00:00:00" itemprop="dateCreated datePublished" datetime="2019-01-06T00:00:00+08:00">2019-01-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-02-03 13:35:22" itemprop="dateModified" datetime="2023-02-03T13:35:22+08:00">2023-02-03</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>本文为<a target="_blank" rel="noopener" href="https://alanhou.org/odoo-12-development/">最好用的免费ERP系统Odoo 12开发手册</a>系列文章第三篇。</p>
+<p>Odoo 开发通常都需要创建自己的插件模块。本文中我们将通过创建第一个应用来一步步学习如何在 Odoo 中开启和安装这个插件。我们将从基础的开发流学起，即创建和安装新插件，然后在开发迭代中更新代码来进行升级。</p>
+<p>Odoo 采用类 MVC(Model-View-Controller)的结构，我们将深入到各层来实施一个图书应用。本文主要内容有：</p>
+<ul>
+<li>创建一个新的模块，用来实施相关功能</li>
+<li>添加应用的特性功能：顶级菜单项和安全组</li>
+<li>添加一个一开始会失败但在项目完成时成功运行的自动化测试</li>
+<li>实施模型层，定义应用的数据结构和相关访问权限</li>
+<li>实施后台视图层，编写内部用户界面</li>
+<li>实施业务逻辑层，支持数据验证和自动化</li>
+<li>实施 web 层，展示访客和内部用户的用户界面</li>
+</ul>
+<h2 id="系统准备"><a href="#系统准备" class="headerlink" title="系统准备"></a>系统准备</h2><p>本文要求安装了 Odoo 服务并可通过命令行启动服务来进行模块安装和运行测试之类的操作。如果还没有相关环境，请参照本系列文章第二篇<a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-development-environment/">Odoo 12开发之开发环境准备</a>。</p>
+<p>本文中我们将从零开始创建第一个 Odoo 应用，无需额外的代码。本文代码可通过 <a target="_blank" rel="noopener" href="https://github.com/alanhou/odoo12-development">GitHub 仓库</a>进行查看。</p>
+<h2 id="概览图书项目"><a href="#概览图书项目" class="headerlink" title="概览图书项目"></a>概览图书项目</h2><p>为更好地在本文中探讨，我们将使用一个现实中可以使用的学习项目。一起来创建一个管理图书库的 Odoo 应用。该项目将在后续文章中持续使用，每篇文章都会进行一次迭代，为应用添加新的功能。本文中将创建图书应用的第一个版本，第一个功能是实现图书目录。</p>
+<p>图书将包含如下数据：</p>
+<ul>
+<li>标题</li>
+<li>作者</li>
+<li>出版社</li>
+<li>发行日期</li>
+<li>封面图</li>
+<li> ISBN：包含检查 ISBN是否有效的功能</li>
+<li>有效性标记；标识图书是否已对公众发布</li>
+</ul>
+<p>图书目录可由图书管理员编辑，对图书操作者则仅有可读权限。该目录可通过公共网页访问，仅显示已发布图书。就是这样一个简单的项目，但提供有用的功能，足以让我们了解 Odoo 应用的主要构件。</p>
+<h2 id="创建新的插件模块"><a href="#创建新的插件模块" class="headerlink" title="创建新的插件模块"></a>创建新的插件模块</h2><p>一个插件模块是包含实现一些 Odoo 功能的文件夹，可以添加新功能或修改已有的功能。插件目录必须含有一个声明或描述文件__manifest__.py，以及其它模块文件。</p>
+<p>一部分模块插件在 Odoo 中以app的形式出现，通常都会带有顶级菜单项。它们为 CRM 或 HR 这样的功能区添加核心元素，因此在 Odoo 应用菜单中会高亮显示。另外还有一些非应用模块插件一般为这些应用添加功能。如果你的模块为 Odoo 添加新的或重要的功能，一般应该是app。而如果模块仅修改应用的功能，那么就是一个普通的插件模块。</p>
+<p>要创建新模块，需要：</p>
+<ol>
+<li>确保操作的目录是 Odoo 的 addons 路径</li>
+<li>创建模块目录，并包含声明文件</li>
+<li>可选择为模块添加一个图标</li>
+<li>如打算对外发布，为模块选择一个证书</li>
+</ol>
+<p>然后我们就可以安装模块了，确定模块在 Odoo 服务中可见并正确安装它。</p>
+<h3 id="准备-addons-路径"><a href="#准备-addons-路径" class="headerlink" title="准备 addons 路径"></a>准备 addons 路径</h3><p>一个插件模块是一个含有 Odoo 声明文件的目录，它创建一个新应用或为已有应用添加功能。addons模块的路径是一系列目录，Odoo 服务可以在这里查找插件。默认addons包含odoo&#x2F;addons 中存放的 Odoo 自带的官方应用，以及在odoo&#x2F;odoo&#x2F;addons目录中提供核心功能的 base 模块。</p>
+<p>我们应将自己创建的或应用市场及其它地方下载的模块放到指定的目录中。要使得 Odoo 服务能够找到这些应用，需要这些目录添加到 Odoo 的 addons 路径中。</p>
+<p>根据我们在<a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-development-environment/">Odoo 12开发之开发环境准备</a>所创建的项目，Odoo 的代码存放在<del>&#x2F;odoo-dev&#x2F;odoo&#x2F;目录下。最佳实践告诉我们应在自有目录下添加代码，而不应与 Odoo 源代码混在一起。所以要添加自定义模块，我们将在 Odoo 同级创建目录</del>&#x2F;odoo-dev&#x2F;custom-addons并添加到 addons 路径中。要添加该目录至 addons 路径，执行如下命令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">cd ~/odoo-dev</span><br><span class="line">./odoo/odoo-bin -d dev12 --addons-path=&quot;custom-addons,odoo/addons&quot; --save</span><br></pre></td></tr></table></figure>
+
+<p>注：如有报错参照<a target="_blank" rel="noopener" href="https://alanhou.org/odoo-faq/">Odoo常见问题汇总</a>开发类错误处理001</p>
+<p>–save 参数将选项保存至配置文件中，这样我们就无需在每次启动服务时输入参数，只需运行.&#x2F;odoo-bin 即可使用上次使用的参数。可以通过-c 参数指定文件来使用或保存配置项。仔细查看输出的日志，可以看到INFO ? odoo: addons paths:[…] 一行中包含custom-addons目录。</p>
+<p>如需使用其它目录也请添加至 addons 路径，比如有~&#x2F;odoo-dev&#x2F;extra 目录中包含需用到的目录，则需通过如下方式设置–addons-path参数：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">--addons-path=&quot;custom-addons,extra,odoo/addons&quot;</span><br></pre></td></tr></table></figure>
+
+<p>现在我们需要让 Odoo 实例能识别新模块。</p>
+<blockquote>
+<p><strong>小贴士：</strong> 以上使用的是相对路径，但在配置文件中需使用绝对路径，–save 参数会自行进行转化。</p>
+</blockquote>
+<h3 id="创建模块目录和声明文件"><a href="#创建模块目录和声明文件" class="headerlink" title="创建模块目录和声明文件"></a>创建模块目录和声明文件</h3><p>现在就准备好了~&#x2F;odoo-dev&#x2F;custom-addons目录，已正确添加至 addons 路径，Odoo 也就可以找到这里的模块。Odoo 自带一个scaffold命令可自动创建新模块目录，其中会包含基础结构。此处并不会使用该命令，而是手动创建。通过以下命令可以了解scaffold用法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~/odoo-dev/odoo/odoo-bin scaffold --help</span><br></pre></td></tr></table></figure>
+
+<p>Odoo 模块目录需包含一个__manifest__.py描述性文件，同时还需要是可导入的包，所以还应包含__init__.py文件。</p>
+<blockquote>
+<p><strong>ℹ️</strong>在老版本中，该描述性文件为__openerp__.py或__odoo__.py，这些名称已过时但仍可使用。</p>
+</blockquote>
+<p>模块目录名是其技术名称，我们使用library_app，技术名称应是有效 Python 标识符，即以字母开头且仅能包含字母、数字和下划线。执行如下步骤来初始化新模块：</p>
+<p>1、通过命令行，我们可以添加一个空的__init__.py 文件来初始化模块：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p ~/odoo-dev/custom-addons/library_app</span><br><span class="line">touch ~/odoo-dev/custom-addons/library_app/__init__.py</span><br></pre></td></tr></table></figure>
+
+<p>2、下面添加声明文件，其中应包含一个 Python 字典，有几十个可用属性。其中仅 name属性为必填，但推荐同时添加 description 和 author 属性。在__init__.py 同级创建__manifest__.py 文件，添加以下内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &#x27;name&#x27;: &#x27;Library Management&#x27;,</span><br><span class="line">    &#x27;description&#x27;: &#x27;Manage library book catalogue and lending.&#x27;,</span><br><span class="line">    &#x27;author&#x27;: &#x27;Alan Hou&#x27;,</span><br><span class="line">    &#x27;depends&#x27;: [&#x27;base&#x27;],</span><br><span class="line">    &#x27;application&#x27;: True,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>depends 属性可以是一个包含所用到的模块列表。Odoo 会在模块安装时自动安装这些模块，这不是强制属性，但建议使用。如果没有特别的依赖，可以添加内核 base 模块。应注意将所有依赖都在此处列明，否则，模块会因缺少依赖而报错或出现加载错误（如果碰巧依赖模块在随后被加载了）。</p>
+<p>我们的应用无需依赖其它模块，所以本处使用了 base。为保持简洁，这里仅使用了几个基本描述符键：</p>
+<ul>
+<li>name：插件模块标题字符串</li>
+<li>description：功能描述长文件，通常为RST格式</li>
+<li>author：作者姓名，本处为一个字符串，可以是逗号分隔的一系列姓名</li>
+<li>depends：一个依赖插件模块列表，在模块安装时会先安装这些插件</li>
+<li>application：一个布尔型标记，代表模块是否在应用列表中以 app 展现</li>
+</ul>
+<p>description可由模块顶层目录中的README.rst或README.md代替，如果两者都不存在，将使用声明文件中的description。</p>
+<p>在真实场景中，建议也同时使用其它属性名，因它们与 Odoo 的应用商店有关：</p>
+<ul>
+<li>summary：显示为模块副标题的字符串</li>
+<li>version:：默认为1.0，应遵守<a target="_blank" rel="noopener" href="http://semver.org/">版本号规则</a>。建议在模块版本号前加上 Odoo 版本，如12.0.1.0</li>
+<li>license:：默认为LGPL-3</li>
+<li>website：了解模块更多信息的 URL，可以帮助人们查看更多文档或提供文件 bug 和建议的跟踪</li>
+<li>category:：带有模块功能性分类字符串，缺省为Uncategorized。已有分类可通过安全组表单（位于Settings &gt; Users &amp; Companies &gt; Groups）的 Application字段下拉列表查看（需开启调试模式）</li>
+</ul>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e20a522c396c4716824bbb0591b59c21~tplv-k3u1fbpfcp-zoom-1.image" alt="模块已有分类信息"></p>
+<p>还有以下描述符键：</p>
+<ul>
+<li>installable：默认为 True，但可以通过设置为 False 来禁用模块</li>
+<li>auto_install：若设置为 True，在其依赖已安装时会自动安装，用于胶水模块，用于同一实例上两个模块安装后功能的连接。</li>
+</ul>
+<h3 id="添加图标"><a href="#添加图标" class="headerlink" title="添加图标"></a>添加图标</h3><p>模块可选择添加图标，这对于作为 app 的模块尤其重要，因为在应用菜单中一般都应有图标。要添加图标，需要在模块中添加static&#x2F;description&#x2F;icon.png文件。</p>
+<p>为简化操作，我们可以复用 accounting 应用的图标，把odoo&#x2F;addons&#x2F;account&#x2F;static&#x2F;description&#x2F;icon.png文件拷贝至customaddons&#x2F;library_app&#x2F;static&#x2F;description目录。可通过如下命令完成：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">cd ~/odoo-dev</span><br><span class="line">mkdir -p ./custom-addons/library_app/static/description</span><br><span class="line">cp ~/odoo-dev/odoo/addons/note/static/description/icon.png ./custom-addons/library_app/static/description</span><br></pre></td></tr></table></figure>
+
+<p>补充：开启开者发者模式（修改 URL 中web#为web?debug#），点击 Apps &gt; Update Apps List即可搜到我们创建的应用（下图我使用了自定义的图标）</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/891d6cece36b4799aa886ebcc5410f80~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12添加图书 icon"></p>
+<h3 id="选择证书-开源协议"><a href="#选择证书-开源协议" class="headerlink" title="选择证书(开源协议)"></a>选择证书(开源协议)</h3><p>为开发的模块选择证书（开源协议）非常重要，应谨慎考虑其代表着什么。Odoo 模块最常用的协议是LGPL(GNU Lesser General Public License)第3版(LGPL v3.0)和AGPL(Affero General Public License)。</p>
+<p>LGPL 授权更广，它允许在无需分享相应源码的情况下对代码作出商业修改。AGPL则是一个更严格的开源证书，它要求派生代码及服务托管者分享源码。</p>
+<p>了解更多有关 GNU 证书请访问<a target="_blank" rel="noopener" href="https://www.gnu.org/licenses/">GNU官网</a>。</p>
+<h3 id="安装新模块"><a href="#安装新模块" class="headerlink" title="安装新模块"></a>安装新模块</h3><p>现在我们已经有了一个简化的模块，还没有任何功能，但我们可以通过安装它来检查各项是否正常。</p>
+<p>要进行这一操作，模块所有的插件目录应对 Odoo 服务可见。可以通过启动 Odoo 服务来进行确认，可以在输出第一行看到显示为odoo: addons paths: xxx 字样，其中会显示在用的插件路径。更多有关插件路径的知识，参见本系列文章第二篇 <a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-development-environment/">Odoo 12开发之开发环境准备</a>。</p>
+<p>要安装新的模块，我们应在启动服务时指定-d 和-i 参数，-d 指定应使用的数据库，-i 可接收一个逗号分隔的多个待安装模块名。假定开发数据库为dev12，则使用如下命令进行安装：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~/odoo-dev/odoo/odoo-bin -d dev12 -i library_app</span><br></pre></td></tr></table></figure>
+
+<p>仔细看日志输出可确定模块是否能被找到并安装，正确安装对应日志： odoo.modules.registry: module library_app: creating or updating database tables。</p>
+<h3 id="更新模块"><a href="#更新模块" class="headerlink" title="更新模块"></a>更新模块</h3><p>开发模块是一个不断迭代的过程，我们会需要应用更新所修改代码并在 Odoo 中可见。可以在后台界面Apps中搜索对应模块并点击 Upgrade 按钮。但如果修改的是 Python 代码，点击升级不会生效，需要先重启服务方可生效。这是因为 Odoo 仅会加载一次 Python 代码，此后的修改就要求进行重启才会生效。</p>
+<p>有时，模块中既修改了数据文件又修改了 Python 代码，那么就需要同时进行如上两种操作。这是 Odoo 开发者的常见困惑。幸好还有更好的方式，最保险的方式是重启 Odoo 实例并应用升级至开发数据库。通过Ctrl + C停止服务实例，然后通过如下命令启动服务并升级library_app模块：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~/odoo-dev/odoo/odoo-bin -d dev12 -u library_app</span><br></pre></td></tr></table></figure>
+
+<p>-u(或全称–update)要求使用-d 参数并接收一个逗号分隔的待升级模块集。例如可以使用-u library_app,mail。模块升级后，所有依赖该模块的模块也会被升级。这是保持用于扩展功能的继承机制完整性的基础。</p>
+<blockquote>
+<p><strong>Odoo 11中的修改：</strong><br>直到 Odoo 10.0，要安装新的插件模块，需要在后台客户端菜单中手动更新以对 Odoo 可见。从 11.0开始，模块列表在模块安装或更新时会自动更新。</p>
+</blockquote>
+<p>在本系列文章中，如需应用对模块代码的修改：</p>
+<ul>
+<li>添加模型字段时需进行升级。修改 Python 代码（含 manifest 文件）时需要重启服务。</li>
+<li>修改XML或CSV文件时，需进行升级。在不确定时，同时重启服务并升级模块。</li>
+</ul>
+<p>在不确定时，最保险的方式是通过-u参数来重启 Odoo 实例，按下键盘上、下方向键可在使用过的命令间切换。进行这一操作时，我们经常会使用到 Ctrl+C，向上方向键和Enter 键。</p>
+<p>或者要避免这种重复的停止&#x2F;启动操作，可使用dev&#x3D;all选项。这样在保存XML 和 Python文件修改时会自动进行重载，参见本系列文章第二篇 <a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-development-environment/">Odoo 12开发之开发环境准备</a>了解更多详情。</p>
+<h2 id="创建新应用"><a href="#创建新应用" class="headerlink" title="创建新应用"></a>创建新应用</h2><p>一些 Odoo 模块创建新应用，而另一些则对已有应用添加功能或作出修改。虽然两者的技术组件基本相同，但应用会被预期包含一些特征性元素。我们创建的是一个图书应用，所以应包含这些元素，它们是：</p>
+<ul>
+<li>图标：用于在应用列表中展示</li>
+<li>顶级菜单项：其下放置所有的应用菜单项</li>
+<li>应用安全组：通过权限访问仅对指定用户开放</li>
+</ul>
+<p>添加图标(icon)，仅需在模块目录下static&#x2F;description&#x2F;子文件夹中放置icon.png文件，前面已经介绍过了。下面我们来添加应用顶级菜单。</p>
+<h3 id="添加应用顶级菜单项"><a href="#添加应用顶级菜单项" class="headerlink" title="添加应用顶级菜单项"></a>添加应用顶级菜单项</h3><p>我们创建的是一个新应用，因此应包含主菜单项，在社区版本中，显示在左侧下拉菜单中，而在企业版中，则作为附加图标显示在应用切换器主界面中。</p>
+<p>菜单项是使用 XML 文件中添加的视图组件，通过创建views&#x2F;library_menu.xml来定义菜单项：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot;?&gt;</span><br><span class="line">&lt;odoo&gt;</span><br><span class="line">    &lt;!-- Library App Menu --&gt;</span><br><span class="line">    &lt;menuitem id=&quot;menu_library&quot; name=&quot;Library&quot; /&gt;</span><br><span class="line">&lt;/odoo&gt;</span><br></pre></td></tr></table></figure>
+
+<p>用户界面中的菜单项和操作均存储于数据表中，上面的代码是一个 Odoo 数据文件，描述了要载入 Odoo 数据库的记录。其中的元素是向ir.ui.menu模型写入记录的指示。 id 属性也称作XML ID，用于唯一标识每个数据元素，以供其它元素引用。例如在添加图书子菜单时，就需要引用顶级菜单的XML ID，即menu_library。XML ID是一个重要话题，将在本系列文章第五篇<a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-import-export-data/">Odoo 12开发之导入、导出以及模块数据</a>中探讨。</p>
+<p>此处添加的菜单项非常简单，仅用到了 name 属性。其它常用的属性这里没有使用，没有设置父菜单，因为这是一个顶级菜单。也没有设置 action，因菜单项本身并不做任何事，仅仅用于放置后面要创建的子菜单项。模块还不知道 XML 数据文件的存在，我们需要在__manifest__.py中使用 data 属性来添加安装或更新时需要加载的模块列表以进行声明。在manifest 文件的字典中加入：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&#x27;data&#x27;: [</span><br><span class="line">    &#x27;views/library_menu.xml&#x27;,</span><br><span class="line">],</span><br></pre></td></tr></table></figure>
+
+<p>要向Odoo数据库中加载这些菜单设置，需要升级模块。此时还不会有什么显式的效果，因菜单项还不包含可操作子菜单，所以不会显示。在添加好子菜单及合适的访问权限时即可显示。</p>
+<blockquote>
+<p><strong>小贴士：</strong> 菜单树中的项目仅在含有可见子菜单项时才会显示。底层包含窗口操作视图的菜单项仅当用户拥有该模型访问权限时才可见。</p>
+</blockquote>
+<h3 id="添加权限组"><a href="#添加权限组" class="headerlink" title="添加权限组"></a>添加权限组</h3><p>普通用户在使用功能前需获得相应的权限。Odoo 中使用安全组来实现，权限授予组，组中分配用户。Odoo 应用通常有两个组：针对普通用户的用户组，包含额外应用配置权限的管理员组。</p>
+<p>下面我们就来添加这两个安全组。权限安全相关的文件通常放在模块下&#x2F;security子目录中，这里我们创建security&#x2F;library_security.xml 文件来进行权限定义。安全组使用分类来更好地组织关联应用。所以第一步我们在ir.module.category模型中创建针对图书应用的分类：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; ?&gt;</span><br><span class="line">&lt;odoo&gt;</span><br><span class="line">    &lt;record id=&quot;module_library_category&quot; model=&quot;ir.module.category&quot;&gt;</span><br><span class="line">        &lt;field name=&quot;name&quot;&gt;Library&lt;/field&gt;</span><br><span class="line">    &lt;/record&gt;</span><br><span class="line">&lt;/odoo&gt;</span><br></pre></td></tr></table></figure>
+
+<p>下一步，我们要添加两个安全组，首先添加用户组。在以上结束标签前添加如下 XML 代码块：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- Library User Group --&gt;</span><br><span class="line">&lt;record id=&quot;library_group_user&quot; model=&quot;res.groups&quot;&gt;</span><br><span class="line">    &lt;field name=&quot;name&quot;&gt;User&lt;/field&gt;</span><br><span class="line">    &lt;field name=&quot;category_id&quot; ref=&quot;module_library_category&quot; /&gt;</span><br><span class="line">    &lt;field name=&quot;implied_ids&quot; eval=&quot;[(4, ref(&#x27;base.group_user&#x27;))]&quot; /&gt;</span><br><span class="line">&lt;/record&gt;</span><br></pre></td></tr></table></figure>
+
+<p>记录在res.groups模型中创建，添加了三个字段：</p>
+<ul>
+<li><strong>name：</strong> 组名</li>
+<li><strong>category_id：</strong> 关联应用，这是一个关联字段，因此使用了 ref 属性来通过 XML ID 连接已创建的分类</li>
+<li><strong>implied_ids：</strong> 这是一个one-to-many关联字段，包含一系列组来对组内用户生效。这里使用了一个特殊语法，在本系列文章第五篇<a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-import-export-data/">Odoo 12开发之导入、导出以及模块数据</a>中会进行介绍。我们使用了编号4来连接基本内部用户组base.group_user。</li>
+</ul>
+<p>然后我们创建管理员组，授予用户组的所有权限以及为应用管理员保留的其它权限：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- Library Manager Group --&gt;</span><br><span class="line">&lt;record id=&quot;library_group_manager&quot; model=&quot;res.groups&quot;&gt;</span><br><span class="line">    &lt;field name=&quot;name&quot;&gt;Manager&lt;/field&gt;</span><br><span class="line">    &lt;field name=&quot;category_id&quot; ref=&quot;module_library_category&quot; /&gt;</span><br><span class="line">    &lt;field name=&quot;implied_ids&quot; eval=&quot;[(4, ref(&#x27;library_group_user&#x27;))]&quot; /&gt;</span><br><span class="line">    &lt;field name=&quot;users&quot; eval=&quot;[</span><br><span class="line">                (4, ref(&#x27;base.user_root&#x27;)),</span><br><span class="line">                (4, ref(&#x27;base.user_admin&#x27;))</span><br><span class="line">            ]&quot; /&gt;</span><br><span class="line">&lt;/record&gt;</span><br></pre></td></tr></table></figure>
+
+<p>像用户组一样，这里也有name, category_id和implied_ids ，implied_ids关联了图书用户组，以继承其权限。还添加了一个 users 字段，让管理员和内部 root 用户自动成为应用管理员。</p>
+<blockquote>
+<p><strong>ℹ️</strong>在 Odoo老版本中，admin 管理员用户同时也是 root 用户。Odoo 12中有一个系统 root用户，在用户列表中不显示，仅在框架需要进行提权(sudo)时在内部使用。admin可以登入系统并应拥有所有功能的访问权限，但不再像系统 root 用户那样可以绕过访问限制。</p>
+</blockquote>
+<p>同样需要在声明文件中添加该 XML 文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&#x27;data&#x27;: [</span><br><span class="line">    &#x27;security/library_security.xml&#x27;,</span><br><span class="line">    &#x27;views/library_menu.xml&#x27;,</span><br><span class="line">],</span><br></pre></td></tr></table></figure>
+
+<p>注意library_security.xml 加在library_menu.xml文件之前，数据文件的加载顺序非常重要，因为我们只能引用已经定义过的标识符。菜单项经常引用到安全组，所以建议将安全组定义文件放到菜单和视图文件之前。</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/cd1c8a9a071a4fa78bcdb5c5a408379f~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12图书应用组"></p>
+<h2 id="添加自动化测试"><a href="#添加自动化测试" class="headerlink" title="添加自动化测试"></a>添加自动化测试</h2><p>编程的最佳实践包含代码的自动化测试，对于像 Python 这样的动态语言尤为重要，因为它没有编译这一步，只有在解释器实际运行代码时才会报语法错误。好的编辑器可以让我们提前发现问题，但无法像自动化测试这样帮助我们确定代码如预期般运行。</p>
+<blockquote>
+<p><strong>Odoo 12中的修改</strong><br>在老版本中，Odoo 使用YAML文件来进行测试，但 Odoo 12中移除了对YAML文件的支持，所以不能再使用该格式文件。</p>
+</blockquote>
+<p>测试驱动开发（TDD -Test-driven Development） 方法让我们先写测试，检查错误，然后开发代码直至通过测试。受此方法启示，在添加实际功能前我们先添加模块测试：</p>
+<p>1、测试代码文件名应以test_开头，并通过tests&#x2F;<strong>init</strong>.py引用。但测试目录（也即 Python 子模块）不应在模块的外层__init__.py中引入，因为仅在测试执行时才会自动查找和加载它。</p>
+<p>2、测试应放在tests&#x2F;子目录中，在tests&#x2F;<strong>init</strong>.py中添加如下代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">from . import test_book</span><br></pre></td></tr></table></figure>
+
+<p>3、在tests&#x2F;test_book.py文件中添加实际的测试代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">from odoo.tests.common import TransactionCase</span><br><span class="line"></span><br><span class="line">class TestBook(TransactionCase):</span><br><span class="line">    def setUp(self, *args, **kwargs):</span><br><span class="line">        result = super().setUp(*args, **kwargs)</span><br><span class="line">        self.Book = self.env[&#x27;library.book&#x27;]</span><br><span class="line">        self.book_ode = self.Book.create(&#123;</span><br><span class="line">            &#x27;name&#x27;: &#x27;Odoo Development Essentials&#x27;,</span><br><span class="line">            &#x27;isbn&#x27;: &#x27;879-1-78439-279-6&#x27;&#125;)</span><br><span class="line">        return result</span><br><span class="line">    def test_create(self):</span><br><span class="line">        &quot;Test Books are active by default&quot;</span><br><span class="line">        self.assertEqual(self.book_ode.active, True)</span><br></pre></td></tr></table></figure>
+
+<p>以上代码添加一个简单测试用例，创建一本新书并检测active 字段的值是否正确。</p>
+<p>4、使用–test-enable参数在安装或升级模块时进行测试</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~/odoo-dev/odoo/odoo-bin -d dev12 -u library_app --test-enable</span><br></pre></td></tr></table></figure>
+
+<p>5、Odoo 服务会在升级的模块中查找tests&#x2F;子目录并运行。现在测试会抛出错误，在输出日志中可看到测试相关的ERROR信息。在为模块添加完图书模型后应该就不再报错。</p>
+<h3 id="测试业务逻辑"><a href="#测试业务逻辑" class="headerlink" title="测试业务逻辑"></a>测试业务逻辑</h3><p>现在我们应为业务逻辑添加测试了，理想情况下每行代码都应有一个测试用例。在tests&#x2F;test_book.py文件test_create() 方法再加几行代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">def test_check_isbn(self):</span><br><span class="line">    &quot;Check valid ISBN&quot;</span><br><span class="line">    self.assertTrue(self.book_ode._check_isbn)</span><br></pre></td></tr></table></figure>
+
+<p>推荐为每个需检查的操作添加一个测试用例，本条测试与上一条相似，先创建一本新书。因为各个测试用例是相互独立的，用例创建或修改的数据会在测试结束时回滚。然后在创建的记录上调用测试方法来检查所使用 ISBN是否被正确验证。</p>
+<p>当然，现在运行测试还是会失败，因为所测试的功能还未被实现。</p>
+<h3 id="测试安全权限"><a href="#测试安全权限" class="headerlink" title="测试安全权限"></a>测试安全权限</h3><p>也可以对安全权限进行检测，确定是否对用户进行了正确的授权。Odoo 中默认测试由不受权限控制的__system__内部用户执行。所以我们应改变执行测试的用户，来检测是否授予了正确的安全权限。这通过在self.env中修改执行环境来实现，只需把 user 属性修改为希望运行测试的用户即可。修改tests&#x2F;test_book.py中的setUp方法如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">def setUp(self, *args, **kwargs):</span><br><span class="line">    result = super().setUp(*args, **kwargs)</span><br><span class="line">    user_admin = self.env.ref(&#x27;base.user_admin&#x27;)</span><br><span class="line">    self.env = self.env(user=user_admin)</span><br><span class="line">    self.Book = self.env[&#x27;library.book&#x27;]</span><br><span class="line">    self.book_ode = self.Book.create(&#123;</span><br><span class="line">        &#x27;name&#x27;: &#x27;Odoo Development Essentials&#x27;,</span><br><span class="line">        &#x27;isbn&#x27;: &#x27;879-1-78439-279-6&#x27;&#125;)</span><br><span class="line">    return result</span><br></pre></td></tr></table></figure>
+
+<p>第一条命令调用了父类中的setUp代码，下面一条修改了用于测试的环境self.env为使用 admin 用户的新环境。测试代码的修改到此告一段落。</p>
+<h2 id="模型层"><a href="#模型层" class="headerlink" title="模型层"></a>模型层</h2><p>既然 Odoo 已经能识别我们的新模块了，下面就添加一个简单的模型。模型描述业务对象，如商机、销售订单或合作伙伴（用户、供应商等）。模型中有一系列属性，也可定义一些特定业务逻辑。</p>
+<p>模型通过 Odoo 模板类派生的 Python 类来实现。它直接与数据库对象对应，Odoo 在安装或升级模块时会自动进行处理。框架中负责这部分的是对象关系映射（ORM -Object Relational Mapping）。</p>
+<p>我们的模块是一个图书管理应用，第一个功能就是管理图书目录，目前这是我们唯一需要实现的模型。</p>
+<h3 id="创建数据模型"><a href="#创建数据模型" class="headerlink" title="创建数据模型"></a>创建数据模型</h3><p>Odoo 开发指南中提到模型的 Python 文件应放在models子目录中，每个模型有一个对应文件。因此我们在library_app模块主目录下创建models&#x2F;library_book.py文件。</p>
+<blockquote>
+<p><strong>ℹ️</strong>Odoo 官方编码指南请见 <a target="_blank" rel="noopener" href="http://www.odoo.com/documentation/12.0/reference/guidelines.html">Odoo 官网</a>。另一相关的编码标准文档为 <a target="_blank" rel="noopener" href="https://github.com/OCA/odoo-community.org/blob/master/website/Contribution/CONTRIBUTING.rst">OCA 编码指南</a>。</p>
+</blockquote>
+<p>在使用之前，应告知 Python 所需引用的模型目录，仅需在模块主__init__.py文件添加：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">from . import models</span><br></pre></td></tr></table></figure>
+
+<p>要引用所创建的 Python 代码文件，我们还应添加models&#x2F;<strong>init</strong>.py文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">from . import library_book</span><br></pre></td></tr></table></figure>
+
+<p>现在我们可以在models&#x2F;library_book.py中加入如下内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">from odoo import fields, models</span><br><span class="line"></span><br><span class="line">class Book(models.Model):</span><br><span class="line">    _name = &#x27;library.book&#x27;</span><br><span class="line">    _description = &#x27;Book&#x27;</span><br><span class="line">    name = fields.Char(&#x27;Title&#x27;, required=True)</span><br><span class="line">    isbn = fields.Char(&#x27;ISBN&#x27;)</span><br><span class="line">    active = fields.Boolean(&#x27;Active?&#x27;, default=True)</span><br><span class="line">    date_published = fields.Date()</span><br><span class="line">    image = fields.Binary(&#x27;Cover&#x27;)</span><br><span class="line">    publisher_id = fields.Many2one(&#x27;res.partner&#x27;, string=&#x27;Publisher&#x27;)</span><br><span class="line">    author_ids = fields.Many2many(&#x27;res.partner&#x27;, string=&#x27;Authors&#x27;)</span><br></pre></td></tr></table></figure>
+
+<p>第一行是 Python 代码导入语句，让 Odoo 内核的models和fields对象在这里可用。紧接着声明了新的模型，它是models.Model派生出的一个类。然后_name 属性定义了 Odoo 全局对该模型引用的标识符。注意Python 类名 Book 与框架无关，_name 的值才是模型的标识符。</p>
+<blockquote>
+<p><strong>小贴士：</strong> 仅有模型名使用点号(.) 来分割关键字，其它如模块、XML 标识符、数据表名等都使用下划线(_)。</p>
+</blockquote>
+<p>注意下面的行都有缩进，对 Python 不熟悉的朋友要知道这很重要：相同缩进代表同一代码块，所以下面的行应采用相同缩进。</p>
+<p>_description属性不是必须的，但为模型记录提供了一个用户友好的名称，可用作更好的用户消息。该行之后定义了模型的不同字段 ，值得一提的是name和active为特殊字段名。默认在其它模型中引用模型时，会使用 name 字段作为记录的标题。</p>
+<p>active 字段用于激活记录，默认仅 active 记录会显示。对于日期模型这非常有用，隐藏掉那些用户在日常操作中不再使用的记录（因历史原因仍需保留在数据库中）。在本项目中，用于标识图书是否可用。</p>
+<p>再来看看其它字段，date_published是一个图书出版日的日期字段，image 是一个存储图书封面的二进制字段。还有一些关联字段：publisher_id是一个出版公司多对一关联，author_ids是作者多对多关联。都是图书与 partner 模型的关联，partner 模型内置于 Odoo 框架中，用户、公司和地址都存储在这里。我们使用它存储出版商和作者。</p>
+<p>字段就是这些，要使代码修改生效，需更新模块来触发数据库中相应对象的创建。菜单中还无法访问这一模型，因为我们还没有添加。不过可以通过 Technical 菜单来检查新建模型。访问 Settings &gt; Technical &gt; Database Structure &gt; Models（需开启开发者模式），在列表中搜索library.book，然后点击查看模型定义：</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/53878422c0054aa69ebb088ab646b9c5~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12图书模型定义"></p>
+<p>如查看一切顺利，说明模型和字段都被正常创建，如果你看不到这些，尝试重启服务升级模型。我们还可以看到一些未声明的字段，这些是 Odoo 自动为新模型添加的保留字段，这些字段有：</p>
+<ul>
+<li>id是模型中每条记录的唯一数字标识符</li>
+<li>create_date和create_uid分别为记录创建时间和创建者</li>
+<li>display_name为所使用的记录提供文本显示，如其它记录引用它，它就会被计算并默认使用 name 字段中的文本</li>
+<li>write_date和write_uid分别表示最后修改时间和修改者</li>
+<li>__last_update是一个助手字段 ，它不存储在数据库，用于做并发检测</li>
+</ul>
+<h2 id="设置访问权限"><a href="#设置访问权限" class="headerlink" title="设置访问权限"></a>设置访问权限</h2><p>在加载服务时，你可能会注意到输出日志中有一条警告信息：</p>
+<p>The model library.book has no access rules, consider adding one.</p>
+<p>提示消息已经很明确了，我们的新模型没有访问规则，所以任何人都可使用。我们已为应用添加了安全组，现在就为模块授权。</p>
+<blockquote>
+<p><strong>ℹ️</strong>在 Odoo 12以前，admin 可自动访问所有数据模型，它是一个不受权限控制的超级用户。在 Odoo 12中则不再如此，需要在新模型中设置 ACL才对 admin 可见。</p>
+</blockquote>
+<h3 id="添加访问权限控制"><a href="#添加访问权限控制" class="headerlink" title="添加访问权限控制"></a>添加访问权限控制</h3><p>要了解需要哪些信息来为模型添加权限，可访问后台Settings &gt; Technical &gt; Security &gt; Access Rights：</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/891bda81421c4066ad1235504483dd90~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12访问权限"></p>
+<p>这里可以看到一些模型的 ACL(Access Control List)，表示允许每个安全组对记录的操作。这一信息需要通过模块中的数据文件提供，然后载入ir.model.access模型。我们将为 employee 组添加该模型的所有权限，内部用户是几乎所有人隶属的基本权限组。</p>
+<blockquote>
+<p><strong>ℹ️Odoo 12中的修改</strong><br>User 表单现在有一个用户类型，仅在开启开发者模式时显示。它允许互斥的几个选项：内部用户，portal门户用户（外部用户如客户）和public公共用户（网站匿名访客）。这一修改用于避免把内部用户放到 portal 或 public 组中一类的错误配置，那样会导致权限的丧失。</p>
+</blockquote>
+<p>权限通过security&#x2F;ir.model.access.csv文件来实现，添加该文件并加入如下内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink</span><br><span class="line">access_book_user,BookUser,model_library_book,library_group_user,1,0,0,0</span><br><span class="line">access_book_manager,BookManager,model_library_book,library_group_manager,1,1,1,1</span><br></pre></td></tr></table></figure>
+
+<p>注：应注意该文件第一行后不要留有空格，否则会导致报错</p>
+<p>文件名必须与要载入的模型对应，第一行为列名，CSV 文件中有如下列：</p>
+<ul>
+<li>id是记录的外部标识符（也称为XML ID），需在模块中唯一</li>
+<li>name是描述性标题，仅在保证唯一时提供有用信息</li>
+<li>model_id是赋权模型的外部标识符，模型有ORM自动生成的XML ID，对于library.book，标识符为model_library_book</li>
+<li>group_id指明授权的安全组，我们给前文创建的安全组授权：library_group_user和library_group_manager</li>
+<li>perm_…字段标记read读, write写, create创建, 或unlink删除权限，我们授予普通用户读权限、管理员所有权限</li>
+</ul>
+<p>还应记得在__manifest__.py的 data 属性中添加对新文件的引用，修改后如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#x27;data&#x27;: [</span><br><span class="line">    &#x27;security/library_security.xml&#x27;,</span><br><span class="line">    &#x27;security/ir.model.access.csv&#x27;,</span><br><span class="line">    &#x27;views/library_menu.xml&#x27;,</span><br><span class="line">],</span><br></pre></td></tr></table></figure>
+
+<p>老规矩升级模块让修改生效，此时警告信息就不见了。我们通过 admin登录来检测权限是否正确，admin 属于图书管理员组。</p>
+<h3 id="行级权限规则"><a href="#行级权限规则" class="headerlink" title="行级权限规则"></a>行级权限规则</h3><p>我们知道默认 active 标记为 False 的记录不可见，但用户在需要时可使用过滤器来访问这些记录。假设我们不希望普通图书用户访问无效图书，可通过记录规则来实现，即定义过滤器来限制某权限组所能访问的记录。这位于Settings &gt; Technical &gt; Security &gt; Record Rules。</p>
+<p>记录规则在ir.rule中定义，和往常一样我们选择一个唯一名称。还应获取操作的模型及使用权限限制的域过滤器。域过滤器使用 Odoo 中常用的元组列表，在第八章 <a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-business-logic/">Odoo 12开发之业务逻辑 - 业务流程的支持</a>将讲解域表达式语法。</p>
+<p>通常，规则应用于指定安全组，我们这里应用的是雇员组。如果没有指定的安全组，则应用于全局(global 字段自动设为 True)。全局规则不同，它们做的限制非全局规则无法重载。</p>
+<p>要添加记录规则，需编辑security&#x2F;library_security.xml文件添加如下代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;data noupdate=&quot;1&quot;&gt;</span><br><span class="line">    &lt;record id=&quot;book_user_rule&quot; model=&quot;ir.rule&quot;&gt;</span><br><span class="line">        &lt;field name=&quot;name&quot;&gt;Library Book User Access&lt;/field&gt;</span><br><span class="line">        &lt;field name=&quot;model_id&quot; ref=&quot;model_library_book&quot; /&gt;</span><br><span class="line">        &lt;field name=&quot;domain_force&quot;&gt;</span><br><span class="line">            [(&#x27;active&#x27;,&#x27;=&#x27;,True)]</span><br><span class="line">        &lt;/field&gt;</span><br><span class="line">        &lt;field name=&quot;groups&quot; eval=&quot;[(4,ref(&#x27;library_group_user&#x27;))]&quot; /&gt;</span><br><span class="line">    &lt;/record&gt;</span><br><span class="line">&lt;/data&gt;</span><br></pre></td></tr></table></figure>
+
+<p>记录规则位于<data noupdate="1">元素中，表示这些记录在模型安装时会被创建，但在模型更新时不会被重写。这么做是允许对规则在后面做自定义但避免在执行模型升级时自定义内容丢失。</p>
+<blockquote>
+<p><strong>小贴士：</strong> 开发过程noupdate&#x3D;”1”会带来麻烦，因为要修复规则时模块更新不会在数据库中重写数据。所以在开发时可以修改为noupdate&#x3D;”0”来让数据达到预期结果。</p>
+</blockquote>
+<p>在 groups 字段中，会发现有一个特殊表达式，这是一个带有特殊语法的one-to-many关联字段。元组(4, x)表示x应添加到记录中，此处 x 为一个标记为base.group_user的内部用户组引用。针对多个字段的这种特殊语法在第六章 <a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-structuring-data/">Odoo 12开发之模型 - 结构化应用数据</a>中探讨。</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/9d920852bf054a729ac620149c37de9f~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12记录规则"></p>
+<h2 id="视图层"><a href="#视图层" class="headerlink" title="视图层"></a>视图层</h2><p>视图层为用户界面的描述，视图用 XML 定义，由网页客户端框架生成数据感知的 HTML 视图。可用菜单项开启渲染视图的操作。比如，Users 菜单项处理一个同样名为 Users 的操作，然后渲染一系列视图。有多种可用视图类型，如 list(因历史原因也称为 tree)列表视图和 form表单视图，以及包含过滤项的右上角搜索框由 search 搜索视图定义。</p>
+<p>Odoo 开发指南写到定义用户界面的 XML 文件应放在views&#x2F;子目录中。接下我们来创建图书应用的用户界面。下面我们会逐步改进并更新模块来使更改生效。可以使用–dev&#x3D;all参数来在开发时频繁的升级。使用该参数，视图定义会在 XML 文件中直接读取，无需升级模块即可在 Odoo 中即刻生效。</p>
+<blockquote>
+<p><strong>小贴士：</strong> 如果因 XML 错误升级失败，不必惊慌！仔细阅读输出日志的错误信息，就可以找到问题所在。如果觉得麻烦，注释掉最近编辑的 XML 版块或删除__manifest__.py中 该XML 文件，重新更新，服务应该就可正确启动了。</p>
+</blockquote>
+<h3 id="添加菜单项"><a href="#添加菜单项" class="headerlink" title="添加菜单项"></a>添加菜单项</h3><p>现在有了存储数据的模型，需要添加到用户界面中。首先要做的就是添加相应菜单项。编辑views&#x2F;library_menu.xml文件，在 XML 元素中定义菜单项以及执行的操作：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;!-- Action to open the Book list --&gt;</span><br><span class="line">&lt;act_window id=&quot;action_library_book&quot;</span><br><span class="line">    name=&quot;Library Books&quot;</span><br><span class="line">    res_model=&quot;library.book&quot;</span><br><span class="line">    view_mode=&quot;tree,form&quot;</span><br><span class="line">/&gt;</span><br><span class="line">&lt;!-- Menu item to open the Book list --&gt;</span><br><span class="line">&lt;menuitem id=&quot;menu_library_book&quot;</span><br><span class="line">    name=&quot;Books&quot;</span><br><span class="line">    parent=&quot;menu_library&quot;</span><br><span class="line">    action=&quot;action_library_book&quot;</span><br><span class="line">/&gt;</span><br></pre></td></tr></table></figure>
+
+<p>用户界面，包括菜单项和操作，存储在数据表中。在安装或升级插件模块时，XML文件会将这些定义载入数据库中的数据文件。以上代码是一个 Odoo 数据文件，表示两条添加到 Odoo 的记录：</p>
+<ul>
+<li><act_window>元素定义客户端窗口操作，它按顺序通过启用列表和表单视图打开library.book 模型</li>
+<li><menuitem>定义一个调用前面定义的action_library_book操作的顶级菜单项</li>
+</ul>
+<p>现在再次升级模块来让修改生效。然后刷新浏览器页面，就可以看到Library顶级菜单，并包含一个子菜单项。点击该菜单会显示一个基本列表视图，记录可通过一个自动生成的表单视图进行编辑。点击 Create 按钮即可查看：</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d121aad0b5234d4fba1b21ebbafe332a~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12图书项目表单视图"></p>
+<p>虽然我们还没有定义用户界面视图，自动生成的列表视图和表单视图也可以使用，允许我们马上编辑数据。</p>
+<h3 id="创建表单视图"><a href="#创建表单视图" class="headerlink" title="创建表单视图"></a>创建表单视图</h3><p>所有的视图都存储在数据库ir.ui.view模型中。为模型添加视图，我们在 XML文件中声明<record>元素来描述视图，在模块安装时 XML 文件会被载入数据库。</p>
+<p>添加views&#x2F;book_view.xml文件来定义表单视图：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot;?&gt;</span><br><span class="line">&lt;odoo&gt;</span><br><span class="line">    &lt;record id=&quot;view_form_book&quot; model=&quot;ir.ui.view&quot;&gt;</span><br><span class="line">        &lt;field name=&quot;name&quot;&gt;Book Form&lt;/field&gt;</span><br><span class="line">        &lt;field name=&quot;model&quot;&gt;library.book&lt;/field&gt;</span><br><span class="line">        &lt;field name=&quot;arch&quot; type=&quot;xml&quot;&gt;</span><br><span class="line">            &lt;form string=&quot;Book&quot;&gt;</span><br><span class="line">                &lt;group&gt;</span><br><span class="line">                    &lt;field name=&quot;name&quot; /&gt;</span><br><span class="line">                    &lt;field name=&quot;author_ids&quot; widget=&quot;many2many_tags&quot; /&gt;</span><br><span class="line">                    &lt;field name=&quot;publisher_id&quot; /&gt;</span><br><span class="line">                    &lt;field name=&quot;date_published&quot; /&gt;</span><br><span class="line">                    &lt;field name=&quot;isbn&quot; /&gt;</span><br><span class="line">                    &lt;field name=&quot;active&quot; /&gt;</span><br><span class="line">                    &lt;field name=&quot;image&quot; widget=&quot;image&quot; /&gt;</span><br><span class="line">                &lt;/group&gt;</span><br><span class="line">            &lt;/form&gt;</span><br><span class="line">        &lt;/field&gt;</span><br><span class="line">    &lt;/record&gt;</span><br><span class="line">&lt;/odoo&gt;</span><br></pre></td></tr></table></figure>
+
+<p>这个ir.ui.view记录有三个字段值：name, model和 arch。另一个重要元素是记录 id，它定义了一个可在其它记录中引用的XML ID标识符。这是library.book 模型的视图，名为Book Form。这个名称仅用于提供信息，无需唯一，但应易于分辨所引用的记录。其实可以完全省略 name，这种情况下会自动按模型名和视图类型来生成。</p>
+<p>最重要的字段是arch，它包含了视图的定义，在 XML 代码中我们做了高亮显示（博客主题问题无法显示）。<form>标签定义了视图类型并包含视图结构。</p>
+<p>此处<form>中包含了要在表单中显示的字段。这些字段会自动使用默认的组件，如 date 字段使用日期选择组件。有时我们要使用不同的组件，如以上代码中的author_ids使用了显示标签列表的组件，image字段使用处理图片的相应组件。有关视图元素的详细说明请见第十章 <a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-backend-views/">Odoo 12开发之后台视图 - 设计用户界面</a>。</p>
+<p>不要忘记在声明文件的 data 中加入新建文件，否则我们的模块将无法识别到并加载该文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&#x27;data&#x27;: [</span><br><span class="line">    &#x27;security/library_security.xml&#x27;,</span><br><span class="line">    &#x27;security/ir.model.access.csv&#x27;,</span><br><span class="line">    &#x27;views/library_menu.xml&#x27;,</span><br><span class="line">    &#x27;views/book_view.xml&#x27;,</span><br><span class="line">],</span><br></pre></td></tr></table></figure>
+
+<p>要使修改载入 Odoo 数据库就需要更新模块。需要重新加载页面来查看修改效果，可以再次点击菜单项或刷新网页（大多数浏览器中快捷键为 F5）。</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/8d58e130fe774646975a564382dfe071~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12图书项目修改后表单视图"></p>
+<h3 id="业务文件表单视图"><a href="#业务文件表单视图" class="headerlink" title="业务文件表单视图"></a>业务文件表单视图</h3><p>上面的部分创建了一个基础表单视图，还可以做一些改进。对于文件模型，Odoo 有一个模拟纸张的展示样式，表单包含两个元素：<header>来包含操作按钮和<sheet>来包含数据字段。可以修改上一部分的基础<form>定义为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;form string=&quot;Book&quot;&gt;</span><br><span class="line">    &lt;header&gt;</span><br><span class="line">        &lt;!-- 此处添加按钮 --&gt;</span><br><span class="line">    &lt;/header&gt;</span><br><span class="line">    &lt;sheet&gt;</span><br><span class="line">        &lt;group&gt;</span><br><span class="line">            &lt;field name=&quot;name&quot; /&gt;</span><br><span class="line">            ...</span><br><span class="line">        &lt;/group&gt;</span><br><span class="line">    &lt;/sheet&gt;</span><br><span class="line">&lt;/form&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="添加操作按钮"><a href="#添加操作按钮" class="headerlink" title="添加操作按钮"></a>添加操作按钮</h3><p>表单可带有执行操作的按钮。这些按钮可用于运行窗口操作，如打开另一个表单或执行模型中定义的 Python 方法。按钮可以放在表单的任意位置，但对于文件样式表单，推荐的位置是<header>中。</p>
+<p>我们的应用会添加图书 ISBN，和一个用于检测 ISBN 有效性的按钮。代码将放在 Book 模型中，我们将该方法命名为button_check_isbn()。虽然还未创建该方法，我们现在可以在表单中先添加相应按钮：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;header&gt;</span><br><span class="line">    &lt;button name=&quot;button_check_isbn&quot; type=&quot;object&quot;</span><br><span class="line">        string=&quot;Check ISBN&quot; /&gt;</span><br><span class="line">&lt;/header&gt;</span><br></pre></td></tr></table></figure>
+
+<p>一个按钮的基本属性有：</p>
+<ul>
+<li>string：定义按钮显示文本</li>
+<li>type：执行的操作类型</li>
+<li>name：操作的标识符</li>
+<li>class：应用 CSS 样式的可选属性，与 HTML 相同</li>
+</ul>
+<h3 id="使用组来组织表单"><a href="#使用组来组织表单" class="headerlink" title="使用组来组织表单"></a>使用组来组织表单</h3><p><group>标签可用于组织表单内容。在<group>元素内加<group>会在外层组中创建一个两列布局。推荐在group 元素中添加 name 属性，更易于其它模块对其进行继承。我们使用该标签来组织内容，修改<sheet>内容如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;sheet&gt;</span><br><span class="line">    &lt;group name=&quot;group_top&quot;&gt;</span><br><span class="line">        &lt;group name=&quot;group_left&quot;&gt;</span><br><span class="line">            &lt;field name=&quot;name&quot; /&gt;</span><br><span class="line">            &lt;field name=&quot;author_ids&quot; widget=&quot;many2many_tags&quot; /&gt;</span><br><span class="line">            &lt;field name=&quot;publisher_id&quot; /&gt;</span><br><span class="line">            &lt;field name=&quot;date_published&quot; /&gt;</span><br><span class="line">        &lt;/group&gt;</span><br><span class="line">        &lt;group name=&quot;group_right&quot;&gt;</span><br><span class="line">            &lt;field name=&quot;isbn&quot; /&gt;</span><br><span class="line">            &lt;field name=&quot;active&quot; /&gt;</span><br><span class="line">            &lt;field name=&quot;image&quot; widget=&quot;image&quot; /&gt;</span><br><span class="line">        &lt;/group&gt;</span><br><span class="line">    &lt;/group&gt;</span><br><span class="line">&lt;/sheet&gt;</span><br></pre></td></tr></table></figure>
+
+<h3 id="完整表单视图"><a href="#完整表单视图" class="headerlink" title="完整表单视图"></a>完整表单视图</h3><p>此时library.book的表单视图代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">&lt;form string=&quot;Book&quot;&gt;</span><br><span class="line">    &lt;header&gt;</span><br><span class="line">        &lt;button name=&quot;button_check_isbn&quot; type=&quot;object&quot;</span><br><span class="line">            string=&quot;Check ISBN&quot; /&gt;</span><br><span class="line">    &lt;/header&gt;</span><br><span class="line">    &lt;sheet&gt;</span><br><span class="line">        &lt;group name=&quot;group_top&quot;&gt;</span><br><span class="line">            &lt;group name=&quot;group_left&quot;&gt;</span><br><span class="line">                &lt;field name=&quot;name&quot; /&gt;</span><br><span class="line">                &lt;field name=&quot;author_ids&quot; widget=&quot;many2many_tags&quot; /&gt;</span><br><span class="line">                &lt;field name=&quot;publisher_id&quot; /&gt;</span><br><span class="line">                &lt;field name=&quot;date_published&quot; /&gt;</span><br><span class="line">            &lt;/group&gt;</span><br><span class="line">            &lt;group name=&quot;group_right&quot;&gt;</span><br><span class="line">                &lt;field name=&quot;isbn&quot; /&gt;</span><br><span class="line">                &lt;field name=&quot;active&quot; /&gt;</span><br><span class="line">                &lt;field name=&quot;image&quot; widget=&quot;image&quot; /&gt;</span><br><span class="line">            &lt;/group&gt;</span><br><span class="line">        &lt;/group&gt;</span><br><span class="line">    &lt;/sheet&gt;</span><br><span class="line">&lt;/form&gt;</span><br></pre></td></tr></table></figure>
+
+<p>按钮还无法使用，需要先添加业务逻辑。</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/231899c03e2e439fb1e98a4ce61a9078~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12图书项目分组加按钮表单视图"></p>
+<h3 id="添加列表视图和搜索视图"><a href="#添加列表视图和搜索视图" class="headerlink" title="添加列表视图和搜索视图"></a>添加列表视图和搜索视图</h3><p>以列表模式显示模型需要使用视图。树状视图可以按层级显示，但大多数情况下仅需显示为普通列表。</p>
+<p>可以在book_view.xml文件中添加<tree>视图：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;record id=&quot;view_tree_book&quot; model=&quot;ir.ui.view&quot;&gt;</span><br><span class="line">    &lt;field name=&quot;name&quot;&gt;Book List&lt;/field&gt;</span><br><span class="line">    &lt;field name=&quot;model&quot;&gt;library.book&lt;/field&gt;</span><br><span class="line">    &lt;field name=&quot;arch&quot; type=&quot;xml&quot;&gt;</span><br><span class="line">        &lt;tree&gt;</span><br><span class="line">            &lt;field name=&quot;name&quot; /&gt;</span><br><span class="line">            &lt;field name=&quot;author_ids&quot; widget=&quot;many2many_tags&quot; /&gt;</span><br><span class="line">            &lt;field name=&quot;publisher_id&quot; /&gt;</span><br><span class="line">            &lt;field name=&quot;date_published&quot; /&gt;</span><br><span class="line">        &lt;/tree&gt;</span><br><span class="line">    &lt;/field&gt;</span><br><span class="line">&lt;/record&gt;</span><br></pre></td></tr></table></figure>
+
+<p>以上定义了一个含有四列的列表：name, author_ids, publisher_id和 date_published。在该列表的右上角，Odoo 显示了一个搜索框。搜索的字段和可用过滤器也由视图定义。同样还在book_view.xml文件中添加：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;record id=&quot;view_search_book&quot; model=&quot;ir.ui.view&quot;&gt;</span><br><span class="line">    &lt;field name=&quot;name&quot;&gt;Book Filters&lt;/field&gt;</span><br><span class="line">    &lt;field name=&quot;model&quot;&gt;library.book&lt;/field&gt;</span><br><span class="line">    &lt;field name=&quot;arch&quot; type=&quot;xml&quot;&gt;</span><br><span class="line">        &lt;search&gt;</span><br><span class="line">            &lt;field name=&quot;publisher_id&quot; /&gt;</span><br><span class="line">            &lt;filter name=&quot;filter_active&quot;</span><br><span class="line">                string=&quot;Active&quot;</span><br><span class="line">                domain=&quot;[(&#x27;active&#x27;,&#x27;=&#x27;,True)]&quot; /&gt;</span><br><span class="line">           &lt;filter name=&quot;filter_inactive&quot;</span><br><span class="line">                string=&quot;Inactive&quot;</span><br><span class="line">                domain=&quot;[(&#x27;active&#x27;,&#x27;=&#x27;,False)]&quot; /&gt;</span><br><span class="line">        &lt;/search&gt;</span><br><span class="line">    &lt;/field&gt;</span><br><span class="line">&lt;/record&gt;</span><br></pre></td></tr></table></figure>
+
+<p><field>元素定义在搜索框中输入搜索的字段，这里添加了publisher_id自动提示出版商字段。<filter>元素添加预定义过滤条件，用户通过点击来切换，它使用了特殊的语法，在第十章 <a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-backend-views/">Odoo 12开发之后台视图 - 设计用户界面</a>中将会进一步介绍。</p>
+<blockquote>
+<p><strong>ℹ️Odoo 12中的修改</strong><br><filter>现在要求包含name&#x3D;”…”属性，唯一标识每个过滤器，如果不写，验证会失败，模块将无法安装或升级。</p>
+</blockquote>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/5c10cdf86f3b442abebe3ee603987e8e~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12图书应用列表视图"></p>
+<h2 id="业务逻辑层"><a href="#业务逻辑层" class="headerlink" title="业务逻辑层"></a>业务逻辑层</h2><p>业务逻辑层编写应用的业务规则，如验证和自动计算。现在我们来为按钮添加逻辑，通过在模型 Python 类中编写方法来实现。</p>
+<h3 id="添加业务逻辑"><a href="#添加业务逻辑" class="headerlink" title="添加业务逻辑"></a>添加业务逻辑</h3><p>上文中我们在 Book表单中添加了一个按钮，用于检查 ISBN 是否有效。现代 ISBN 包含13位数字，最后一位是由前12位计算所得的检查位。我们无需深入到算法的细节，这里是一个实现验证的 Python 方法。应当在class Book(…)中进行添加：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">@api.multi</span><br><span class="line">def _check_isbn(self):</span><br><span class="line">    self.ensure_one() </span><br><span class="line">    isbn = self.isbn.replace(&#x27;-&#x27;, &#x27;&#x27;) # 为保持兼容性 Alan 自行添加</span><br><span class="line">    digits = [int(x) for x in isbn if x.isdigit()]</span><br><span class="line">    if len(digits) == 13:</span><br><span class="line">        ponderations = [1, 3] * 6</span><br><span class="line">        terms = [a * b for a,b in zip(digits[:12], ponderations)]</span><br><span class="line">        remain = sum(terms) % 10</span><br><span class="line">        check = 10 - remain if remain !=0 else 0</span><br><span class="line">        return digits[-1] == check</span><br></pre></td></tr></table></figure>
+
+<p>图书模型的button_check_isbn()方法应使用该函数来验证 ISBN 字段中的数字，如果验证失败，应向用户显示警告信息。</p>
+<p>首先要导入 Odoo API库，添加对应的 import 及 Odoo Warning异常。这需要编辑library_book.py文件修改前两行为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">from odoo import api, fields, models</span><br><span class="line">from odoo.exceptions import Warning</span><br></pre></td></tr></table></figure>
+
+<p>然后还是在models&#x2F;library_book.py文件Book 类中加入：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">@api.multi</span><br><span class="line">def button_check_isbn(self):</span><br><span class="line">    for book in self:</span><br><span class="line">        if not book.isbn:</span><br><span class="line">            raise Warning(&#x27;Please provide an ISBN for %s&#x27; % book.name)</span><br><span class="line">        if book.isbn and not book._check_isbn():</span><br><span class="line">            raise Warning(&#x27;%s is an invalid ISBN&#x27; % book.isbn)</span><br><span class="line">        return True</span><br></pre></td></tr></table></figure>
+
+<p>对于记录的逻辑，我们使用@api.multi装饰器。此处 self 表示一个记录集，然后我们遍历每一条记录。其实@api.multi装饰器可以不写，因为这是模型方法的默认值。这里保留以示清晰。代码遍历所有已选图书，对于每本书，如果 ISBN 有值，则检查有效性，若无值，则向用户抛出一条警告消息。</p>
+<p>模型方法无需返回值，但此处需至少返回 True 值。因为不是所有XML-RPC客户端实现都支持None&#x2F;Null空值，这种情况若返回空值则会导致抛出错误。此时可更新模块并再次运行测试，添加–test-enable参数来确定测试是否通过。也可以在线测试，进入 Book 表单使用正确和错误的 ISBN点击按钮进行测试。</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/e8b05164b5ac434abac25ac495ce3bd9~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12自动化测试"></p>
+<h2 id="网页和控制器"><a href="#网页和控制器" class="headerlink" title="网页和控制器"></a>网页和控制器</h2><p>Odoo 还提供了一个 web 开发框架，可用于开发与后台应用深度集成的功能。第一步我们来创建一个显示有效图书列表的简单网页。在请求http:&#x2F;&#x2F;<my-server>&#x2F;library&#x2F;books页面时会进行响应，所以&#x2F;library&#x2F;books是用于实施的 URL。这里我们简短地了解下 Odoo 网页开发，这一话题在第十三章 <a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-frontend/">Odoo 12开发之创建网站前端功能</a>中会深入探讨。</p>
+<p>Web控制器是负责渲染网页的组件。控制器是http.Controller中定义的方法，与URL链接(endpoint)绑定。 访问 URL 时执行控制器代码，生成向用户展示的 HTML。我们使用 QWeb 模板引擎方便HTML的渲染。</p>
+<p>按惯例控制器代码放在&#x2F;controllers子目录中，首先编辑library_app&#x2F;<strong>init</strong>.py导入控制器模块目录：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">from . import models</span><br><span class="line">from . import controllers</span><br></pre></td></tr></table></figure>
+
+<p>然后添加library_app&#x2F;controllers&#x2F;<strong>init</strong>.py文件来让目录可被 Python 导入，并在该文件中添加：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">from . import main</span><br></pre></td></tr></table></figure>
+
+<p>接下来就要创建真实的控制器文件library_app&#x2F;controllers&#x2F;main.py，并添加如下代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">from odoo import http</span><br><span class="line"></span><br><span class="line">class Books(http.Controller):</span><br><span class="line"></span><br><span class="line">    @http.route(&#x27;/library/books&#x27;, auth=&#x27;user&#x27;)</span><br><span class="line">    def list(self, **kwargs):</span><br><span class="line">        Book = http.request.env[&#x27;library.book&#x27;]</span><br><span class="line">        books = Book.search([])</span><br><span class="line">        return http.request.render(</span><br><span class="line">            &#x27;library_app.book_list_template&#x27;, &#123;&#x27;books&#x27;:books&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>这里导入的odoo.http模块，是提供网页相关功能的核心组件。http.Controller是需要继承的类控制器，这里在主控制器类中使用。我们选择的类名和方法并不关联，@http.route装饰器才是重要的部分，它声明了与类方法关联的 URL 地址，此处为&#x2F;books。默认访问 URL 地址要求客户登录，推荐明确指出访问的授权模式，所以这里添加了auth&#x3D;’user’参数。要允许公开访问，可为@http.route 添加auth&#x3D;’public’ 参数。</p>
+<blockquote>
+<p><strong>小贴士：</strong> 如果使用auth&#x3D;’public’，控制器代码中在进行图书搜索前应使用sudo() 进行提权。这部分在第十三章 <a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-frontend/">Odoo 12开发之创建网站前端功能</a>会进一步讨论。</p>
+</blockquote>
+<p>在这个控制器方法中，我们使用http.request.env获取环境，使用它可从目录中获取有效图书记录集。最后一步是使用http.request.render() 来处理 library_app.index_template Qweb 模板并生成输出 HTML。可通过字典向模板传值，这里传递了图书记录集。</p>
+<p>这时如果重启 Odoo 服务来重载 Python 代码，并访问&#x2F;library&#x2F;books会得到一个错误日志：ValueError: External ID not found in the system: library_app.book_list_template。这是因为我们还没有定义模板。下面就一起来定义模板。</p>
+<p>QWeb模板是一个视图类型，应放在&#x2F;views子目录下，我们来创建views&#x2F;book_list_template.xml文件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span><br><span class="line">&lt;odoo&gt;</span><br><span class="line">    &lt;template id=&quot;book_list_template&quot; name=&quot;Book List&quot;&gt;</span><br><span class="line">        &lt;div id=&quot;wrap&quot; class=&quot;container&quot;&gt;</span><br><span class="line">            &lt;h1&gt;Books&lt;/h1&gt;</span><br><span class="line">            &lt;t t-foreach=&quot;books&quot; t-as=&quot;book&quot;&gt;</span><br><span class="line">                &lt;div class=&quot;row&quot;&gt;</span><br><span class="line">                    &lt;span t-field=&quot;book.name&quot; /&gt;,</span><br><span class="line">                    &lt;span t-field=&quot;book.date_published&quot; /&gt;,</span><br><span class="line">                    &lt;span t-field=&quot;book.publisher_id&quot; /&gt;</span><br><span class="line">                &lt;/div&gt;</span><br><span class="line">            &lt;/t&gt;</span><br><span class="line">        &lt;/div&gt;</span><br><span class="line">    &lt;/template&gt;</span><br><span class="line">&lt;/odoo&gt;</span><br></pre></td></tr></table></figure>
+
+<p><template>元素用于声明 QWeb 模板，它事实上是一个存储模块的 base 模型 - ir.ui.view记录的快捷方式。模板中包含要使用的 HTML，并使用 Qweb 的特定属性：t-foreach用于遍历变量 books的每一项，通过控制器的http.request.render()调用来获取；t-field用于渲染记录字段的内容。这里仅简单地使用 QWeb，更多详情见第十三章 <a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-frontend/">Odoo 12开发之创建网站前端功能</a>。</p>
+<p>在模块的 manifest 中需要声明该 XML 文件来供加载和使用。进行模块升级即可通过http:&#x2F;&#x2F;<my-server>:8069&#x2F;library&#x2F;books来访问有效图书的简单列表。</p>
+<p><a target="_blank" rel="noopener" href="http://alanhou.org/homepage/wp-content/uploads/2019/01/book-list.jpg"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/73e3abf18e604b82b0a0aeff1e6e83f4~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12图书项目图书列表"></a></p>
+<p>注：以上数据为从 Packt 的 Top 20中添加了当前前3</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文中我们从0开始创建了一个新模块，了解了模块中常用的元素：模型、三个基础视图类型（表单视图、列表视图和搜索视图）、模型方法中的业务逻辑和访问权限。我们还学习了访问权限控制，包括记录规则以及如何使用网页控制器和 Qweb 模板来创建网页。</p>
+<p>在学习过程中，我们熟悉了模块开发过程，包含模块升级和应用服务重启来使得修改在 Odoo 中生效。不要忘记在添加模块字段时需要进行更新操作。修改含声明在内的 Python 文件需要重启服务。修改XML或CSV文件需进行更新，一旦不确定，同时进行重启服务和升级模块操作。</p>
+<p>我们已经学习创建 Odoo 应用的基本元素和步骤，但大多数情况下，我们的模块都是对已有应用添加功能来进行扩展，我们将在下一篇文章中一起学习。</p>
+<p>☞☞☞第四章 <a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-extending-modules/">Odoo 12 开发之模块继承</a></p>
+<h2 id="学霸专区"><a href="#学霸专区" class="headerlink" title="学霸专区"></a>学霸专区</h2><ol>
+<li>library-app是正确的模块名吗？</li>
+<li>模块是否应为其中所有的模型定义访问控制列表(ACL)？</li>
+<li>是否可以让某些用户仅访问一个模型记录的子集？</li>
+<li>关联字段和其它字段类型有什么区别？</li>
+<li>Odoo 应用中使用的主要视图组件有哪些？</li>
+<li>后台视图如何定义？</li>
+<li>Odoo 应用中的业务逻辑应在哪里实现？</li>
+<li>Odoo 使用的网页模板引擎是什么？</li>
+</ol>
+<h2 id="扩展阅读"><a href="#扩展阅读" class="headerlink" title="扩展阅读"></a>扩展阅读</h2><p>本文中涉及到的所有课题在系列文章后续都会深入介绍。官方文档中的相关资源可以作为补充阅读：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.odoo.com/documentation/12.0/howtos/backend.html">创建模块课程</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.odoo.com/documentation/12.0/reference/guidelines.html">Odoo 指南</a>中的一系列编码规则和模块开发指南</li>
+<li><a target="_blank" rel="noopener" href="https://github.com/OCA/odoo-community.org/blob/master/website/Contribution/CONTRIBUTING.rst">Odoo 社区联盟(OCA)指南</a>是指导 Odoo 开发最佳实践很好的资源</li>
+</ul>
+<p>学习 Python 对 Odoo 开发来说也非常重要，在Packt 书录中有一些很好的 Python 图书，如<a target="_blank" rel="noopener" href="https://www.packtpub.com/application-development/learn-python-programming-second-edition">Learn Python Programming – Second Edition</a>。</p>
+<p>注：本博客新增<a target="_blank" rel="noopener" href="https://alanhou.org/mastering-python-scripting-system-administrators/">精通Python自动化脚本-运维人员宝典</a>可用于深入Python 脚本的学习。</p>
+<p>本文首发地址：<a target="_blank" rel="noopener" href="https://alanhou.org/developer-mode-odoo12/">Alan Hou 的个人博客</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Odoo-Odoo12/" rel="tag"># Odoo,Odoo12</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/01/04/odoo-essentials-12-chapter2/" rel="prev" title="第二章 Odoo 12开发之开发环境准备">
+                  <i class="fa fa-chevron-left"></i> 第二章 Odoo 12开发之开发环境准备
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Alan Hou</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
