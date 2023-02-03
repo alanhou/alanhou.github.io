@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"alanhou.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="本文为最好用的免费ERP系统Odoo 12开发手册系列文章第九篇。 Odoo 服务器端带有外部 API，可供网页客户端和其它客户端应用使用。本文中我们将学习如何在我们的客户端程序中使用 Odoo 的外部 API。为避免引入大家所不熟悉的编程语言，此处我们将使用基于 Python 的客户端，但这种 RPC 调用的处理方法也适用于其它编程语言。 我们将一起了解如何使用 Odoo RPC调用，然后根据所">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第九章 Odoo 12开发之外部 API – 集成第三方系统">
+<meta property="og:url" content="https://alanhou.github.io/2019/01/15/odoo-essentials-12-chapter9/index.html">
+<meta property="og:site_name" content="Alan Hou的个人博客">
+<meta property="og:description" content="本文为最好用的免费ERP系统Odoo 12开发手册系列文章第九篇。 Odoo 服务器端带有外部 API，可供网页客户端和其它客户端应用使用。本文中我们将学习如何在我们的客户端程序中使用 Odoo 的外部 API。为避免引入大家所不熟悉的编程语言，此处我们将使用基于 Python 的客户端，但这种 RPC 调用的处理方法也适用于其它编程语言。 我们将一起了解如何使用 Odoo RPC调用，然后根据所">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/dbc0881b09484c0998d44eaee58743b1~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/1515b0259da04f108b3ad0ce5645aa02~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/0a340ec4fe0e4eb388da1d3adea46334~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="article:published_time" content="2019-01-14T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-02-03T05:45:28.935Z">
+<meta property="article:author" content="Alan Hou">
+<meta property="article:tag" content="Odoo,Odoo12">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/dbc0881b09484c0998d44eaee58743b1~tplv-k3u1fbpfcp-zoom-1.image">
+
+
+<link rel="canonical" href="https://alanhou.github.io/2019/01/15/odoo-essentials-12-chapter9/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://alanhou.github.io/2019/01/15/odoo-essentials-12-chapter9/","path":"2019/01/15/odoo-essentials-12-chapter9/","title":"第九章 Odoo 12开发之外部 API – 集成第三方系统"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>第九章 Odoo 12开发之外部 API – 集成第三方系统 | Alan Hou的个人博客</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Alan Hou的个人博客</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">用行动赢得尊重</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E5%8F%91%E5%87%86%E5%A4%87"><span class="nav-number">1.</span> <span class="nav-text">开发准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%A6%E4%B9%A0%E9%A1%B9%E7%9B%AE-%E5%9B%BE%E4%B9%A6%E7%9B%AE%E5%BD%95%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="nav-number">2.</span> <span class="nav-text">学习项目-图书目录客户端</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8%E5%AE%A2%E6%88%B7%E7%AB%AF%E6%9C%BA%E5%99%A8%E4%B8%8A%E5%AE%89%E8%A3%85-Python"><span class="nav-number">3.</span> <span class="nav-text">在客户端机器上安装 Python</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8XML-RPC%E8%BF%9E%E6%8E%A5-Odoo-API"><span class="nav-number">4.</span> <span class="nav-text">使用XML-RPC连接 Odoo API</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8XML-RPC%E8%BF%90%E8%A1%8C%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF%E6%96%B9%E6%B3%95"><span class="nav-number">5.</span> <span class="nav-text">使用XML-RPC运行服务器端方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%90%9C%E7%B4%A2%E5%92%8C%E8%AF%BB%E5%8F%96-API-%E6%96%B9%E6%B3%95"><span class="nav-number">6.</span> <span class="nav-text">搜索和读取 API 方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E4%B9%A6%E5%AE%A2%E6%88%B7%E7%AB%AFXML-RPC-%E6%8E%A5%E5%8F%A3"><span class="nav-number">7.</span> <span class="nav-text">图书客户端XML-RPC 接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E4%B9%A6%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%94%A8%E6%88%B7%E7%95%8C%E9%9D%A2"><span class="nav-number">8.</span> <span class="nav-text">图书客户端用户界面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8OdooRPC%E5%BA%93"><span class="nav-number">9.</span> <span class="nav-text">使用OdooRPC库</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%86%E8%A7%A3ERPpeek%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="nav-number">10.</span> <span class="nav-text">了解ERPpeek客户端</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">11.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A9%E5%B1%95%E9%98%85%E8%AF%BB"><span class="nav-number">12.</span> <span class="nav-text">扩展阅读</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Alan Hou</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://alanhou.github.io/2019/01/15/odoo-essentials-12-chapter9/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Alan Hou">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alan Hou的个人博客">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="第九章 Odoo 12开发之外部 API – 集成第三方系统 | Alan Hou的个人博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          第九章 Odoo 12开发之外部 API – 集成第三方系统
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2019-01-15 00:00:00" itemprop="dateCreated datePublished" datetime="2019-01-15T00:00:00+08:00">2019-01-15</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-02-03 13:45:28" itemprop="dateModified" datetime="2023-02-03T13:45:28+08:00">2023-02-03</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>本文为<a target="_blank" rel="noopener" href="https://alanhou.org/odoo-12-development/">最好用的免费ERP系统Odoo 12开发手册</a>系列文章第九篇。</p>
+<p>Odoo 服务器端带有外部 API，可供网页客户端和其它客户端应用使用。本文中我们将学习如何在我们的客户端程序中使用 Odoo 的外部 API。为避免引入大家所不熟悉的编程语言，此处我们将使用基于 Python 的客户端，但这种 RPC 调用的处理方法也适用于其它编程语言。</p>
+<p>我们将一起了解如何使用 Odoo RPC调用，然后根据所学知识使用 Python创建一个简单的图书命令行应用。</p>
+<p>本文主要内容有：</p>
+<ul>
+<li>在客户端机器上安装 Python</li>
+<li>使用XML-RPC连接 Odoo</li>
+<li>使用XML-RPC运行服务器端方法</li>
+<li>搜索和读取 API 方法</li>
+<li>图书客户端XML-RPC 接口</li>
+<li>图书客户端用户界面</li>
+<li>使用OdooRPC库</li>
+<li>了解ERPpeek客户端</li>
+</ul>
+<h2 id="开发准备"><a href="#开发准备" class="headerlink" title="开发准备"></a>开发准备</h2><p>本文基于第三章 <a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-first-application/">Odoo 12 开发之创建第一个 Odoo 应用</a>创建的代码，具体代码请参见<a target="_blank" rel="noopener" href="https://github.com/alanhou/odoo12-development/tree/master/library_app"> GitHub 仓库</a>。应将library_app模块放在addons路径下并进行安装。为保持前后一致，我们将使用第二章 <a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-development-environment/">Odoo 12开发之开发环境准备</a>所进行安装并使用12-library数据库。本章完成后的代码请参见 <a target="_blank" rel="noopener" href="https://github.com/alanhou/odoo12-development/tree/master/chapter9">GitHub 仓库</a>。</p>
+<p>补充：因原书前后曾使用过多个数据库，本文中Alan将使用系列中一直使用的 dev12数据库，并在前一篇文章的基础上进行开发。</p>
+<h2 id="学习项目-图书目录客户端"><a href="#学习项目-图书目录客户端" class="headerlink" title="学习项目-图书目录客户端"></a>学习项目-图书目录客户端</h2><p>本文中，我们将开发一个简单的客户端应用来管理图书目录。这是一个命令行接口(CLI) 应用，使用 Odoo 来作为后端。应用的功能非常有限，这样我们可以聚焦在用于与 Odoo服务端交互的技术，而不是具体应用的实现细节。我们的简单应用可以完成如下功能：</p>
+<ul>
+<li>通过标题搜索并列出图书</li>
+<li>向目录添加新标题</li>
+<li>修正图书标题</li>
+<li>从目录中删除图书</li>
+</ul>
+<p>这个应用是一个 Python 脚本，等待输入命令来执行操作。使用会话示例如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ python3 library.py add &quot;Moby-Dick&quot;</span><br><span class="line">$ python3 library.py list &quot;moby&quot;</span><br><span class="line">60 Moby-Dick</span><br><span class="line">$ python3 library.py set-title 60 &quot;Moby Dick&quot;</span><br><span class="line">$ python3 library.py del 60</span><br></pre></td></tr></table></figure>
+
+<h2 id="在客户端机器上安装-Python"><a href="#在客户端机器上安装-Python" class="headerlink" title="在客户端机器上安装 Python"></a>在客户端机器上安装 Python</h2><p>Odoo API 可以在外部通过两种协议访问：XML-RPC和JSON-RPC。任意外部程序，只要能实施其中一种协议的客户端，就可以与 Odoo 服务端进行交互。为避免引入其它编程语言，我们将保持使用 Python 来研究外部 API。</p>
+<p>到目前为止我们仅在服务端运行了 Python 代码。现在我们要在客户端上使用 Python，所以你可能需要在电脑上做一些额外设置。要学习本文的示例，你需要能在操作电脑上运行 Python 文件。可通过在命令行终端运行python3 –version命令来进行确认。如果没有安装，请参考官方网站针对你所使用的平台的<a target="_blank" rel="noopener" href="https://www.python.org/downloads/">安装包</a>。</p>
+<p>对于 Ubuntu，你可能已经安装了 Python 3，如果没有安装，可通过以下命令进行安装：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install python3 python3-pip</span><br></pre></td></tr></table></figure>
+
+<p>如果你使用的是 Windows 并且已安装了 Odoo，可能会奇怪为什么没有 Python 解释器，还需要进行额外安装。简单地说是因为 Odoo 安装带有一个内嵌的 Python 解释器，无法在外部使用。</p>
+<h2 id="使用XML-RPC连接-Odoo-API"><a href="#使用XML-RPC连接-Odoo-API" class="headerlink" title="使用XML-RPC连接 Odoo API"></a>使用XML-RPC连接 Odoo API</h2><p>访问服务的最简单方法是使用XML-RPC，我们可以使用 Python 标准库中的xmlrpclib来实现。不要忘记我们是在编写客户端程序连接服务端，因此需运行 Odoo 服务端实例来供连接。本例中我们假设 Odoo 服务端实例在同一台机器上运行，但你可以使用任意运行服务的其它机器，只要能连接其IP 地址或服务器名。</p>
+<p>让我们来初次连接 Odoo 外部 API。打开 Python 3终端并输入如下代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; from xmlrpc import client</span><br><span class="line">&gt;&gt;&gt; srv = &#x27;http://localhost:8069&#x27;</span><br><span class="line">&gt;&gt;&gt; common = client.ServerProxy(&#x27;%s/xmlrpc/2/common&#x27; % srv)</span><br><span class="line">&gt;&gt;&gt; common.version()</span><br><span class="line">&#123;&#x27;server_version&#x27;: &#x27;12.0&#x27;, &#x27;server_version_info&#x27;: [12, 0, 0, &#x27;final&#x27;, 0, &#x27;&#x27;], &#x27;server_serie&#x27;: &#x27;12.0&#x27;, &#x27;protocol_version&#x27;: 1&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里我们导入了xmlrpc.client库，然后创建了一个包含服务地址和监听端口信息的变量。请根据自身状况进行修改（如 Alan 使用srv &#x3D; ‘<a target="_blank" rel="noopener" href="http://192.168.16.161:8069'）。">http://192.168.16.161:8069&#39;）。</a></p>
+<p>下一步访问服务端公共服务（无需登录），在终端地址&#x2F;xmlrpc&#x2F;2&#x2F;common上暴露。其中一个可用方法是version()，用于查看服务端版本。我们使用它来确认可与服务端进行通讯。</p>
+<p>另一个公共方法是authenticate()。你可能你会以为它会创建会话，但实际上不会。该方法仅仅确认用户名和密码可被接受，请求不使用用户名而是它返回的用户 ID。示例如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; db = &#x27;dev12&#x27;</span><br><span class="line">&gt;&gt;&gt; user, pwd = &#x27;admin&#x27;, &#x27;admin&#x27;</span><br><span class="line">&gt;&gt;&gt; uid = common.authenticate(db, user, pwd, &#123;&#125;)</span><br><span class="line">&gt;&gt;&gt; print(uid)</span><br><span class="line">2</span><br></pre></td></tr></table></figure>
+
+<p>首先创建变量 db，来存储使用的数据库名。本例中为 dev12，但可以修改为任意其它你所使用的数据库名。如果登录信息错误，将不会返回用户 ID，而是返回 False 值。authenticate()最后一个参数是用户代理(User Agent)环境，用于提供客户端的一些元数据(metadata)，它是必填的，但可以是一个空字典。</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/dbc0881b09484c0998d44eaee58743b1~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12 Python 客户端访问XML RPC"></p>
+<h2 id="使用XML-RPC运行服务器端方法"><a href="#使用XML-RPC运行服务器端方法" class="headerlink" title="使用XML-RPC运行服务器端方法"></a>使用XML-RPC运行服务器端方法</h2><p>使用XML-RPC，不会维护任何会话，每次请求都会发送验证信息。这让协议过重，但使用简单。下一步我们设置访问需登录才能访问的服务端方法。暴露的终端地址为&#x2F;xmlrpc&#x2F;2&#x2F;object，示例如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; api = client.ServerProxy(&#x27;%s/xmlrpc/2/object&#x27; % srv)</span><br><span class="line">&gt;&gt;&gt; api.execute_kw(db, uid, pwd, &#x27;res.partner&#x27;, &#x27;search_count&#x27;, [[]])</span><br><span class="line">48</span><br></pre></td></tr></table></figure>
+
+<p>此处我们第一次访问了服务端 API，执行了Partner 记录的计数。通过 execute_kw() 方法来调用方法，接收如下参数：</p>
+<ul>
+<li>连接的数据库名</li>
+<li>连接用户ID</li>
+<li>用户密码</li>
+<li>目标模型标识符名称</li>
+<li>调用的方法</li>
+<li>位置参数列表</li>
+<li>可选的关键字参数字典(本例中未使用)</li>
+</ul>
+<p>上面的例子中对res.partner模型调用了search_count方法，仅一个位置参数[]，没有关键字参数。该位置参数是一个搜索域，因我们传入的是一个空列表，它对所有伙伴进行计数。常用的操作有搜索和读取。在使用RPC调用时，search方法返回一个区块的 ID 列表。browse方法不可用于RPC，而应使用read来得到记录 ID 列表并获取相应数据，示例如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; domain = [(&#x27;is_company&#x27;, &#x27;=&#x27;, True)]</span><br><span class="line">&gt;&gt;&gt; api.execute_kw(db, uid, pwd, &#x27;res.partner&#x27;, &#x27;search&#x27;, [domain])</span><br><span class="line">[14, 10, 11, 15, 12, 13, 9, 1]</span><br><span class="line">&gt;&gt;&gt; api.execute_kw(db, uid, pwd, &#x27;res.partner&#x27;, &#x27;read&#x27;, [[14]], &#123;&#x27;fields&#x27;: [&#x27;id&#x27;, &#x27;name&#x27;, &#x27;country_id&#x27;]&#125;)</span><br><span class="line">[&#123;&#x27;id&#x27;: 14, &#x27;name&#x27;: &#x27;Azure Interior&#x27;, &#x27;country_id&#x27;: [233, &#x27;United States&#x27;]&#125;]</span><br></pre></td></tr></table></figure>
+
+<p>对于 read 方法，我们使用了一个位置参数[14]来作为 ID 列表，以及一个关键字参数fields。还可以看到many-to-one关联字段如country_id，被成对获取，包含关联的记录 ID 和显示名称。在代码中处理数据时应记住这一点。</p>
+<p>经常会使用search和 read 的组合，所以提供了一个search_read方法来在同一步中执行两者的操作。可通过如下命令来获取以上两段代码的同样结果：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">api.execute_kw(db, uid, pwd, &#x27;res.partner&#x27;, &#x27;search_read&#x27;, [domain], &#123;&#x27;fields&#x27;: [&#x27;id&#x27;, &#x27;name&#x27;, &#x27;country_id&#x27;]&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>补充：以上代码会为 read 方法传入所有 search 方法的结果，因此内容要较仅传入[14]多</p>
+<p>search_read方法和 read 相似，但需要 domain代替 id 列表来作为第一个位置参数。需要说明在 read 和search_read中fields参数并非必须。如果不传入，则获取所有字段。这可能会带来对函数字段的大量计算，并且获取大量可能从来都不会用到的数据，所以通常建议明确传入字段列表。</p>
+<h2 id="搜索和读取-API-方法"><a href="#搜索和读取-API-方法" class="headerlink" title="搜索和读取 API 方法"></a>搜索和读取 API 方法</h2><p>在第七章 <a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-recordsets/">Odoo 12开发之记录集 - 使用模型数据</a>我们学习了用于生成记录的最重要的模型方法以及代码书写。但还有一些其它模型方法可用于更具体的操作，如：</p>
+<ul>
+<li>read([fields]) 类似于browse方法，但返回的不是记录集，而是包含按参数指定的字段的各行数据列表。每一行是一个字典。它提供可供 RPC 协议使用的数据的序列化展示，设计用于客户端程序中而非服务端逻辑中。</li>
+<li>search_read([domain], [fields], offset&#x3D;0, limit&#x3D;None, order&#x3D;None)在读取结果记录列表之后执行搜索操作。设计用于 RPC 客户端，避免了反复进行读取结果和搜索的操作。</li>
+</ul>
+<p>所有其它模型方法都对 RPC 暴露，但以下划线开头的除外，这些是私有方法。也就是说我们可以像下面这样使用create, write,和unlink修改服务端数据：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; x = api.execute_kw(db, uid, pwd, &#x27;res.partner&#x27;, &#x27;create&#x27;, [&#123;&#x27;name&#x27;: &#x27;Packt Pub&#x27;&#125;])</span><br><span class="line">&gt;&gt;&gt; print(x)</span><br><span class="line">69</span><br><span class="line">&gt;&gt;&gt; api.execute_kw(db, uid, pwd, &#x27;res.partner&#x27;, &#x27;write&#x27;, [[x], &#123;&#x27;name&#x27;: &#x27;Packt Publishing&#x27;&#125;])</span><br><span class="line">True</span><br><span class="line">&gt;&gt;&gt; api.execute_kw(db, uid, pwd, &#x27;res.partner&#x27;, &#x27;read&#x27;,  [[x], [&#x27;id&#x27;, &#x27;name&#x27;]])</span><br><span class="line">[&#123;&#x27;id&#x27;: 69, &#x27;name&#x27;: &#x27;Packt Publishing&#x27;&#125;]</span><br><span class="line">&gt;&gt;&gt; api.execute_kw(db, uid, pwd, &#x27;res.partner&#x27;, &#x27;unlink&#x27;, [[x]])</span><br><span class="line">True</span><br><span class="line">&gt;&gt;&gt; api.execute_kw(db, uid, pwd, &#x27;res.partner&#x27;, &#x27;read&#x27;,  [[x], [&#x27;id&#x27;, &#x27;name&#x27;]])</span><br><span class="line">[]</span><br></pre></td></tr></table></figure>
+
+<p>XML-RPC的一个缺陷是它不支持 None 值。有一个XML-RPC扩展可以支持 None 值，但这取决于我们客户端所依赖的具体XML-RPC库。不返回任何值的方法不能在XML-RPC中使用，因为默认返回的是 None。这也是为什么方法在结束时至少会带有一个return True语句。另一个方案是使用 Odoo 同时支持的JSON-RPC。OdooRPC对其进行运行，在稍后的<a href="#odoorpc">使用OdooRPC库</a>一节会进行使用。</p>
+<p>应反复强调 Odoo 的外部 API 可在大部分编程语言中使用。<a target="_blank" rel="noopener" href="https://www.odoo.com/documentation/12.0/webservices/odoo.html">官方文档</a>中我们可以看到Ruby, PHP和Java实际示例。</p>
+<blockquote>
+<p>ℹ️以下划线开头的模块方法被认为是私有方法，不对XML-RPC暴露。</p>
+</blockquote>
+<h2 id="图书客户端XML-RPC-接口"><a href="#图书客户端XML-RPC-接口" class="headerlink" title="图书客户端XML-RPC 接口"></a>图书客户端XML-RPC 接口</h2><p>下面就来实现图书客户端应用。我们将使用两个文件：一个处理服务端的接口：library_api.py，另一个处理应用的用户界面：library.py。然后我们会使用现有的OdooRPC库来提供一个替代的实现方法。</p>
+<p>我们将创建类来配置与 Odoo 服务端的连接，以及读取&#x2F;写入图书数据。这将暴露基本的增删改查方法：</p>
+<ul>
+<li>search_read()获取图书数据</li>
+<li>create()创建图书</li>
+<li>write()更新图书</li>
+<li>unlink()删除图书</li>
+</ul>
+<p>选择一个目录来放置应用文件并创建library_api.py文件。首先添加类的构造方法，代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">from xmlrpc import client</span><br><span class="line"></span><br><span class="line">class LibraryAPI():</span><br><span class="line">	def __init__(self, srv, port, db, user, pwd):</span><br><span class="line">		common = client.ServerProxy(</span><br><span class="line">			&#x27;http://%s:%d/xmlrpc/2/common&#x27; % (srv, port))</span><br><span class="line">		self.api = client.ServerProxy(</span><br><span class="line">			&#x27;http://%s:%d/xmlrpc/2/object&#x27; % (srv, port))</span><br><span class="line">		self.uid = common.authenticate(db, user, pwd, &#123;&#125;)</span><br><span class="line">		self.pwd = pwd</span><br><span class="line">		self.db = db</span><br><span class="line">		self.model = &#x27;library.book&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>此处我们存储了所有创建执行模型调用的对象的所有信息：API引用、uid、密码、数据库名和要使用的模型。接下来我们定义一个帮助方法来执行调用。有赖于前面对象存储的数据该方法可以很精炼：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">def execute(self, method, arg_list, kwarg_dict=None):</span><br><span class="line">	return self.api.execute_kw(</span><br><span class="line">		self.db, self.uid, self.pwd, self.model,</span><br><span class="line">		method, arg_list, kwarg_dict or &#123;&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>现在就可以使用它来实现更高级的方法了。search_read()方法接收一个可选的 ID 列表来获取数据。如果没传入数据，则返回所有记录：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">def search_read(self, text=None):</span><br><span class="line">	domain = [(&#x27;name&#x27;, &#x27;ilike&#x27;, text)] if text else []</span><br><span class="line">	fields = [&#x27;id&#x27;, &#x27;name&#x27;]</span><br><span class="line">	return self.execute(&#x27;search_read&#x27;, [domain, fields])</span><br></pre></td></tr></table></figure>
+
+<p>create()方法用于创建给定书名的新书并返回所创建记录的 ID：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">def create(self, title):</span><br><span class="line">	vals = &#123;&#x27;name&#x27;: title&#125;</span><br><span class="line">	return self.execute(&#x27;create&#x27;, [vals])</span><br></pre></td></tr></table></figure>
+
+<p>write()方法中传入新书名和图书 ID 作为参数，并对该书执行写操作：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">def write(self, title, id):</span><br><span class="line">	vals = &#123;&#x27;name&#x27;: title&#125;</span><br><span class="line">	return self.execute(&#x27;write&#x27;, [[id], vals])</span><br></pre></td></tr></table></figure>
+
+<p>然后我们可以实现unlink()方法，非常简单：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">def unlink(self, id):</span><br><span class="line">	return self.execute(&#x27;unlink&#x27;, [[id]])</span><br></pre></td></tr></table></figure>
+
+<p>在该Python文件最后添加一段测试代码在运行时执行：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">if __name__ == &#x27;__main__&#x27;:</span><br><span class="line">	# 测试配置</span><br><span class="line">	srv, db, port = &#x27;localhost&#x27;, &#x27;dev12&#x27;, 8069</span><br><span class="line">	user, pwd = &#x27;admin&#x27;, &#x27;admin&#x27;</span><br><span class="line">	api = LibraryAPI(srv, port, db, user, pwd)</span><br><span class="line">	from pprint import pprint</span><br><span class="line">	pprint(api.search_read())</span><br></pre></td></tr></table></figure>
+
+<p>如果执行以上 Python 脚本，我们可以打印出图书的内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ python3 library_api.py</span><br><span class="line">[&#123;&#x27;id&#x27;: 56, &#x27;name&#x27;: &#x27;Brave New World&#x27;&#125;,</span><br><span class="line"> &#123;&#x27;id&#x27;: 40, &#x27;name&#x27;: &#x27;Hands-On System Programming with Linux&#x27;&#125;,</span><br><span class="line"> &#123;&#x27;id&#x27;: 41, &#x27;name&#x27;: &#x27;Lord of the Flies&#x27;&#125;,</span><br><span class="line"> &#123;&#x27;id&#x27;: 39, &#x27;name&#x27;: &#x27;Mastering Docker - Third Edition&#x27;&#125;,</span><br><span class="line"> &#123;&#x27;id&#x27;: 38, &#x27;name&#x27;: &#x27;Mastering Reverse Engineering&#x27;&#125;,</span><br><span class="line"> &#123;&#x27;id&#x27;: 55, &#x27;name&#x27;: &#x27;Odoo 11 Development Cookbook&#x27;&#125;,</span><br><span class="line"> &#123;&#x27;id&#x27;: 54, &#x27;name&#x27;: &#x27;Odoo Development Essentials 11&#x27;&#125;]</span><br></pre></td></tr></table></figure>
+
+<p>现在已经有了对 Odoo 后端的简单封装，下面就可以处理命令行用户界面了。</p>
+<h2 id="图书客户端用户界面"><a href="#图书客户端用户界面" class="headerlink" title="图书客户端用户界面"></a>图书客户端用户界面</h2><p>我的目标是学习如何写外部应用和 Odoo 服务之间的接口，前面已经实现了。但不能止步于此，我们还应让终端用户可以使用它。为使设置尽量简单，我们将使用 Python 内置功能来实现这个命令行应用。该功能是标准库自带的，因此不需要进行额外的安装。</p>
+<p>在library_api.py 同目录，新建一个library.py文件。首先导入命令行参数解析器，然后导入LibraryAPI类，代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">from argparse import ArgumentParser</span><br><span class="line">from library_api import LibraryAPI</span><br></pre></td></tr></table></figure>
+
+<p>下面我们来看看参数解析器接收的命令，有以下四个命令：</p>
+<ul>
+<li>搜索并列出图书</li>
+<li>添加图书</li>
+<li>设置(修改)书名</li>
+<li>删除图书</li>
+</ul>
+<p>在命令行解析器中添加这些命令的代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">parser = ArgumentParser()</span><br><span class="line">parser.add_argument(</span><br><span class="line">	&#x27;command&#x27;,</span><br><span class="line">	choices=[&#x27;list&#x27;, &#x27;add&#x27;, &#x27;set-title&#x27;, &#x27;del&#x27;])</span><br><span class="line">parser.add_argument(&#x27;params&#x27;, nargs=&#x27;*&#x27;) # 可选参数</span><br><span class="line">args = parser.parse_args()</span><br></pre></td></tr></table></figure>
+
+<p>这里 args 是一个包含传入脚本参数的对象，args.command是提供的命令，args.params是可选项，用于存放命令所需的其它参数。如果使用了不存在或错误的命令，参数解析器会进行处理并提示用户应输入的内容。有关argparse更完整的说明，请参考<a target="_blank" rel="noopener" href="https://docs.python.org/3/library/argparse.html">官方文档</a>。</p>
+<p>下一步是执行所计划的操作。首先为 Odoo服务准备连接：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">srv, port, db = &#x27;localhost&#x27;, 8069, &#x27;dev12&#x27;</span><br><span class="line">user, pwd = &#x27;admin&#x27;, &#x27;admin&#x27;</span><br><span class="line">api = LibraryAPI(srv, port, db, user, pwd)</span><br></pre></td></tr></table></figure>
+
+<p>第一行代码设置服务实例的一些固定参数以及要连接的数据库。本例中，我们连接 Odoo 服务本机(localhost)，监听8069默认端口，并使用 dev12数据库。如需连接其它服务器和数据库，请对参数进行相应调整。</p>
+<p>这里硬编码了服务器地址并且密码使用了明文，显然与最佳实施相差甚远。我们应该包含配置步骤让客户提供相关设置信息，并以安全的方式进行存储。但此处我们的目标是学习使用 Odoo RPC，所以可把它看作概念代码，而非已完成的产品。下面写代码来利用 api 对象处理所支持的命令。我们可以先写list命令来列出图书：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">if args.command == &#x27;list&#x27;:</span><br><span class="line">	text = args.params[0] if args.params else None</span><br><span class="line">	books = api.search_read(text)</span><br><span class="line">	for book in books:</span><br><span class="line">		print(&#x27;%(id)d %(name)s&#x27; % book)</span><br></pre></td></tr></table></figure>
+
+<p>这里我们使用了LibraryAPI.search_read()来从服务端获取图书记录列表。然后遍历列表中每个元素并打印。我们使用 Python 字符串格式化来向用户显示每条图书记录，记录是一个键值对字典。下面添加add命令，这里使用了额外的书名作为参数：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">if args.command == &#x27;add&#x27;:</span><br><span class="line">	for title in args.params:</span><br><span class="line">		new_id = api.create(title)</span><br><span class="line">		print(&#x27;Book added with ID %d.&#x27; % new_id)</span><br></pre></td></tr></table></figure>
+
+<p>因为主要的工作已经在LibraryAPI对象中完成，下面我们只要调用write()方法并向终端用户显示结果即可。 set-title命令允许我们修改已有图书的书名，应传入两个参数，新的书名和图书的 ID：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">if args.command == &#x27;set-title&#x27;:</span><br><span class="line">	if len(args.params) != 2:</span><br><span class="line">		print(&quot;set command requires a title and ID.&quot;)</span><br><span class="line">	else:</span><br><span class="line">		book_id, title = int(args.params[0]), args.params[1]</span><br><span class="line">		api.write(title, book_id)</span><br><span class="line">		print(&#x27;Title set for Book ID %d.&#x27; % book_id)</span><br></pre></td></tr></table></figure>
+
+<p>最终我们要实现 del 命令来删除图书记录，学到这里应该不再有任何挑战性了：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">if args.command == &#x27;del&#x27;:</span><br><span class="line">	for param in args.params:</span><br><span class="line">		api.unlink(int(param))</span><br><span class="line">		print(&#x27;Book with ID %s deleted.&#x27; % param)</span><br></pre></td></tr></table></figure>
+
+<p>到这里我们就完成了基础的 API CLI (命令行接口)了，读者可以尝试执行命令来查看效果。比如，我们可以运行本文开头<a href="#catalog">学习项目-图书目录客户端</a>中的命令。通过普通客户端来访问图书中的数据也会有助于确认该CLI是否如预想般运行。这是一个非常基础的应用，查看代码你应该可以想到一些改进它的方式。但要记住我们这里的目的是以相对有趣的方式举例说明Odoo RPC API的使用。</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/1515b0259da04f108b3ad0ce5645aa02~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12 客户端RPC命令行接口"></p>
+<h2 id="使用OdooRPC库"><a href="#使用OdooRPC库" class="headerlink" title="使用OdooRPC库"></a>使用OdooRPC库</h2><p>另一个可以考虑的客户端库是OdooRPC。它是一个更流行的客户端库，使用JSON-RPC 协议而不是XML-RPC。事实上 Odoo 官方客户端使用的就是JSON-RPC，XML-RPC更多是用于支持向后兼容性。</p>
+<blockquote>
+<p>ℹ️OdooRPC库现在由 OCA 管理和持续维护。了解更多请参见<a target="_blank" rel="noopener" href="https://github.com/OCA/odoorpc">OCA</a>。</p>
+</blockquote>
+<p>OdooRPC库可通过PyPI安装：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip3 install --user odoorpc</span><br></pre></td></tr></table></figure>
+
+<p>不管是使用JSON-RPC还是XML-RPC，Odoo API的使用方式并没什么分别。所以在下面我们可以看一些细节可能有区别，但这些客户端库的使用方式并没有什么分别。</p>
+<p>OdooRPC库在创建新的odoorpc.ODOO对象时建立服务端连接，然后应使用ODOO.login()方法来创建用户会话。和服务端相似，会话有一个带有会话环境的 env 属性，包含用户 ID-uid 和上下文。我们可以使用OdooRPC来重新实现library_api.py对服务端的接口。它应提供相同的功能，但使用JSON-RPC代替XML-RPC来实施。在相同目录下创建library_odoorpc.py文件并加入如下代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">from odoorpc import ODOO</span><br><span class="line"></span><br><span class="line">class LibraryAPI():</span><br><span class="line">	def __init__(self, srv, port, db, user, pwd):</span><br><span class="line">		self.api = ODOO(srv, port=port)</span><br><span class="line">		self.api.login(db, user, pwd)</span><br><span class="line">		self.uid = self.api.env.uid</span><br><span class="line">		self.model = &#x27;library.book&#x27;</span><br><span class="line">		self.Model = self.api.env[self.model]</span><br><span class="line"></span><br><span class="line">	def execute(self, method, arg_list, kwarg_dict=None):</span><br><span class="line">		return self.api.execute(</span><br><span class="line">			self.model,</span><br><span class="line">			method, *arg_list, **kwarg_dict)</span><br></pre></td></tr></table></figure>
+
+<p>OdooRPC库实现Model和Recordset对象来模仿服务端对应的功能。目标是在客户端编程与服务端编程应基本一致。客户端使用的方法将通过存储在self.Model属性中的图书模型来利用这点。这里实现的execute()方法并不会在我们客户端中使用，仅用于与本文中讨论的其它实现进行对比。</p>
+<p>下面我们来实现search_read(), create(), write()和unlink()这些客户端方法。在相同文件的LibraryAPI()类中添加如下方法：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">def search_read(self, text=None):</span><br><span class="line">	domain = [(&#x27;name&#x27;, &#x27;ilike&#x27;, text)] if text else []</span><br><span class="line">	fields = [&#x27;id&#x27;, &#x27;name&#x27;]</span><br><span class="line">	return self.Model.search_read(domain, fields)</span><br><span class="line"></span><br><span class="line">def create(self, title):</span><br><span class="line">	vals = &#123;&#x27;name&#x27;: title&#125;</span><br><span class="line">	return self.Model.create(vals)</span><br><span class="line"></span><br><span class="line">def write(self, title, id):</span><br><span class="line">	vals = &#123;&#x27;name&#x27;: title&#125;</span><br><span class="line">	self.Model.write(id, vals)</span><br><span class="line"></span><br><span class="line">def unlink(self, id):</span><br><span class="line">	return self.Model.unlink(id)</span><br></pre></td></tr></table></figure>
+
+<p>注意这段代码和 Odoo 服务端代码相似，因为它使用了与 Odoo 中插件写法相近的 API。然后可以将library.py文件中的from library_api import LibraryAPI一行修改为library_odoorpc import LibraryAPI。现在再次运行library.py客户端应用进行测试，执行的效果和之前应该一致。</p>
+<h2 id="了解ERPpeek客户端"><a href="#了解ERPpeek客户端" class="headerlink" title="了解ERPpeek客户端"></a>了解ERPpeek客户端</h2><p>ERPpeek是一个多功能工具，既可以作为交互式命令行接口(CLI)也可以作为 Python库，它提供了比xmlrpc库更便捷的 API。它在PyPi索引中，可通过如下命令安装：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip3 install --user erppeek</span><br></pre></td></tr></table></figure>
+
+<p>ERPpeek不仅可用作 Python 库，它还可作为 CLI 来在服务器上执行管理操作。Odoo shell 命令在主机上提供了一个本地交互式会话功能，而erppeek库则为网络上的客户端提供了一个远程交互式会话。打开命令行，通过以下命令可查看能够使用的选项：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">erppeek --help</span><br></pre></td></tr></table></figure>
+
+<p>下面一起来看看一个示例会话：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">$ erppeek --server=&#x27;http://192.168.16.161:8069&#x27; -d dev12 -uadmin</span><br><span class="line">Usage (some commands):</span><br><span class="line">    models(name)                    # List models matching pattern</span><br><span class="line">    model(name)                     # Return a Model instance</span><br><span class="line">... </span><br><span class="line"></span><br><span class="line">Password for &#x27;admin&#x27;:</span><br><span class="line">Logged in as &#x27;admin&#x27;</span><br><span class="line">dev12 &gt;&gt;&gt; model(&#x27;res.users&#x27;).count()</span><br><span class="line">3</span><br><span class="line">dev12 &gt;&gt;&gt; rec = model(&#x27;res.partner&#x27;).browse(14)</span><br><span class="line">dev12 &gt;&gt;&gt; rec.name</span><br><span class="line">&#x27;Azure Interior&#x27;</span><br></pre></td></tr></table></figure>
+
+<p>如上所见，建立了服务端的连接，执行上下文引用了model() 方法来获得模型实例并对其进行操作。连接使用的erppeek.Client实例也可通过客户端变量来使用。 值得一提的是它可替代网页客户端来管理所安装的插件模块：</p>
+<ul>
+<li>client.modules()列出可用或已安装模块</li>
+<li>client.install()执行模块安装</li>
+<li>client.upgrade()执行模块升级</li>
+<li>client.uninstall()卸载模块</li>
+</ul>
+<p>因此ERPpeek可作为 Odoo 服务端远程管理的很好的服务。有关ERPpeek的更多细节请见 <a target="_blank" rel="noopener" href="https://github.com/tinyerp/erppeek">GitHub</a>。</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/0a340ec4fe0e4eb388da1d3adea46334~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12 ERPpeek"></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文的目标是学习外部 API 如何运作以及它们能做些什么。一开始我们通过一个简单的Python XML-RPC客户端来进行探讨，但外部 API 可用于其它编程语言。事实上官方文档中包含了Java, PHP和Ruby的代码示例。</p>
+<p>有很多库可处理XML-RPC或JSON-RPC，有些是通用的，有些仅适用于 Odoo。我们使用了一个指定库OdooRPC。</p>
+<p>以上我们就完结了本文有关编程 API 和业务逻辑的学习。是时候深入视图和用户界面了。在下一篇文章中，我们进一步学习网页客户端所提供的后台视图和用户体验。</p>
+<p> </p>
+<p>☞☞☞第十章 <a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-backend-views/">Odoo 12开发之后台视图 - 设计用户界面</a></p>
+<p> </p>
+<h2 id="扩展阅读"><a href="#扩展阅读" class="headerlink" title="扩展阅读"></a>扩展阅读</h2><p>以下参考资料可用于补充本文所学习的内容：</p>
+<ul>
+<li>Odoo web 服务的<a target="_blank" rel="noopener" href="https://www.odoo.com/documentation/12.0/webservices/odoo.html">官方文档</a>中包含了 Python 以外的其它编程语言示例</li>
+<li><a target="_blank" rel="noopener" href="https://pythonhosted.org/OdooRPC/">OdooRPC文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://erppeek.readthedocs.io/en/latest/">ERPpeek文档</a></li>
+</ul>
+<p>本文首发地址：<a target="_blank" rel="noopener" href="https://alanhou.org/developer-mode-odoo12/">Alan Hou 的个人博客</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Odoo-Odoo12/" rel="tag"># Odoo,Odoo12</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/01/14/odoo-essentials-12-chapter8/" rel="prev" title="第八章 Odoo 12开发之业务逻辑 – 业务流程的支持">
+                  <i class="fa fa-chevron-left"></i> 第八章 Odoo 12开发之业务逻辑 – 业务流程的支持
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2019/01/17/odoo-essentials-12-chapter10/" rel="next" title="第十章 Odoo 12开发之后台视图 – 设计用户界面">
+                  第十章 Odoo 12开发之后台视图 – 设计用户界面 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Alan Hou</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

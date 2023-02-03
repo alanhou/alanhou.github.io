@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"alanhou.github.io","root":"/","images":"/images","scheme":"Muse","darkmode":false,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="本文为最好用的免费ERP系统Odoo 12开发手册系列文章第十一篇。 QWeb 是 Odoo 使用的模板引擎，它基于 XML 来生成 HTML 片断和页面。通过 QWeb可生成内容丰富的看板(Kankan)视图、报表和 CMS 网页。本文中我们将学习QWeb 语法以及如何使用 QWeb 来创建我们自己的看板视图和自定义报表。 本文主要内容有：  看板是什么？ 设计看板视图 QWeb 模板语言 看板">
+<meta property="og:type" content="article">
+<meta property="og:title" content="第十一章 Odoo 12开发之看板视图和用户端 QWeb">
+<meta property="og:url" content="https://alanhou.github.io/2019/01/19/odoo-essentials-12-chapter11/index.html">
+<meta property="og:site_name" content="Alan Hou的个人博客">
+<meta property="og:description" content="本文为最好用的免费ERP系统Odoo 12开发手册系列文章第十一篇。 QWeb 是 Odoo 使用的模板引擎，它基于 XML 来生成 HTML 片断和页面。通过 QWeb可生成内容丰富的看板(Kankan)视图、报表和 CMS 网页。本文中我们将学习QWeb 语法以及如何使用 QWeb 来创建我们自己的看板视图和自定义报表。 本文主要内容有：  看板是什么？ 设计看板视图 QWeb 模板语言 看板">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/c5f76dc3b9984ba08e1738ce9bdfa848~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f8c1e58e31084937a9081ce43334a3f7~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/06649a94199b4b1a8203711086869147~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b3ad0d808c6d4afd9fc5eea7d201eaa9~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/a970e9acfd144d05bdc69c10e05e285c~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/bbb868371a0c4abca20de08364d4a513~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/84a431fa9e4849ff8c848cc377f2a8ca~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/62b207944c9240ef9580c2e0dd46ae33~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/dd2823f9036f4465a39c5e956b743fd9~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/30566f47384743f99269d8d535f13e98~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="article:published_time" content="2019-01-18T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-02-03T05:55:30.595Z">
+<meta property="article:author" content="Alan Hou">
+<meta property="article:tag" content="Odoo,Odoo12">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/c5f76dc3b9984ba08e1738ce9bdfa848~tplv-k3u1fbpfcp-zoom-1.image">
+
+
+<link rel="canonical" href="https://alanhou.github.io/2019/01/19/odoo-essentials-12-chapter11/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://alanhou.github.io/2019/01/19/odoo-essentials-12-chapter11/","path":"2019/01/19/odoo-essentials-12-chapter11/","title":"第十一章 Odoo 12开发之看板视图和用户端 QWeb"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>第十一章 Odoo 12开发之看板视图和用户端 QWeb | Alan Hou的个人博客</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Alan Hou的个人博客</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">用行动赢得尊重</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E5%8F%91%E5%87%86%E5%A4%87"><span class="nav-number">1.</span> <span class="nav-text">开发准备</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%86%E8%A7%A3%E7%9C%8B%E6%9D%BF"><span class="nav-number">2.</span> <span class="nav-text">了解看板</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9C%8B%E6%9D%BF%E8%A7%86%E5%9B%BE"><span class="nav-number">2.1.</span> <span class="nav-text">看板视图</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E8%AE%A1%E7%9C%8B%E6%9D%BF%E8%A7%86%E5%9B%BE"><span class="nav-number">3.</span> <span class="nav-text">设计看板视图</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BC%98%E5%85%88%E7%BA%A7%E3%80%81%E7%9C%8B%E6%9D%BF%E7%8A%B6%E6%80%81%E5%92%8C%E9%A2%9C%E8%89%B2"><span class="nav-number">3.1.</span> <span class="nav-text">优先级、看板状态和颜色</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9C%8B%E6%9D%BF%E5%8D%A1%E7%89%87%E5%85%83%E7%B4%A0"><span class="nav-number">3.2.</span> <span class="nav-text">看板卡片元素</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9C%8B%E6%9D%BF%E5%8D%A1%E7%89%87%E5%B8%83%E5%B1%80"><span class="nav-number">3.3.</span> <span class="nav-text">看板卡片布局</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E7%9C%8B%E6%9D%BF%E5%8D%A1%E7%89%87%E6%B7%BB%E5%8A%A0%E9%80%89%E9%A1%B9%E8%8F%9C%E5%8D%95"><span class="nav-number">3.4.</span> <span class="nav-text">为看板卡片添加选项菜单</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%9C%8B%E6%9D%BF%E8%A7%86%E5%9B%BE%E4%B8%AD%E7%9A%84%E6%93%8D%E4%BD%9C"><span class="nav-number">3.5.</span> <span class="nav-text">看板视图中的操作</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#QWeb-%E6%A8%A1%E6%9D%BF%E8%AF%AD%E8%A8%80"><span class="nav-number">4.</span> <span class="nav-text">QWeb 模板语言</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#QWeb-JavaScript-%E8%BF%90%E8%A1%8C%E4%B8%8A%E4%B8%8B%E6%96%87"><span class="nav-number">4.1.</span> <span class="nav-text">QWeb JavaScript 运行上下文</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E7%AC%A6%E4%B8%B2%E6%9B%BF%E6%8D%A2%E5%8A%A8%E6%80%81%E5%B1%9E%E6%80%A7%E2%80%93-t-attf"><span class="nav-number">4.2.</span> <span class="nav-text">字符串替换动态属性– t-attf</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A1%A8%E8%BE%BE%E5%BC%8F%E5%8A%A8%E6%80%81%E5%B1%9E%E6%80%A7-t-att"><span class="nav-number">4.3.</span> <span class="nav-text">表达式动态属性 - t-att</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BE%AA%E7%8E%AF-t-foreach"><span class="nav-number">4.4.</span> <span class="nav-text">循环 - t-foreach</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9D%A1%E4%BB%B6%E5%88%A4%E6%96%AD-t-if"><span class="nav-number">4.5.</span> <span class="nav-text">条件判断 - t-if</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B8%B2%E6%9F%93%E5%80%BC-t-esc%E5%92%8Ct-raw"><span class="nav-number">4.6.</span> <span class="nav-text">渲染值 - t-esc和t-raw</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E5%8F%98%E9%87%8F%E8%AE%BE%E7%BD%AE%E5%80%BC-t-set"><span class="nav-number">4.7.</span> <span class="nav-text">为变量设置值 - t-set</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B0%83%E7%94%A8%E5%92%8C%E5%A4%8D%E7%94%A8%E5%85%B6%E5%AE%83%E6%A8%A1%E6%9D%BF-t-call"><span class="nav-number">4.8.</span> <span class="nav-text">调用和复用其它模板 - t-call</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AD%97%E5%85%B8%E5%92%8C%E5%88%97%E8%A1%A8%E5%8A%A8%E6%80%81%E5%B1%9E%E6%80%A7"><span class="nav-number">4.9.</span> <span class="nav-text">字典和列表动态属性</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9C%8B%E6%9D%BF%E8%A7%86%E5%9B%BE%E7%9A%84%E7%BB%A7%E6%89%BF"><span class="nav-number">5.</span> <span class="nav-text">看板视图的继承</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89-CSS-%E5%92%8C-JavaScript"><span class="nav-number">6.</span> <span class="nav-text">自定义 CSS 和 JavaScript</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%80%BB%E7%BB%93"><span class="nav-number">7.</span> <span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A9%E5%B1%95%E9%98%85%E8%AF%BB"><span class="nav-number">8.</span> <span class="nav-text">扩展阅读</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%A9%E5%B1%95%E9%98%85%E8%AF%BB-1"><span class="nav-number">9.</span> <span class="nav-text">扩展阅读</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Alan Hou</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">11</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">1</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://alanhou.github.io/2019/01/19/odoo-essentials-12-chapter11/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Alan Hou">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alan Hou的个人博客">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="第十一章 Odoo 12开发之看板视图和用户端 QWeb | Alan Hou的个人博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          第十一章 Odoo 12开发之看板视图和用户端 QWeb
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2019-01-19 00:00:00" itemprop="dateCreated datePublished" datetime="2019-01-19T00:00:00+08:00">2019-01-19</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-02-03 13:55:30" itemprop="dateModified" datetime="2023-02-03T13:55:30+08:00">2023-02-03</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>本文为<a target="_blank" rel="noopener" href="https://alanhou.org/odoo-12-development/">最好用的免费ERP系统Odoo 12开发手册</a>系列文章第十一篇。</p>
+<p>QWeb 是 Odoo 使用的模板引擎，它基于 XML 来生成 HTML 片断和页面。通过 QWeb可生成内容丰富的看板(Kankan)视图、报表和 CMS 网页。本文中我们将学习QWeb 语法以及如何使用 QWeb 来创建我们自己的看板视图和自定义报表。</p>
+<p>本文主要内容有：</p>
+<ul>
+<li>看板是什么？</li>
+<li>设计看板视图</li>
+<li>QWeb 模板语言</li>
+<li>看板视图的继承</li>
+<li>添加自定义 CSS 和 JavaScript</li>
+</ul>
+<h2 id="开发准备"><a href="#开发准备" class="headerlink" title="开发准备"></a>开发准备</h2><p>我们将继续使用第十章 <a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-backend-views/">Odoo 12开发之后台视图 - 设计用户界面</a>完成的library_checkout插件模块。相应代码请见 <a target="_blank" rel="noopener" href="https://github.com/alanhou/odoo12-development/tree/master/chapter10">GitHub仓库</a>。本章完成后的代码也请参见<a target="_blank" rel="noopener" href="https://github.com/alanhou/odoo12-development/tree/master/chapter11">GitHub仓库</a>。</p>
+<h2 id="了解看板"><a href="#了解看板" class="headerlink" title="了解看板"></a>了解看板</h2><p>Kanban 是一个日语词汇，字面意思榜单，与精益制造和准时化生产相关联，由丰田工业工程师大野耐一(Taiichi Ohno)引入。最近看板的概念应用于更多领域，并且随着敏捷方法的施行在软件工业内流行起来。</p>
+<p>看板让我们能够可视化工作队列，它以列来进行组织，每列代表工作进程的一个阶段。工作项以放在看板对应列的卡片来表示。新的工作项从最左边的列开始，并开始向右移动直至最右边列，代表工作完成。</p>
+<p>看板的简单化或视觉效果让其对简单的业务流程有着优异的支持。一个基本的看板示例包含三列，如下图所示：待办、在办和完成。当然它可以扩展为你需要的其它指定流程：</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/c5f76dc3b9984ba08e1738ce9bdfa848~tplv-k3u1fbpfcp-zoom-1.image" alt="看板示例"></p>
+<p>对许多业务用例，看板都是管理相应流程的更有效方式，与 Odoo 11之前的更重的工作流引擎形成鲜明对比。Odoo 在支持经典的列表和表单视图的同时还支持看板视图，这易于我们实施这种类型的视图。下面就让我们一起来学习如何使用看板视图。</p>
+<h3 id="看板视图"><a href="#看板视图" class="headerlink" title="看板视图"></a>看板视图</h3><p>现在我们要为借阅模型添加一个看板视图。每个借阅是一个卡片，看板将会被组织成阶段列。在前面的文章中，我们已经添加了stage_id阶段字段。</p>
+<p>此前在表单视图我们大部分时候使用 Odoo 独有的 XML 元素，比如<code>&lt;field&gt;</code>和<code>&lt;group&gt;</code>，有时也会使用 HTML 元素，如<code>&lt;h1&gt;</code>或<code>&lt;div&gt;</code>，但用得较少。在看板视图中则恰恰相反，展示模板基于 HTML，仅支持两个 Odoo 独有的元素：<code>&lt;field&gt;</code>和<code>&lt;button&gt;</code>。</p>
+<p>最终呈现在网页客户端中的内容是由 QWeb 模板动态生成的。QWeb 引擎处理特殊的 XML 标签和属性来进行生成。这样可以很好地控制如何渲染内容，但也让视图设计更为复杂。看板视图设计灵活性很强，我们将尽力以直接易懂地方式介绍快速创建看板视图的知识。查看与所需相似的看板视图来获取创意然后创建自己的看板是一种不错的方法。</p>
+<p>我们将学习两种使用看板视图的方式。一种是卡片列表，它用于联系人、产品、雇员通讯录或应用等。联系人看板视图长这样：</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/f8c1e58e31084937a9081ce43334a3f7~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12联系人看板视图"></p>
+<p>但这不是真正的看板，看板应是一个组织成不同列的卡片，当然看板视图也支持这种布局。可能过 CRM 或项目应用来查看示例。访问CRM &gt; Sales &gt; My Pipeline可得到如下结果：</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/06649a94199b4b1a8203711086869147~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12 CRM看板视图"></p>
+<p>这两种布局的最大区别是卡片按列的组织方式。这通过 Group By 功能实现，与列表视图中相似。通常分组是通过stage字段实现。看板视图的一个非常有用的功能是可以在列之间拖放卡片，自动分配分组视图字段的对应值。从两个示例中的卡片我们可以看到一些分别。其实它们的设计非常灵活，设计看板卡片不只有一种方式。这两个示例为我们提供设计的一些基础。</p>
+<p>联系人卡片基本组成有左侧的图像，主区域的加粗标题和紧随其后的一系列值。CRM 管道卡片结构更为复杂些。卡片主区域也有一个标题以及相关信息紧随其后，还有 footer 区。在该区域中，可看到左侧有一个优先级组件，后面带有一个活动指示，在右侧是一个负责用户的头像。上图中看不到，在鼠标悬停在右上角时还会有一个选项菜单。这个菜单让我们可以修改卡片的颜色提示等。</p>
+<p>我们将使用这种更复杂的结构来作为借阅看板卡片的参照。</p>
+<h2 id="设计看板视图"><a href="#设计看板视图" class="headerlink" title="设计看板视图"></a>设计看板视图</h2><p>我们将改进一直以来开发的library_checkout模型，为图书借阅添加看板视图。为此我们使用一个新文件library_checkout&#x2F;views&#x2F;checkout_kanban_view.xml。需要在__manifest__.py文件的 data 键最下方添加这个文件。在library_checkout&#x2F;views&#x2F;library_menu.xml文件中，可以看到借阅菜单项使用的窗口操作。需要对其修改来启用本文中添加的视图类型：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;act_window id=&quot;action_library_checkout&quot;</span><br><span class="line">    name=&quot;Checkouts&quot;</span><br><span class="line">    res_model=&quot;library.checkout&quot;</span><br><span class="line">    view_mode=&quot;kanban,tree,form,activity,calendar,graph,pivot&quot; /&gt;</span><br></pre></td></tr></table></figure>
+
+<p>这里我们修改了菜单操作来在view_mode列表的最前面添加了kanban，来让它成为默认的视图模式。然后我们来添加kanban视图记录。与其它视图基本相同，除了 arch 字段内，最外层 XML元素为<kanban>。下一步创建实际使用的 XML 文件library_checkout&#x2F;views&#x2F;checkout_kanban_view.xml来放置这个惊艳的看板视图：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot;?&gt;</span><br><span class="line">&lt;odoo&gt;</span><br><span class="line">    &lt;record id=&quot;library_checkout_kanban&quot; model=&quot;ir.ui.view&quot;&gt;</span><br><span class="line">        &lt;field name=&quot;model&quot;&gt;library.checkout&lt;/field&gt;</span><br><span class="line">        &lt;field name=&quot;arch&quot; type=&quot;xml&quot;&gt;</span><br><span class="line">            &lt;kanban&gt;</span><br><span class="line"></span><br><span class="line">            &lt;/kanban&gt;</span><br><span class="line">        &lt;/field&gt;</span><br><span class="line">    &lt;/record&gt;</span><br><span class="line">&lt;/odoo&gt;</span><br></pre></td></tr></table></figure>
+
+<p>在使用看板视图前，我们需要为图书借阅模型添加几个字段。</p>
+<h3 id="优先级、看板状态和颜色"><a href="#优先级、看板状态和颜色" class="headerlink" title="优先级、看板状态和颜色"></a>优先级、看板状态和颜色</h3><p>除阶段外，看板中还有一些常用和有用的字段：</p>
+<ul>
+<li>priority让用户组织他们的工作项，标记什么应优先处理</li>
+<li>kanban_state标记是否应移向下一阶段或因某种原因原地不动。在模型定义层中两者都是选择项字段。在视图层，对它们有特别的组件用于表单和看板视图。</li>
+<li>color用于存储看板卡片显示的颜色，并可通过看板视图中的颜色拾取器菜单设置</li>
+</ul>
+<p>编辑library_checkout&#x2F;models&#x2F;library_checkout.py文件来在我们的模型中添加这些字段：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">class Checkout(models.Model):</span><br><span class="line">...</span><br><span class="line">    priority = fields.Selection(</span><br><span class="line">        [(&#x27;0&#x27;, &#x27;Low&#x27;),</span><br><span class="line">        (&#x27;1&#x27;, &#x27;Normal&#x27;),</span><br><span class="line">        (&#x27;2&#x27;, &#x27;High&#x27;)],</span><br><span class="line">        &#x27;Priority&#x27;,</span><br><span class="line">        default=&#x27;1&#x27;)</span><br><span class="line">    kanban_state = fields.Selection(</span><br><span class="line">        [(&#x27;normal&#x27;, &#x27;In Progress&#x27;),</span><br><span class="line">        (&#x27;blocked&#x27;, &#x27;Blocked&#x27;),</span><br><span class="line">        (&#x27;done&#x27;, &#x27;Ready for next stage&#x27;)],</span><br><span class="line">        &#x27;Kanban State&#x27;,</span><br><span class="line">        default=&#x27;normal&#x27;)</span><br></pre></td></tr></table></figure>
+
+<p>我们还应该在表单视图中添加这些字段，使用各自的特别组件。kanban_state字段就加在<code>&lt;div class=&quot;oe_title&quot;&gt;</code>之前并在按钮框之后：<code>&lt;field name=&quot;kanban_state&quot; widget=&quot;state_selection&quot; /&gt;</code>。priority应添加在name 字段之前，包裹在<code>&lt;h1&gt;</code>元素中：<code>&lt;field name=&quot;priority&quot; widget=&quot;priority&quot; /&gt;</code>。color字段一般不出现在表单视图中。</p>
+<p>既然借阅模型已有我们所需使用的所有字段，我们可以来写看板视图了。</p>
+<h3 id="看板卡片元素"><a href="#看板卡片元素" class="headerlink" title="看板卡片元素"></a>看板卡片元素</h3><p>看板视图框架包含一个<code>&lt;kanban&gt;</code>外层元素和以下基础结构：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&lt;kanban default_group_by=&quot;stage_id&quot; class=&quot;o_kanban_small_column&quot;&gt;</span><br><span class="line">                &lt;!-- Fields --&gt;</span><br><span class="line">                &lt;field name=&quot;stage_id&quot; /&gt;</span><br><span class="line">                &lt;field name=&quot;id&quot; /&gt;</span><br><span class="line">                &lt;field name=&quot;color&quot; /&gt;</span><br><span class="line">                &lt;field name=&quot;kanban_state&quot; /&gt;</span><br><span class="line">                &lt;field name=&quot;priority&quot; /&gt;</span><br><span class="line">                &lt;field name=&quot;message_partner_ids&quot; /&gt;</span><br><span class="line"></span><br><span class="line">                &lt;!-- Optional progress bar --&gt;</span><br><span class="line">                &lt;progressbar</span><br><span class="line">                    field=&quot;kanban_state&quot;</span><br><span class="line">                    colors=&#x27;&#123;&quot;done&quot;: &quot;success&quot;, &quot;blocked&quot;: &quot;danger&quot;&#125;&#x27; /&gt;</span><br><span class="line">                &lt;!-- Templates with HTML snippets to use --&gt;</span><br><span class="line">                &lt;templates&gt;</span><br><span class="line">                    &lt;t t-name=&quot;kanban-box&quot;&gt;</span><br><span class="line">                        &lt;!-- HTML Qweb template --&gt;</span><br><span class="line">                    &lt;/t&gt;</span><br><span class="line">                &lt;/template&gt;</span><br><span class="line">            &lt;/kanban&gt;</span><br></pre></td></tr></table></figure>
+
+<p>注意在元素中使用了default_group_by&#x3D;”stage_id”属性，我们用它来让看板默认以 stage 分组，这也是看板通常的分组方式。在简单卡片列表的看板中，如联系人，我们不需要添加该属性，只需使用<code>&lt;kanban&gt;</code>标签即可。<code>&lt;kanban&gt;</code>元素支持以下属性：</p>
+<ul>
+<li>default_group_by设置默认列分组使用的字段</li>
+<li>default_order设置看板项默认使用的排序</li>
+<li> quick_create&#x3D;”false”禁用了每列顶部的快速创建选项（大的加号符号），快速创建只需提供标题描述即可创建新项。false是 JavaScript 的语法，必须是小写字母。</li>
+<li>class为渲染看板视图的根元素添加 CSS 类。相关类是_kanban_small_column，让列比默认的更加紧湊。其它类可由我们模块的 CSS 文件来进行提供。</li>
+<li> group_create, group_edit, group_delete和quick_create_view可设置为 false 来禁用看板列上对应的操作。如group_create&#x3D;”false”删除右侧添加新列的按钮。</li>
+<li>on_create用于创建用户点击左上角 Create 按钮时弹出的自定义简单表单视图窗口。应为相应的表单视图添加<code>&lt;module&gt;.&lt;xml_id&gt;</code>值。</li>
+</ul>
+<p>然后我们的模板中使用了一组字段。确切地说，只有在 QWeb 表达式中明确使用的字段才需要在这里声明，用以保证从服务端抓取它们的数据。QWeb引擎在处理模板前，仅会在视图中查找 <code>&lt;field name=&quot;...&quot;&gt;</code>来从模型中获取数据。QWeb的属性通常使用不会被检测到的record.field引用方式。正因为如此，需在<code>&lt;templates&gt;</code>之前包含这些字段来让模板处理时有相应字段值可以使用。</p>
+<blockquote>
+<p>ℹ️<strong>Odoo 11中的修改</strong><br>引入了进度条组件。使用的时候在看板列的上方会出现一个颜色条，来提供该列各项的状态数据。在本文前面CRM Pipeline的示例图中可以查看。</p>
+</blockquote>
+<p><code>&lt;progressbar&gt;</code>有如下属性：</p>
+<ul>
+<li>field是对列中各项进行颜色分组的字段名</li>
+<li>colors是一个字典，将分组字段值与以下三种颜色分别进行映射：danger (红色), warning (黄色)或success (绿色)。</li>
+<li>sum_field是一个可选项，用于选取整列汇总的字段名。如未设置，会使用各项的计数值。</li>
+</ul>
+<p>然后我们的<code>&lt;templates&gt;</code>元素包含一个或多个QWeb模板来生成要使用的 HTML 片断。必须要有一个名为kanban-box的模板，它渲染看板卡片。还可以添加其它模板，通常用于定义主模板中复用到的 HTML 片断。这些模板使用标准的 HTML 和 QWeb 模板语言。QWeb提供了一些特殊指令，用于处理动态生成最终展示的 HTML。</p>
+<blockquote>
+<p>ℹ️<strong>Odoo 12中的修改</strong><br>Odoo 现在使用 Twitter Bootstrap 4，此前版本中使用Bootstrap 3。这些样式在渲染 HTML 的地方通常都可使用，有关Bootstrap更多知识请见<a target="_blank" rel="noopener" href="https://getbootstrap.com/">官方网站</a>。</p>
+</blockquote>
+<p>下面就来详细了解看板视图中所使用的QWeb模板设计。</p>
+<h3 id="看板卡片布局"><a href="#看板卡片布局" class="headerlink" title="看板卡片布局"></a>看板卡片布局</h3><p>看板卡片主内容区域在kanban-box模板内定义。这个内容区也可以有一个 footer 底部子容器。卡片右上角还可以添加按钮，点击后打开操作菜单的功能。对于footer区域，应在看板盒子模型底部使用<div>并添加oe_kanban_bottom CSS 类。还可以通过oe_kanban_bottom_left和oe_kanban_bottom_right CSS 类进一步分割为左、右 footer 区。此外，可通过Bootstrap的pull-left和pull-right类在卡片的任意位置（包括oe_kanban_bottom底部区域）添加向左或向右对齐元素。</p>
+<p>以下是对看板卡片中QWeb模板的第一次迭代：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&lt;t t-name=&quot;kanban-box&quot;&gt;</span><br><span class="line">    &lt;!-- Set the Kanban Card color --&gt;</span><br><span class="line">    &lt;div t-attf-class=&quot;</span><br><span class="line">        oe_kanban_color_#&#123;kanban_getcolor(record.color.raw_value)&#125;</span><br><span class="line">        oe_kanban_global_click&quot;&gt;</span><br><span class="line">        &lt;div class=&quot;o_dropdown_kanban dropdown&quot;&gt;</span><br><span class="line">            &lt;!-- Top-right drop down menu here... --&gt;</span><br><span class="line">        &lt;/div&gt;</span><br><span class="line">        &lt;div class=&quot;oe_kanban_body&quot;&gt;</span><br><span class="line">            &lt;!-- Content elements and fields go here... --&gt;</span><br><span class="line">        &lt;/div&gt;</span><br><span class="line">        &lt;div class=&quot;oe_kanban_footer&quot;&gt;</span><br><span class="line">            &lt;div class=&quot;oe_kanban_footer_left&quot;&gt;</span><br><span class="line">                &lt;!-- Left hand footer... --&gt;</span><br><span class="line">            &lt;/div&gt;</span><br><span class="line">            &lt;div class=&quot;oe_kanban_footer_right&quot;&gt;</span><br><span class="line">                &lt;!-- Right hand footer... --&gt;</span><br><span class="line">            &lt;/div&gt;</span><br><span class="line">        &lt;/div&gt;</span><br><span class="line">        &lt;div class=&quot;oe_clear&quot; /&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">&lt;/t&gt;</span><br></pre></td></tr></table></figure>
+
+<p>这就是看板卡片的整体结构。你可能注意到了在顶部<code>&lt;div&gt;</code>元素中使用了color字段来动态设置卡片颜色。在后面的部分中我们会讲解t-attf QWeb指令的细节。现在来为主内容区域添加内容：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;div class=&quot;oe_kanban_body&quot;&gt;</span><br><span class="line">    &lt;div&gt;</span><br><span class="line">        &lt;strong&gt;</span><br><span class="line">            &lt;a type=&quot;open&quot;&gt;&lt;field name=&quot;member_id&quot; /&gt;&lt;/a&gt;</span><br><span class="line">        &lt;/strong&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">    &lt;ul&gt;</span><br><span class="line">        &lt;li&gt;&lt;field name=&quot;user_id&quot; /&gt;&lt;/li&gt;</span><br><span class="line">        &lt;li&gt;&lt;field name=&quot;request_date&quot; /&gt;&lt;/li&gt;</span><br><span class="line">    &lt;/ul&gt;</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure>
+
+<p>这个模板中大部分都是常规 HTML，但也有渲染字段值的<code>&lt;field&gt;</code>元素和在常规表单视图按钮中使用的 type 属性，此处用在锚文本标签中。</p>
+<p>在左部 footer 中插入优先级组件：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">                            &lt;div class=&quot;o_kanban_record_bottom&quot;&gt;</span><br><span class="line">                                &lt;div class=&quot;oe_kanban_bottom_left&quot;&gt;</span><br><span class="line">                                    &lt;field name=&quot;priority&quot; widget=&quot;priority&quot; /&gt;</span><br><span class="line">                                    &lt;field name=&quot;activity_ids&quot; widget=&quot;kanban_activity&quot; /&gt;</span><br><span class="line">                                &lt;/div&gt;</span><br><span class="line">...</span><br><span class="line">                            &lt;/div&gt;</span><br></pre></td></tr></table></figure>
+
+<p>这里像我们在表单视图中做的那样添加了priority字段。还添加了一个计划活动的字段，使用kanban_activity特殊组件来显示即将开始活动的指示。</p>
+<p>在右部footer中，放入看板状态组件和请求借阅的会员头像：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">&lt;div class=&quot;oe_kanban_bottom_right&quot;&gt;</span><br><span class="line">    &lt;field name=&quot;kanban_state&quot;</span><br><span class="line">        widget=&quot;kanban_state_selection&quot; /&gt;</span><br><span class="line">    &lt;img t-att-src=&quot;kanban_image(</span><br><span class="line">            &#x27;library.checkout&#x27;,</span><br><span class="line">            &#x27;member_image&#x27;,</span><br><span class="line">            record.id.raw_value)&quot;</span><br><span class="line">        t-att-title=&quot;record.member_id.value&quot;</span><br><span class="line">        t-att-alt=&quot;record.member_id.value&quot;</span><br><span class="line">        width=&quot;24&quot;</span><br><span class="line">        height=&quot;24&quot;</span><br><span class="line">        class=&quot;oe_kanban_avatar&quot;</span><br><span class="line">    /&gt;</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure>
+
+<p>补充：原文件使用的 CSS 类oe_kanban_footer，oe_kanban_footer_left和oe_kanban_footer_right经测试不会进行左右对齐，参照 CRM 进行了如上修改</p>
+<p>看板状态通过<code>&lt;field&gt;</code>元素和kanban_state_selection组件来进行添加。用户头像使用 HTML <code>&lt;img&gt;</code>标签插入。图像内容使用QWeb t-att-命令动态生成，后面会详细讲解。这里使用了kanban_image()帮助函数来获取src属性的值。kanban_image() Javascript函数从 Odoo 模型中获取表单并在网页中渲染。有以下属性：</p>
+<ul>
+<li>获取图像的模型</li>
+<li>包含图像的字段</li>
+<li>获取的记录 ID</li>
+</ul>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b3ad0d808c6d4afd9fc5eea7d201eaa9~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12看板 footer 添加"></p>
+<h3 id="为看板卡片添加选项菜单"><a href="#为看板卡片添加选项菜单" class="headerlink" title="为看板卡片添加选项菜单"></a>为看板卡片添加选项菜单</h3><p>看板卡片可在右上角带有一个选项菜单。通常的操作有编辑或删除记录，但也可以为其添加和按钮调用的同样操作。还有一个设置卡片颜色的组件。以下是oe_kanban_content顶部添加的选项菜单的基础代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&lt;div class=&quot;o_dropdown_kanban dropdown&quot;&gt;</span><br><span class="line">    &lt;a class=&quot;dropdown-toggle btn&quot;</span><br><span class="line">        data-toggle=&quot;dropdown&quot; role=&quot;button&quot;</span><br><span class="line">        aria-label=&quot;Dropdown menu&quot;</span><br><span class="line">        title=&quot;Dropdown menu&quot;</span><br><span class="line">        href=&quot;#&quot;&gt;</span><br><span class="line">        &lt;span class=&quot;fa fa-ellipsis-v&quot; /&gt;</span><br><span class="line">    &lt;/a&gt;</span><br><span class="line">    &lt;div class=&quot;dropdown-menu&quot; role=&quot;menu&quot;&gt;</span><br><span class="line">        &lt;!-- Edit and Delete actions, if available: --&gt;</span><br><span class="line">        &lt;t t-if=&quot;widget.editable&quot;&gt;</span><br><span class="line">            &lt;a role=&quot;menuitem&quot; type=&quot;edit&quot; class=&quot;dropdown-item&quot;&gt;Edit&lt;/a&gt;</span><br><span class="line">        &lt;/t&gt;</span><br><span class="line">        &lt;t t-if=&quot;widget.deletable&quot;&gt;</span><br><span class="line">            &lt;a role=&quot;menuitem&quot; type=&quot;delete&quot; class=&quot;dropdown-item&quot;&gt;Delete&lt;/a&gt;</span><br><span class="line">        &lt;/t&gt;</span><br><span class="line">        &lt;!-- Color picker option --&gt;</span><br><span class="line">        &lt;ul class=&quot;oe_kanban_colorpicker&quot; data-field=&quot;color&quot; /&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure>
+
+<p>下拉菜单基本上是由带有<code>&lt;a&gt;</code>标签的<code>&lt;li&gt;</code> HTML 列表元素组成。Edit 和 Delete 这类选项需要满足指定条件下才会出现。这通过<a href="">QWeb的</a><a href="">t-if命令来实现。本文后续会详细讲解</a><a href="">QWeb的命令。widget全局变量表示一个KanbanRecord()  JS 对象，负责渲染当前看板卡片。有两个非常有用的属性：widget.editable和widget.deletable，让我们可以检查相应的操作是否可用。</a></p>
+<p>可以看到如何根据记录字段值来显示或隐藏选项，Set as Done仅在未设置is_done 字段时才会显示。最后一个选项添加颜色拾取器组件来使用 color 数据字段选择或修改卡片背景色。因此，除<button>元素外，<code>&lt;a&gt;</code>也可用于运行Odoo 操作。</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/a970e9acfd144d05bdc69c10e05e285c~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12看板视图下拉选项"></p>
+<h3 id="看板视图中的操作"><a href="#看板视图中的操作" class="headerlink" title="看板视图中的操作"></a>看板视图中的操作</h3><p>在QWeb模板中，用于超链的<code>&lt;a&gt;</code>标签可带有一个 type 属性。它设置链接执行的操作类型，这样链接和常规表单中的按钮可进行同样的操作。和表单视图一样，操作类型可以是action或object，并应带有一个 name 属性来标识所要执行的具体操作。此外，还有以下操作类型可以使用：</p>
+<ul>
+<li>open打开相应的表单视图</li>
+<li>edit在编辑模式下直接打开相应的表单视图</li>
+<li>delete删除记录并从看板视图中删除该项</li>
+</ul>
+<h2 id="QWeb-模板语言"><a href="#QWeb-模板语言" class="headerlink" title="QWeb 模板语言"></a>QWeb 模板语言</h2><p>QWeb会查找模板中的特殊指令并替换为动态生成的 HTML。这些指令是 XML 元素属性，可以用在<code>&lt;div&gt;</code>, <code>&lt;span&gt;</code>或<code>&lt;field&gt;</code>等有效标签或元素中。有时我们要使用QWeb指令但不希望放在模板的 XML 元素中。对这种情况，可以使用能带有 QWeb 指令（如t-if或t-foreach）的特殊元素<code>&lt;t&gt;</code>，该元组不会在最终产生的XML&#x2F;HTML有任何输出。</p>
+<p>QWeb指令常使用运算的表达式来根据当前记录值生成不同的结果。有两种不同的QWeb实现：客户端JavaScript和服务端Python。报表和网页使用服务端QWeb的 Python 实现。看板视图使用客户端JavaScript实现。也就是说看板视图中的QWeb表达式应使用JavaScript语法书写，而不是 Python。</p>
+<p>在显示看板视图时，内部的步骤大致如下：</p>
+<ol>
+<li>获取模板的XML进行渲染</li>
+<li>调用服务端read()方法来获取模板中所涉及的字段数据</li>
+<li>定位kanban-boxs模板并使用QWeb解析它来输出最终的HTML片断</li>
+<li>在浏览器显示(DOM)中注入 HTML</li>
+</ol>
+<p>以上在技术上并不精确，仅是用于理解看板视图中如何运作的脑图。下面我们将学习QWeb表达式运行并探讨可用的QWeb指令，通过示例改进借阅看板卡片。</p>
+<h3 id="QWeb-JavaScript-运行上下文"><a href="#QWeb-JavaScript-运行上下文" class="headerlink" title="QWeb JavaScript 运行上下文"></a>QWeb JavaScript 运行上下文</h3><p>许多QWeb指令使用表达式的运行来生成结果。在看板视图这类客户端的应用中，表达式应使用JavaScript书写。表达式在带有几个有用变量的上下文中进行运行。可用record 对象带有从服务端请求的字段来表示当前记录。字段值可通过raw_value或value属性来获取：</p>
+<ul>
+<li>raw_value是由服务端read()方法返回的值，因此在条件表达式中更适用</li>
+<li>value根据用户设置来格式化，用于在用户界面中的显示。常用于date&#x2F;datetime, float&#x2F;monetary和关联字段。</li>
+</ul>
+<p>QWeb运行上下文还可在JavaScript网页客户端中引用。要擅用这些需要对网页客户端结构有很好的理解，但这里我们不会进行深入介绍。要进行引用 ，QWeb表达式运行中有以下标识符可以使用：</p>
+<ul>
+<li>widget是对当前KanbanRecord() 组件对象的引用 ，用于在看板卡片中渲染当前记录。它会暴露一些帮助函数供我们使用。</li>
+<li>record是widget.record的简写形式，使用点号标记来提供对可用字段的访问。</li>
+<li>read_only_mode表示当前视图是否为读模式（而非编辑模式）。它是widget.view.options.read_only_mode的简写形式。</li>
+<li>instance是对全部网页客户端实例的一个引用 。</li>
+</ul>
+<p>值得一提的是有些字符是不能在表达式中使用的，比如小于号(<code>&lt;</code>) 。这是因为在 XML 标准中，这些字符具有特殊含义，不应在 XML 内容中使用。反向的<code>&gt;=</code>是一个有效替代方式，但通常是使用以下替代符号来进行不等式运算：</p>
+<ul>
+<li>lt是小于</li>
+<li>lte是小于等于</li>
+<li>gt是大于</li>
+<li>gte是大于等于</li>
+</ul>
+<blockquote>
+<p>ℹ️前述的比较符号仅用于 Odoo，是引入来解决 XML 格式中的限制的。它们不是 XML 标准的一部分。</p>
+</blockquote>
+<h3 id="字符串替换动态属性–-t-attf"><a href="#字符串替换动态属性–-t-attf" class="headerlink" title="字符串替换动态属性– t-attf"></a>字符串替换动态属性– t-attf</h3><p>我们的看板卡片使用t-attf QWeb指令来为顶级<code>&lt;div&gt;</code>元素动态设置一个类，这样卡片可根据 color 字段值来显示颜色。为此使用了t-attf- QWeb指令。t-attf-指令使用字符串替换动态生成标签属性。这让像 URL 地址或 CSS 类名这类较大字符串中的部分内容可动态生成。</p>
+<p>该指令查找表达式代码块进行运行并替换结果。它们通过 或#{和}来进行分隔。代码块的内容可以是任意JavaScript表达式并使用QWeb表达式中的任意可用变量，如record和widget。本例中我们还使用了专门提供的kanban_color() JS 函数，用于映射索引值到类颜色名。</p>
+<p>作为一个更复杂的示例，我们使用这个指令来动态生成用户的颜色，红色字体表示优先级很高。下面替换看板卡片中的相应代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;li t-attf-class=&quot;oe_kanban_text_&#123;&#123;</span><br><span class="line">    record.priority.raw_value lt &#x27;2&#x27;</span><br><span class="line">    ? &#x27;black&#x27; : &#x27;red&#x27;&#125;&#125;&quot;&gt;</span><br><span class="line">    &lt;field name=&quot;user_id&quot; /&gt;</span><br><span class="line">&lt;/li&gt;</span><br></pre></td></tr></table></figure>
+
+<p>这将会根据借阅优先级的值生成class&#x3D;”oe_kanban_text_red”或class&#x3D;”oe_kanban_text_black”。请注意看板视图中是有oe_kanban_text_red这个 CSS 类的，但oe_kanban_text_black仅用于演示，实际并不存在。</p>
+<blockquote>
+<p>ℹ️注意JavaScript表达式中使用的lt符号，是<code>&lt;</code>的转义表达式，并不能在XML中使用。</p>
+</blockquote>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/bbb868371a0c4abca20de08364d4a513~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12字符串替换动态属性"></p>
+<h3 id="表达式动态属性-t-att"><a href="#表达式动态属性-t-att" class="headerlink" title="表达式动态属性 - t-att"></a>表达式动态属性 - t-att</h3><p>t-att- QWeb指令通过运行表达式动态生成属性值。我们的看板卡片中使用它来为<code>&lt;img&gt;</code>标签动态生成属性，title 属性使用以下表达式动态渲染：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">t-att-title=&quot;record.member_id.value&quot;</span><br></pre></td></tr></table></figure>
+
+<p>.value字段返回在屏幕上显示的值。对于many-to-one字段，这通常是相关记录的 name 值。对于用户则是用户名。运行之后在鼠标悬停于图像上时会显示相应的用户名。</p>
+<p>在表达式运行的结果值为假时，就不会渲染该属性。这对于特殊的 HTML 属性非常重要，比如 input 字段中的 checked，即便在没有属性值时也会有显示效果。</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/84a431fa9e4849ff8c848cc377f2a8ca~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12表达式动态属性 "></p>
+<h3 id="循环-t-foreach"><a href="#循环-t-foreach" class="headerlink" title="循环 - t-foreach"></a>循环 - t-foreach</h3><p>通过循环遍历来重复同一 HTML 代码块。我们可使用它来添加记录 follower 的头像。让我们先来仅渲染记录的partner ID：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;t t-foreach=&quot;record.message_partner_ids.raw_value&quot; t-as=&quot;rec&quot;&gt;</span><br><span class="line">    &lt;t t-esc=&quot;rec&quot; /&gt;;</span><br><span class="line">&lt;/t&gt;</span><br></pre></td></tr></table></figure>
+
+<p>t-foreach指令接收一个JavaScript表达式，运行来遍历集合。在大多数情况下，这会是 一个to-many关联字段的名称。与t-as指令一同使用来设置用于引用遍历各项的名称。下面使用的t-esc指令运行所提供的表达式，本处仅为 rec 变量名，将其渲染为已转译的安全 HTML。</p>
+<p>在上例中，我们遍历了存储在message_partner_ids 字段中的 follower。因为在看板卡片上的空间有限，我们使用JS 的slice()函数来限定所显示的follower数量，如下所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">t-foreach=&quot;record.message_partner_ids.raw_value.slice(0, 3)&quot;</span><br></pre></td></tr></table></figure>
+
+<p>rec变量存储每个遍历值，本例中为partner ID。这样我们可以将循环改写为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;t t-foreach=&quot;record.message_partner_ids.raw_value.slice(0,3)&quot; t-as=&quot;rec&quot;&gt;</span><br><span class="line">    &lt;img t-att-src=&quot;kanban_image(&#x27;res.partner&#x27;, &#x27;image_small&#x27;, rec)&quot;</span><br><span class="line">        class=&quot;oe_avatar&quot; width=&quot;24&quot; height=&quot;24&quot; alt=&quot;&quot; /&gt;</span><br><span class="line">&lt;/t&gt;</span><br></pre></td></tr></table></figure>
+
+<p>比如可将其添加在右侧 footer 的用户头像旁。还包含一些帮助变量，它们的名称以t_as 中定义的变量名为前缀。本例中使用了rec，因此可用的帮助变量如下：</p>
+<ul>
+<li>rec_index是迭代索引，从0开始</li>
+<li>rec_size是集合中的元素数量</li>
+<li>rec_first在迭代的第一个元素中为真</li>
+<li>rec_last在迭代的最后一个元素中为真</li>
+<li>rec_even在索引为偶数时为真</li>
+<li>rec_odd在索引为奇数时为真</li>
+<li>rec_parity根据当前索引为odd或even</li>
+<li>rec_all表示进行迭代的对象</li>
+<li>rec_value在迭代{key:value} 字典时，存储value (rec存储键名)</li>
+</ul>
+<p>例如可通过如下代码去除ID 列表最后逗号：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;t t-foreach=&quot;record.message_parter_ids.raw_value.slice(0, 3)&quot;</span><br><span class="line">    t-as=&quot;rec&quot;&gt;</span><br><span class="line">    &lt;t t-esc=&quot;rec&quot; /&gt;</span><br><span class="line">    &lt;t t-if=&quot;!rec_last&quot;&gt;;&lt;/t&gt;</span><br><span class="line">&lt;/t&gt;</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/62b207944c9240ef9580c2e0dd46ae33~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12 循环遍历"></p>
+<h3 id="条件判断-t-if"><a href="#条件判断-t-if" class="headerlink" title="条件判断 - t-if"></a>条件判断 - t-if</h3><p>我们的看板视图在卡片选项菜单中使用了t-if指令来根据不同条件显示不同选项。t-if指令在客户端渲染看板视图时需传入在 JS 中运行的表达式。标签和其内容仅在条件运行值为true 时才会渲染。作为示例，仅在借出有值时显示图书借出数量，在request_date字段后加入如下代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;t t-if=&quot;record.num_books.raw_value gt 0&quot;&gt;</span><br><span class="line">    &lt;li&gt;&lt;field name=&quot;num_books&quot; /&gt; books&lt;/li&gt;</span><br><span class="line">&lt;/t&gt;</span><br></pre></td></tr></table></figure>
+
+<p>我们使用了<code>&lt;t t-if=&quot;...&quot;&gt;</code>元素，这样在条件为 false 时，元素不会有任何输出。在为 true 时，仅会渲染其所包含的<code>&lt;li&gt;</code>元素来进行输出。注意条件表达式中使用gt符号来替代<code>&gt;</code>以表示大于运算符。可通过t-elif和t-else来支持else if和else条件语句，使用示例如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;t t-if=&quot;record.num_books.raw_value == 0&quot;&gt;</span><br><span class="line">    &lt;li&gt;No books.&lt;/li&gt;</span><br><span class="line">&lt;/t&gt;</span><br><span class="line">&lt;t t-elif=&quot;record.num_books.raw_value gt 9&quot;&gt;</span><br><span class="line">    &lt;li&gt;A lot of books!&lt;/li&gt;</span><br><span class="line">&lt;/t&gt;</span><br><span class="line">&lt;t t-else=&quot;&quot;&gt;</span><br><span class="line">    &lt;li&gt;&lt;field name=&quot;num_books&quot; /&gt; books.&lt;/li&gt;</span><br><span class="line">&lt;/t&gt;</span><br></pre></td></tr></table></figure>
+
+<p>Javascript表达式中，AND和OR的运算符分别为&amp;&amp;和 ||。但在 XML 中不支持&amp;符号，我们可以使用 and 和 or 运算符来规避这一问题。</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/dd2823f9036f4465a39c5e956b743fd9~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12 QWeb 条件判断"></p>
+<h3 id="渲染值-t-esc和t-raw"><a href="#渲染值-t-esc和t-raw" class="headerlink" title="渲染值 - t-esc和t-raw"></a>渲染值 - t-esc和t-raw</h3><p>我们使用了<code>&lt;field&gt;</code>元素来渲染值，但也可以无需<code>&lt;field&gt;</code>标签直接显示字段值。t-esc指令运行表达式并将其渲染为转义后的 HTML 值，如下所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;t t-esc=&quot;record.message_partner_ids.raw_value&quot; /&gt;</span><br></pre></td></tr></table></figure>
+
+<p>有些情况下，如果确定源数据是安全的，可以无需转义使用t-raw 来渲染原始值，如下例所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;t t-raw=&quot;record.message_partner_ids.raw_value&quot; /&gt;</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>小贴士：</strong> 出于安全考虑，应尽量避免使用t-raw。它应严格用于输出特别准备不包含用户数据的HTML 数据，或者是已明确对 HTML 特殊字符转义的用户数据。</p>
+</blockquote>
+<h3 id="为变量设置值-t-set"><a href="#为变量设置值-t-set" class="headerlink" title="为变量设置值 - t-set"></a>为变量设置值 - t-set</h3><p>对于更复杂的逻辑，我们可以将表达式结果存储在变量中，在模板中随后使用。这通过t-set指令来实现，它设置变量名，紧接着使用t-value指令来添加表达式计算分配的值。作为示例，以下代码将优先级较高的和前面一节一样渲染为红色，但使用red_or_black 变量来作为 CSS 类使用的变量，如下所示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;t t-set=&quot;red_or_black&quot;</span><br><span class="line">    t-value=&quot;record.priority.raw_value gte &#x27;2&#x27; ? &#x27;oe_kanban_text_red&#x27; :&#x27;&#x27;&quot; /&gt;</span><br><span class="line">&lt;li t-att-class=&quot;red_or_black&quot;&gt;</span><br><span class="line">    &lt;field name=&quot;user_id&quot; /&gt;</span><br><span class="line">&lt;/li&gt;</span><br></pre></td></tr></table></figure>
+
+<p>变量中也可分配 HTML内容，示例如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;t t-set=&quot;calendar_sign&quot;&gt;</span><br><span class="line">    &lt;i class=&quot;fa fa-calendar&quot; /&gt;</span><br><span class="line">&lt;/t&gt;</span><br><span class="line">&lt;t t-raw=&quot;calendar_sign&quot; /&gt;</span><br></pre></td></tr></table></figure>
+
+<p> </p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/30566f47384743f99269d8d535f13e98~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12为变量设置值"></p>
+<h3 id="调用和复用其它模板-t-call"><a href="#调用和复用其它模板-t-call" class="headerlink" title="调用和复用其它模板 - t-call"></a>调用和复用其它模板 - t-call</h3><p>QWeb模板可作为可复用的 HTML 片段插入到其它模板中。我们无需重复相同的 HTML 代码块，可以设计构成部分来组成更为复杂的用户界面视图，可复用的模板在<code>&lt;templates&gt;</code>标签中定义，通过顶级元素中 kanban-box 以外的 t-name值进行标识。这些模板可通过t-call来进行包含，在当前看板视图、相同模块的其它地方以及其它插件模块中均可。</p>
+<p>follower头像列表可以通过可复用代码段来进行分离，下面通过子模板重写代码。首先应在 XML 文件中添加另一个模板，在<code>&lt;templates&gt;</code>元素内，<code>&lt;t t-name=&quot;kanban-box&quot;&gt;</code>节点之后，添加如下代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;t t-name=&quot;follower_avatars&quot;&gt;</span><br><span class="line">    &lt;div&gt;</span><br><span class="line">        &lt;t t-foreach=&quot;record.message_partner_ids.raw_value.slice(0,3)&quot;</span><br><span class="line">            t-as=&quot;rec&quot;&gt;</span><br><span class="line">            &lt;img t-att-src=&quot;kanban_image(&#x27;res.partner&#x27;, &#x27;image_small&#x27;, rec)&quot;</span><br><span class="line">                class=&quot;oe_avatar&quot; width=&quot;24&quot; height=&quot;24&quot; alt=&quot;&quot; /&gt;</span><br><span class="line">        &lt;/t&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">&lt;/t&gt;</span><br></pre></td></tr></table></figure>
+
+<p>在kanban-box主模板调用它就简单明了了，将原来包含 for each 指令的<div>元素修改为如下代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;t t-call=&quot;follower_avatars&quot; /&gt;</span><br></pre></td></tr></table></figure>
+
+<p>调用其它插件模块中定义的模板，和视图类似，我们需要使用完整的module.name标识符。比如，以上代码片断可使用library_checkout.follower_avatars完整标识符来进行引用 。调用的模板和调用者运行在同一上下文中，所以调用方中的变量名在处理调用模板时同样可用。</p>
+<p>一种更优雅的实现方式是向调用模板传递参数，这通过在 t-call 标签中设置变量来完成。这些仅在子模板上下文中运行和使用，在调用方上下文中并不存在。我们将使用这个方法来让调用方设置follower 头像的最大数，而不是在子模板中硬编码。首先，我们将原固定值3修改为一个变量 arg_max：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;t t-name=&quot;follower_avatars&quot;&gt;</span><br><span class="line">    &lt;div&gt;</span><br><span class="line">        &lt;t t-foreach=&quot;record.message_partner_ids.raw_value.slice(0, arg_max)&quot;</span><br><span class="line">            t-as=&quot;rec&quot;&gt;</span><br><span class="line">            &lt;img t-att-src=&quot;kanban_image(&#x27;res.partner&#x27;, &#x27;image_small&#x27;, rec)&quot;</span><br><span class="line">                class=&quot;oe_avatar&quot; width=&quot;24&quot; height=&quot;24&quot; alt=&quot;&quot; /&gt;</span><br><span class="line">        &lt;/t&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">&lt;/t&gt;</span><br></pre></td></tr></table></figure>
+
+<p>然后像下面这样在执行子模板调用时定义该变量：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;t t-call=&quot;follower_avatars&quot;&gt;</span><br><span class="line">    &lt;t t-set=&quot;arg_max&quot; t-value=&quot;3&quot; /&gt;</span><br><span class="line">&lt;/t&gt;</span><br></pre></td></tr></table></figure>
+
+<p>t-call元素内的整个内容可通过0（数字零）这个魔法变量在子模板中使用。不使用参数变量，我们还可以定义代码片断并在子模板中通过<code>&lt;t t-raw=&quot;0&quot; /&gt;</code>使用。这对以模块化的方式创建布局、合并&#x2F;嵌套 QWeb 模板尤为有用。</p>
+<h3 id="字典和列表动态属性"><a href="#字典和列表动态属性" class="headerlink" title="字典和列表动态属性"></a>字典和列表动态属性</h3><p>我们已经学习最重要的那些QWeb指令，但还有一部分我们也应该了解。下面简短地进行讲解。</p>
+<p>前面我们看到t-att-NAME和t-attf-NAME样式的动态标签属性，此外还可以使用固定的t-att指令。它接收键值对字典或pair（两个元素的列表）。</p>
+<p>使用如下映射：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;p t-att=&quot;&#123;&#x27;class&#x27;: &#x27;oe_bold&#x27;, &#x27;name&#x27;: &#x27;Hello&#x27;&#125;&quot; /&gt;</span><br></pre></td></tr></table></figure>
+
+<p>将生成如下结果：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;p class=&quot;oe_bold&quot; name=&quot;Hello&quot; /&gt;</span><br></pre></td></tr></table></figure>
+
+<p>使用如下 pair：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;p t-att=&quot;[&#x27;class&#x27;, &#x27;oe_bold&#x27;]&quot; /&gt;</span><br></pre></td></tr></table></figure>
+
+<p>将生成如下结果：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;p class=&quot;oe_bold&quot; /&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="看板视图的继承"><a href="#看板视图的继承" class="headerlink" title="看板视图的继承"></a>看板视图的继承</h2><p>看板视图和报表中使用的模板可通过视图相同的常规方法来进行继承，例如，使用XPath表达式，参见第四章 <a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-extending-modules/">Odoo 12 开发之模块继承</a>。</p>
+<p>常见的情况是使用<code>&lt;field&gt;</code>元素作为选择器，然后在其前或后添加其它元素。对于看板视图，同一字段可声明多次，例如在模板前和模板内分别声明。这时，选择器将匹配第一个字段元素，不会将修改我们希望修改的模板内的字段。要规避这一问题，我们需使用XPath来确保匹配的是模板内的字段，例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;record id=&quot;res_partner_kanban_inherit&quot; model=&quot;ir.ui.view&quot;&gt;</span><br><span class="line">	&lt;field name=&quot;name&quot;&gt;Contact Kanban modification&lt;/field&gt;</span><br><span class="line">	&lt;field name=&quot;model&quot;&gt;res.partner&lt;/field&gt;</span><br><span class="line">	&lt;field name=&quot;inherit_id&quot; ref=&quot;base.res_partner_kanban_view&quot; /&gt;</span><br><span class="line">	&lt;field name=&quot;arch&quot; type=&quot;xml&quot;&gt;</span><br><span class="line">		&lt;xpath expr=&quot;//t[@t-name=&#x27;kanban-box&#x27;]//field[@name=&#x27;display_name&#x27;]&quot;</span><br><span class="line">			position=&quot;before&quot;&gt;</span><br><span class="line">			&lt;span&gt;Name:&lt;/span&gt;</span><br><span class="line">		&lt;/xpath&gt;</span><br><span class="line">	&lt;/field&gt;</span><br><span class="line">&lt;/record&gt;</span><br></pre></td></tr></table></figure>
+
+<p>在上例中，XPath 查找<code>&lt;t t-name=&quot;kanban-box&quot;&gt;</code>元素内的<code>&lt;field name=&quot;display_name&quot;&gt;</code>元素。这条规则会排除掉<code>&lt;templates&gt;</code>版块之外的相同字段元素。对于更 复杂的XPath表达式，我们可以使用命令行工具来研究出正确的语法。你的 Linux 系统中可能已有安装了xmllint工具（sudo apt install libxml2-utils），它有一个–xpath 选项可对 XML 文件执行查询。</p>
+<p>另一个输出更好看的选项是Debian&#x2F;Ubuntu包中的libxml-xpath-perl，带有一个xpath 命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt-get install libxml-xpath-perl</span><br><span class="line">$ xpath -e &quot;//record[@id=&#x27;res_partner_kanban_view&#x27;]&quot; -e &quot;//field[@name=&#x27;display_name&#x27;]]&quot; /path/to/myfile.xml</span><br></pre></td></tr></table></figure>
+
+<h2 id="自定义-CSS-和-JavaScript"><a href="#自定义-CSS-和-JavaScript" class="headerlink" title="自定义 CSS 和 JavaScript"></a>自定义 CSS 和 JavaScript</h2><p>如前所见，看板视图大多数为 HTML 并重度使用了 CSS 类。我们介绍了标准产品中提供的一些常用 CSS 类，但要实现最佳效果，我们还可以为模块添加自己的 CSS。我们这里不会详细讲解 CSS 代码的写法，但相应地需要讲解如何为模块添加自己的 CSS (JavaScript)这些前端资源。Odoo 中后台的前端资源在assets_backend模块中声明。要在模块中添加前端资源，需要对模块进行继承。进行这一操作的 XML 文件通常放在views&#x2F; 模块子目录内。</p>
+<p>以下是在library_checkout模块中添加一个 CSS 和 JavaScript文件的示例，对应文件为library_checkout&#x2F;views&#x2F;checkout_kanban_assets.xml：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">&lt;odoo&gt;</span><br><span class="line">    &lt;template id=&quot;assets_backend&quot; inherit_id=&quot;web.assets_backend&quot;</span><br><span class="line">        name=&quot;Library Checkout Kanban Assets&quot;&gt;</span><br><span class="line">        &lt;xpath expr=&quot;.&quot; position=&quot;inside&quot;&gt;</span><br><span class="line">            &lt;link rel=&quot;stylesheet&quot;</span><br><span class="line">                href=&quot;/library_checkout/static/src/css/checkout_kanban.css&quot; /&gt;</span><br><span class="line">            &lt;script type=&quot;text/javascript&quot;</span><br><span class="line">                src=&quot;/library_checkout/static/src/js/checkout_kanban.js&quot;&gt;</span><br><span class="line">            &lt;/script&gt;</span><br><span class="line">        &lt;/xpath&gt;</span><br><span class="line">    &lt;/template&gt;</span><br><span class="line">&lt;/odoo&gt;</span><br></pre></td></tr></table></figure>
+
+<p>和平常一样，需要在__manifest__.py描述文件中对其进引用，注意这些前端文件放在&#x2F;static&#x2F;src 子目录中，这不是强制要求，但是约定俗成如此。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>我们学习了看板和如何创建看板视图来实现这些看板。我们还介绍了QWeb模板以及使用它来设计看板卡片。QWeb同时还是 CMS 网站的渲染引擎，因此它在 Odoo 工具集中的重要性越来越高。</p>
+<p>看板视图可通过其它视图中使用的相同XML语法来进行继承。看板的 XML 结构可能会更为复杂，我们经常需要使用XPath表达式来定义需继承的元素。</p>
+<p>最后，高级看板视图可以使用独有的 CSS 和 JavaScript 文件。可作为模块文件来进行添加，然后应在web.assets_backend QWeb模板中添加这些文件，以在客户端页面中包含。</p>
+<p>在下一篇文章中，我们将继续使用QWeb，但是是在服务端创建自定义报表 。</p>
+<p> </p>
+<p>☞☞☞第十二章 <a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-reports-qweb/">Odoo 12开发之报表和服务端 QWeb</a></p>
+<p> </p>
+<h2 id="扩展阅读"><a href="#扩展阅读" class="headerlink" title="扩展阅读"></a>扩展阅读</h2><p>以下参考材料是对本文所学习课题的补充：</p>
+<ul>
+<li>Odoo<a target="_blank" rel="noopener" href="https://www.odoo.com/documentation/12.0/reference/qweb.html">官方文档</a>QWeb的介绍</li>
+<li>Bootstrap<a target="_blank" rel="noopener" href="https://getbootstrap.com/docs/4.1/getting-started/introduction/">样式文档</a></li>
+<li>Font Awesome<a target="_blank" rel="noopener" href="https://fontawesome.com/v4.7.0/icons/">图标索引</a></li>
+</ul>
+<p> </p>
+<p>☞☞☞第十一章 <a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-kanban-qweb/">Odoo 12开发之看板视图和用户端 QWeb</a></p>
+<p> </p>
+<h2 id="扩展阅读-1"><a href="#扩展阅读-1" class="headerlink" title="扩展阅读"></a>扩展阅读</h2><p>以下本文中所讨论的话题的附加参考和补充材料：</p>
+<ul>
+<li><p>Odoo 官方文档</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://www.odoo.com/documentation/12.0/reference/actions.html">有关actions</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.odoo.com/documentation/12.0/reference/views.html">有关视图</a></li>
+</ul>
+</li>
+<li><p>Font Awesome<a target="_blank" rel="noopener" href="https://fontawesome.com/v4.7.0/icons/">图标索引</a></p>
+</li>
+</ul>
+<p>本文首发地址：<a target="_blank" rel="noopener" href="https://alanhou.org/developer-mode-odoo12/">Alan Hou 的个人博客</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Odoo-Odoo12/" rel="tag"># Odoo,Odoo12</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2019/01/17/odoo-essentials-12-chapter10/" rel="prev" title="第十章 Odoo 12开发之后台视图 – 设计用户界面">
+                  <i class="fa fa-chevron-left"></i> 第十章 Odoo 12开发之后台视图 – 设计用户界面
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Alan Hou</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
