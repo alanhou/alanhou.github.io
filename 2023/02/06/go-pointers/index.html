@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 6.3.0">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+  <link rel="manifest" href="/images/manifest.json">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.1/css/all.min.css" integrity="sha256-Z1K5uhUaJXA7Ll0XrZ/0JhX4lAtZFpT6jkKrEDT0drU=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"alanhou.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.14.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="本文来自正在规划的Go语言&amp;云原生自我提升系列，欢迎关注后续文章。 我们已学习过变量和函数，下面来快速了解下指针的语法。然后我们通过将Go中的指针与其它语言中的类进行对比来讲清指针的原理。我们还会学习如何以及何时使用指针、Go中如何分配内存以及正确使用指针及值是如何使Go程序变得更快速、更高效的。 指针快速入门指针其实就一个存储了值所在内存位置的变量。如果读者学过计算机课的话，可能见过表示">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="云原生系列Go语言篇-指针">
+<meta property="og:url" content="https://alanhou.github.io/2023/02/06/go-pointers/index.html">
+<meta property="og:site_name" content="Alan Hou的个人博客">
+<meta property="og:description" content="本文来自正在规划的Go语言&amp;云原生自我提升系列，欢迎关注后续文章。 我们已学习过变量和函数，下面来快速了解下指针的语法。然后我们通过将Go中的指针与其它语言中的类进行对比来讲清指针的原理。我们还会学习如何以及何时使用指针、Go中如何分配内存以及正确使用指针及值是如何使Go程序变得更快速、更高效的。 指针快速入门指针其实就一个存储了值所在内存位置的变量。如果读者学过计算机课的话，可能见过表示">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/01375eb4fbf9442787caff68617eebd9~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/9c493454bca24133888e73e1da688ea5~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/421176f1f1f847998dfd76c455ac1196~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/0208cd03027e4392a363ab1fe1497ddc~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/a1c8fa1c83a74b9dbe67000af8eda16d~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/0aa0dc1276364e1a943466aaf73c7d5d~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/653fb40c8d7f41368860205bceac84f4~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/9d0d0497c8a745c09683feb293ad29a5~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/5cd021727deb44f0ae55eed9579e129f~tplv-k3u1fbpfcp-zoom-1.image">
+<meta property="article:published_time" content="2023-02-05T16:00:00.000Z">
+<meta property="article:modified_time" content="2023-02-06T10:15:53.643Z">
+<meta property="article:author" content="Alan Hou">
+<meta property="article:tag" content="Golang">
+<meta property="article:tag" content="Go 语言">
+<meta property="article:tag" content="云原生">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/01375eb4fbf9442787caff68617eebd9~tplv-k3u1fbpfcp-zoom-1.image">
+
+
+<link rel="canonical" href="https://alanhou.github.io/2023/02/06/go-pointers/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"en","comments":true,"permalink":"https://alanhou.github.io/2023/02/06/go-pointers/","path":"2023/02/06/go-pointers/","title":"云原生系列Go语言篇-指针"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>云原生系列Go语言篇-指针 | Alan Hou的个人博客</title>
+  
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-53450398-1"></script>
+  <script class="next-config" data-name="google_analytics" type="application/json">{"tracking_id":"UA-53450398-1","only_pageview":false}</script>
+  <script src="/js/third-party/analytics/google-analytics.js"></script>
+
+  <script src="/js/third-party/analytics/baidu-analytics.js"></script>
+  <script async src="https://hm.baidu.com/hm.js?c6d32d47881743b193f462b65f69d37f"></script>
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">Alan Hou的个人博客</p>
+      <i class="logo-line"></i>
+    </a>
+      <p class="site-subtitle" itemprop="description">用行动赢得尊重</p>
+      <img class="custom-logo-image" src="/images/logo.png" alt="Alan Hou的个人博客">
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="Search" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li><li class="menu-item menu-item-odoo"><a href="/tags/Odoo/" rel="section"><i class="fa-solid fa-o fa-fw"></i>Odoo</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%87%E9%92%88%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8"><span class="nav-number">1.</span> <span class="nav-text">指针快速入门</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%B8%8D%E8%A6%81%E7%95%8F%E6%83%A7%E6%8C%87%E9%92%88"><span class="nav-number">2.</span> <span class="nav-text">不要畏惧指针</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%87%E9%92%88%E8%A1%A8%E6%98%8E%E5%8F%82%E6%95%B0%E5%8F%AF%E5%8F%98"><span class="nav-number">3.</span> <span class="nav-text">指针表明参数可变</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%87%E9%92%88%E9%9D%9E%E9%A6%96%E9%80%89"><span class="nav-number">4.</span> <span class="nav-text">指针非首选</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8C%87%E9%92%88%E6%8F%90%E5%8D%87%E6%80%A7%E8%83%BD"><span class="nav-number">5.</span> <span class="nav-text">指针提升性能</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%9B%B6%E5%80%BC%E5%92%8C%E6%97%A0%E5%80%BC"><span class="nav-number">6.</span> <span class="nav-text">零值和无值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AD%97%E5%85%B8%E5%92%8C%E5%88%87%E7%89%87%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">7.</span> <span class="nav-text">字典和切片的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%86%E5%88%87%E7%89%87%E7%94%A8%E4%BD%9C%E7%BC%93%E5%86%B2"><span class="nav-number">8.</span> <span class="nav-text">将切片用作缓冲</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%99%8D%E4%BD%8E%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E5%99%A8%E7%9A%84%E5%B7%A5%E4%BD%9C%E9%87%8F"><span class="nav-number">9.</span> <span class="nav-text">降低垃圾回收器的工作量</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B0%8F%E7%BB%93"><span class="nav-number">10.</span> <span class="nav-text">小结</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Alan Hou</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://alanhou.github.io/2023/02/06/go-pointers/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Alan Hou">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alan Hou的个人博客">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="云原生系列Go语言篇-指针 | Alan Hou的个人博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          云原生系列Go语言篇-指针
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2023-02-06 00:00:00 / Modified: 18:15:53" itemprop="dateCreated datePublished" datetime="2023-02-06T00:00:00+08:00">2023-02-06</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>本文来自正在规划的<a target="_blank" rel="noopener" href="https://alanhou.org/go-cloudnative/">Go语言&amp;云原生自我提升系列</a>，欢迎关注后续文章。</p>
+<p>我们已学习过变量和函数，下面来快速了解下指针的语法。然后我们通过将Go中的指针与其它语言中的类进行对比来讲清指针的原理。我们还会学习如何以及何时使用指针、Go中如何分配内存以及正确使用指针及值是如何使Go程序变得更快速、更高效的。</p>
+<h2 id="指针快速入门"><a href="#指针快速入门" class="headerlink" title="指针快速入门"></a>指针快速入门</h2><p>指针其实就一个存储了值所在内存位置的变量。如果读者学过计算机课的话，可能见过表示内存中如何存储变量的图。如下的两个变量可表示为图6-1：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var x int32 = 10</span><br><span class="line">var y bool = true</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/01375eb4fbf9442787caff68617eebd9~tplv-k3u1fbpfcp-zoom-1.image" alt="图6-1. 在内存中存储两个变量"></p>
+<p>图6-1. 在内存中存储两个变量</p>
+<p>每个变量都存储在一段或多段连续的内存中，称为内存地址。不同类型的变量所占的内存大小可能是不同的。本例中有两个变量<code>x</code>，它是一个32位的整型，以及布尔类型的<code>y</code>。存储32位的整型需要4个字节，因而<code>x</code>存储于4个字节中，从地址1到地址4。布尔类型只占一个字节（只需用一位来表示true或false，但独立寻址的内存大小是一个字节），因而<code>y</code>存储于地址5位的一个字节中，<code>true</code>通过1进行表示。</p>
+<p>指针的内容就是存储了其它变量的地址 。图6-2演示了如何在内存中存储指针：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">var x int32 = 10</span><br><span class="line">var y bool = true</span><br><span class="line">pointerX := &amp;x</span><br><span class="line">pointerY := &amp;y</span><br><span class="line">var pointerZ *string</span><br></pre></td></tr></table></figure>
+
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/9c493454bca24133888e73e1da688ea5~tplv-k3u1fbpfcp-zoom-1.image" alt="图6-2：在内存中存储指针"></p>
+<p>图6-2：在内存中存储指针</p>
+<p>虽然不同变量类型占用的内存空间不同，但不管是什么类型的指针都占据相同的大小：也即存储数据在内存中空间的字节数相同。<code>x</code>的指针<code>pointerX</code>存储在位置6，值为1，也即<code>x</code>的地址。类似地<code>y</code>的指针<code>pointerY</code>存储于位置10，值为5，即为<code>y</code>的地址。最后一个变量<code>pointerZ</code>，存储于位置14，值为0，因为它没有指向任何变量。</p>
+<p>指针的零值为<code>nil</code>。前面的文章中已经多次使用到了<code>nil</code>，用作切片、字典和函数的零值。所有这些类型都通过指针实现。（还有两种类型，通道和接口，也是用接口实现。我们会在<a target="_blank" rel="noopener" href="https://alanhou.org/types-methods-and-interfaces/">类型、方法和接口</a>一章的快速讲解接口以及<a target="_blank" rel="noopener" href="https://alanhou.org/concurrency-in-go/">并发</a>一章中进行讲解）。在<a target="_blank" rel="noopener" href="https://alanhou.org/composite-types/">复合类型</a>一章中，<code>nil</code>是表示缺少值的某种类型的无类型标识符。与C语言中的<code>NULL</code>不同，<code>nil</code>不是0的别名，它与数字间不可互转。</p>
+<p>警告：在<a target="_blank" rel="noopener" href="http://alanhou.org/blocks-shadows-and-control-structures">代码块，遮蔽和控制结构</a>一章中提到，<code>nil</code>定义于全局代码块中。因其是在全局代码块中定义，可能会被遮蔽。不要将变量或函数命名为<code>nil</code>，除非你是和同事恶作剧，或是完全不care年终评审。</p>
+<p>Go指针的语法部分来自C和C++。因Go自带垃圾回收器，大部分内存管理的痛楚都不存在了。此外，C和C++中一些指针黑活，包括指针运算，在Go语言中都不再允许。</p>
+<p>注：Go标准库中有一个<code>unsafe</code>包，可对数据结构执行一些底层运算。虽然在C中操作指针是常见运算，但Go开发者极少使用<code>unsafe</code>。在<a target="_blank" rel="noopener" href="https://alanhou.org/reflect-unsafe-cgo/">恶龙三剑客：反射、Unsafe 和 Cgo</a>一章中会进行讲解。</p>
+<p><code>&amp;</code>是地址运算符。放在值类型的前面用于返回所存储值的内存地址：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">x := &quot;hello&quot;</span><br><span class="line">pointerToX := &amp;x</span><br></pre></td></tr></table></figure>
+
+<p><code>*</code>为间接运算符。放在指针类型的变量前可返回其所指向的值。这称为解引用：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">x := 10</span><br><span class="line">pointerToX := &amp;x</span><br><span class="line">fmt.Println(pointerToX)  // 打印内存地址</span><br><span class="line">fmt.Println(*pointerToX) // 打印10</span><br><span class="line">z := 5 + *pointerToX</span><br><span class="line">fmt.Println(z)           // 打印15</span><br></pre></td></tr></table></figure>
+
+<p>在对指针解引用之前，必须确保指针不为nil。对<code>nil</code>指针解引用会崩溃（panic）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var x *int</span><br><span class="line">fmt.Println(x == nil) // 打印true</span><br><span class="line">fmt.Println(*x)       // 程序崩溃</span><br></pre></td></tr></table></figure>
+
+<p>指针类型是用于表示指针的类型。写法为在类型名前加<code>*</code>。指针类型可基于任意类型：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">x := 10</span><br><span class="line">var pointerToX *int</span><br><span class="line">pointerToX = &amp;x</span><br></pre></td></tr></table></figure>
+
+<p>内置函数<code>new</code>可创建指针变量。它返回指定类型零值实例的指针：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var x = new(int)</span><br><span class="line">fmt.Println(x == nil) // 打印false</span><br><span class="line">fmt.Println(*x)       // 打印0</span><br></pre></td></tr></table></figure>
+
+<p>较少使用<code>new</code>函数。对于结构体，可在结构体字面量前加<code>&amp;</code>创建指针实例。不能在原生类型字面量（数字、布尔值和字符串）或常量前加<code>&amp;</code>，因为它们没有内存地址，仅在编译时存在。要用原生类型的指针时，声明一个变量指向它：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">x := &amp;Foo&#123;&#125;</span><br><span class="line">var y string</span><br><span class="line">z := &amp;y</span><br></pre></td></tr></table></figure>
+
+<p>不能获取常的地址有时会带来不便。结构体中包含原生类型指针字段时，就无法直接对字段赋字面量：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">type person struct &#123;</span><br><span class="line">    FirstName  string</span><br><span class="line">    MiddleName *string</span><br><span class="line">    LastName   string</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">p := person&#123;</span><br><span class="line">  FirstName:  &quot;Pat&quot;,</span><br><span class="line">  MiddleName: &quot;Perry&quot;, // 该行无法通过编译</span><br><span class="line">  LastName:   &quot;Peterson&quot;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>编译这段代码返回如下错误：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cannot use &quot;Perry&quot; (type string) as type *string in field value</span><br></pre></td></tr></table></figure>
+
+<p>倘若在<code>&quot;Perry&quot;</code>前添加<code>&amp;</code>，会报如下错误：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cannot take the address of &quot;Perry&quot;</span><br></pre></td></tr></table></figure>
+
+<p>解决这个问题有两种方法。第一种上面讲到了，引入一个存储常量值的变量。第二种是编译一个接收布尔值、数值或字符串并返回该类型指针的帮助函数：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">func stringp(s string) *string &#123;</span><br><span class="line">    return &amp;s</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>借助这个函数，可以改写成这样：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">p := person&#123;</span><br><span class="line">  FirstName:  &quot;Pat&quot;,</span><br><span class="line">  MiddleName: stringp(&quot;Perry&quot;), // 正常运行</span><br><span class="line">  LastName:   &quot;Peterson&quot;,</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>为什么这样就正常了呢？对函数传递常量时，会将常量拷贝到参数变量。因其是一个变量，就在内存中有一段地址。然后这个函数会返回变量的内存地址。</p>
+<p>小贴士：帮助函数会将常量值转化为指针。</p>
+<h2 id="不要畏惧指针"><a href="#不要畏惧指针" class="headerlink" title="不要畏惧指针"></a>不要畏惧指针</h2><p>学习指针的第一条就是不要畏惧。读者如果习惯了使用Java、JavaScript、Python或Ruby，可能会觉得指针很可怕。但指针其实和读者所熟知的类相似。Go语言中非指针结构体才是异类。</p>
+<p>在Java和JavaScript中，原生类型和类不同（Python和Ruby中并没有原始值，而是使用不可变实例来进行模拟）。在将原始值赋给另一个变量或传递给函数或方法时，另一个变量对值的修改不会体现在原变量中，见例6-1。</p>
+<p>例6-1 Java中原始变量赋值不共享内存</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">int x = 10;</span><br><span class="line">int y = x;</span><br><span class="line">y = 20;</span><br><span class="line">System.out.println(x); // 打印10</span><br></pre></td></tr></table></figure>
+
+<p>我们再来看将类实例赋值给另一个变量或传递给函数或方法的情况（例6-2使用Python编写，Java、JavaScript和Ruby中相应的代码参见<a target="_blank" rel="noopener" href="https://github.com/learning-go-book/language_pointer_examples">GitHub</a>）。</p>
+<p>例6-2 将类实例传递给函数</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">class Foo:</span><br><span class="line">    def __init__(self, x):</span><br><span class="line">        self.x = x</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def outer():</span><br><span class="line">    f = Foo(10)</span><br><span class="line">    inner1(f)</span><br><span class="line">    print(f.x)</span><br><span class="line">    inner2(f)</span><br><span class="line">    print(f.x)</span><br><span class="line">    g = None</span><br><span class="line">    inner2(g)</span><br><span class="line">    print(g is None)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def inner1(f):</span><br><span class="line">    f.x = 20</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">def inner2(f):</span><br><span class="line">    f = Foo(30)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">outer()</span><br></pre></td></tr></table></figure>
+
+<p>运行这段代码会打印：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">20</span><br><span class="line">20</span><br><span class="line">True</span><br></pre></td></tr></table></figure>
+
+<p>这是由于Java、Python、JavaScript和Ruby具有如下特征：</p>
+<ul>
+<li>如果对函数传递类的实例且修改其字段值，修改会作用于所传递的变量。</li>
+<li>如重新赋值参数，修改不会作用于所传入的变量。</li>
+<li>如使用<code>nil/null/None</code>传递参数值，将参数设为其它值不会修改调用函数中的变量。</li>
+</ul>
+<p>有人在讲解这一行为时，会说这些语言中类实例通过指针传递。这是不对的。如果真是通过指针传递，第二、三种情况会修改调用函数中的变量。这些语言和Go一样都是值传递。</p>
+<p>这里看到各种编程语言中的类实例使用指针实现。在将类实例传入函数或方法时，所拷贝的值是实例的指针。因<code>outer</code>和<code>inner1</code>指向相同的内存，<code>inner1</code>中对<code>f</code>的修改会体现在<code>outer</code>的变量中。在<code>inner2</code>对<code>f</code>赋一个新的类实例时，会单独创建一个实例且不会影响到<code>outer</code>中的变量。</p>
+<p>在Go语言中使用指针变量效果相同。Go与其它语言的差别是可以选择使用原生类型和结构体的指针或是值。大部分情况下应使用值。这会更容易理解数据是在何时以及如何发行修改的。使用值的另一个好处是用值会减少垃圾回收器的工作量。在<strong>降低垃圾回收器的工作量</strong>一节中会再做讨论。</p>
+<h2 id="指针表明参数可变"><a href="#指针表明参数可变" class="headerlink" title="指针表明参数可变"></a>指针表明参数可变</h2><p>我们已经知道，Go常量可对字面量表达式添加名称并在运行时进行计算。语言中没有其它声明不可变量值的机制。现在软件工程包含不可变量性。MIT的<a target="_blank" rel="noopener" href="http://web.mit.edu/6.031/www/fa20/classes/08-immutability/">Software Construction课程</a>总结原因为：“不可变量类型不易产生 bug，更易于掌握，也更能应对变化。可变性会使用理解程序变难，强制合约则更难。”</p>
+<p>Go语言中不可变声明的匮乏看起来是个问题，但通过允许选择值和指针参数类型解决了这一问题。在<strong>软件构造</strong>的课程资料中讲到：“如果仅在方法内部使用可变量对象且对向的引用唯一就没有问题。”Go开发者不是将部分变量和参数声明为不可变，而是通过使用指针来表示参数可变。</p>
+<p>因Go一种值传递的编程语言，传入函数的值是一份拷贝。对于原生类型、结构体和数组等非指针类型，这意味着调用函数无法修改其原始值。而调用函数中为原始数据的拷贝，进而保障了原始数据的不可变性。</p>
+<p>注：我们会在<strong>字典和切片的区别</strong>一节中讨论对函数传递字典和切片。</p>
+<p>但如果将指针传递给函数的话，函数会得到指针的拷贝。它仍会指向原数据，也就意味着调用函数可修改原数据。</p>
+<p>这里有两种潜在情况。</p>
+<p>第一是如果将<code>nil</code>指针传递给函数，无法将值变为非空。只能对已赋值的指针重新赋值。乍一听让人困扰，但是有道理的。因内容空间是通过值传递传给函数的，我们无法改变其内存地址，就像我们不能修改<code>int</code>参数值一样。可通过如下程序进行演示：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">func failedUpdate(g *int) &#123;</span><br><span class="line">    x := 10</span><br><span class="line">    g = &amp;x</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func main() &#123;</span><br><span class="line">    var f *int // f为nil</span><br><span class="line">    failedUpdate(f)</span><br><span class="line">    fmt.Println(f) // 打印nil</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>代码运行的流程见图6-3。</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/421176f1f1f847998dfd76c455ac1196~tplv-k3u1fbpfcp-zoom-1.image" alt="图6-3 无法更新nil指针"><br>图6-3 无法更新<code>nil</code>指针<br>刚开始<code>main</code>中的<code>f</code>是一个<code>nil</code>变量。调用<code>failedUpdate</code>后，我们将<code>f</code>的值，也就是<code>nil</code>，拷贝到参数<code>g</code>中。也就是说<code>g</code>被设置成了<code>nil</code>。然后在<code>failedUpdate</code>中声明了一个变量<code>x</code>，值为10。接着修改<code>failedUpdate</code>中的<code>g</code>指向<code>x</code>。这不会修改<code>main</code>中的<code>f</code>，在退出<code>failedUpdate</code>并返回<code>main</code>时，<code>f</code>仍为<code>nil</code>。</p>
+<p>第二种情况是在退出函数时希望赋值给指针参数的值依然存在，就必须解引用指针并设置值。修改指针改变的是其拷贝而非原始指针。解引用会将新值放入原始指针和拷贝指针共同指向的内存空间。下面是一段简短演示程序：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">func failedUpdate(px *int) &#123;</span><br><span class="line">    x2 := 20</span><br><span class="line">    px = &amp;x2</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func update(px *int) &#123;</span><br><span class="line">    *px = 20</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func main() &#123;</span><br><span class="line">    x := 10</span><br><span class="line">    failedUpdate(&amp;x)</span><br><span class="line">    fmt.Println(x) // 打印10</span><br><span class="line">    update(&amp;x)</span><br><span class="line">    fmt.Println(x) // 打印20</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>其流程见图6-4。</p>
+<p>在这个例子中，我们先将<code>main</code>中的<code>x</code>设置为10。调用<code>failedUpdate</code>时，我们将<code>x</code>的地址拷入参数<code>px</code>。然后，我们在<code>failedUpdate</code>中声明了<code>x2</code>，设置为20。接着将<code>failedUpdate</code>中的<code>px</code>指向<code>x2</code>的地址。在返回<code>main</code>时，<code>x</code>的值未发生改变。在调用<code>update</code>时，我们再次将<code>x</code>的地址拷入参数<code>px</code>。但这次修改的是<code>update</code>中<code>px</code>所指向的值，也即<code>main</code>中的变量<code>x</code>。返回<code>main</code>时<code>x</code>发生了改变。</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/0208cd03027e4392a363ab1fe1497ddc~tplv-k3u1fbpfcp-zoom-1.image" alt="图6-4 更新指针的错误方式和正确方式"><br>图6-4 更新指针的错误方式和正确方式</p>
+<h2 id="指针非首选"><a href="#指针非首选" class="headerlink" title="指针非首选"></a>指针非首选</h2><p>在Go中使用指针应谨慎。前面也讨论过，那样会更难理解数据流并会给垃圾回收器带来额外的工作。可以将传入函数的结构体指针改成让函数实例化并返回结构体（参见例6-3和例6-4）。</p>
+<p>例6-3 别这么干</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">func MakeFoo(f *Foo) error &#123;</span><br><span class="line">  f.Field1 = &quot;val&quot;</span><br><span class="line">  f.Field2 = 20</span><br><span class="line">  return nil</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>例6-4 应当这么干</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">func MakeFoo() (Foo, error) &#123;</span><br><span class="line">  f := Foo&#123;</span><br><span class="line">    Field1: &quot;val&quot;,</span><br><span class="line">    Field2: 20,</span><br><span class="line">  &#125;</span><br><span class="line">  return f, nil</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>使用指针参数修改变量的唯一场景是在函数接收接口时。在操作JSON时会看到这种用法（在讲解Go的<a target="_blank" rel="noopener" href="https://alanhou.org/standard-library/">标准库</a>时会说到encoding&#x2F;json对JSON的支持）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">f := struct &#123;</span><br><span class="line">  Name string `json:&quot;name&quot;`</span><br><span class="line">  Age int `json:&quot;age&quot;`</span><br><span class="line">&#125;&#123;&#125;</span><br><span class="line">err := json.Unmarshal([]byte(`&#123;&quot;name&quot;: &quot;Bob&quot;, &quot;age&quot;: 30&#125;`), &amp;f)</span><br></pre></td></tr></table></figure>
+
+<p><code>Unmarshal</code>函数使用JSON字节对切片变量赋值。该函数接收字节切片和<code>interface&#123;&#125;</code>参数。传给<code>interface&#123;&#125;</code>参数的值必须为指针。如若不是，则会报错。这种用法是因为最早Go中没有泛型。这也就导致了根据传入类型指向反序列化的方式不方便，并且无法动态地按传入函数的类型指定返回类型。</p>
+<p>而JSON的集成非常广泛，有时Go开发者便将这一API看作常规操作，而非什么特例。</p>
+<p>注：通过使用<code>reflect</code>包中的<code>Type</code>类型可以用变量表示类型。<code>reflect</code>包预留在没有其它方法的场景中使用。在<a target="_blank" rel="noopener" href="https://alanhou.org/reflect-unsafe-cgo/">恶龙三剑客：反射、Unsafe 和 Cgo</a>中会做讲解。</p>
+<p>函数返回值应优先值类型。仅在类型中有状态需要做变更时才使用指针作为返回类型。在<a target="_blank" rel="noopener" href="https://alanhou.org/standard-library/">标准库</a>一章的<strong>io及其朋友们</strong>一节会讲到I&#x2F;O，我们会学到读取或写入数据的缓冲。此外，并发所使用数据须以指针传递。这会在<a target="_blank" rel="noopener" href="https://alanhou.org/concurrency-in-go/">并发</a>一章中讨论。</p>
+<h2 id="指针提升性能"><a href="#指针提升性能" class="headerlink" title="指针提升性能"></a>指针提升性能</h2><p>如果结构体过大，使用结构体指针作为入参或返回值可改善性能。向函数传递任意大小数据的指针耗时是恒定的。这很容易理解，因为所有数据类型的指针大小相同。对函数传值时数据越大耗时越久。在数据达到10 MB时耗时约一毫秒。</p>
+<p>返回指针和返回值的效果更有趣。对于小于1 MB 的数据结构，返回指针类型实际上要慢于值类型。例如，返回一个100字节的数据耗费约10纳秒，而返回该数据结构的指针耗时约30纳秒。一旦数据结构大于1 MB，则出现反转。返回10 MB 的数据约耗时2微秒，而返回其指针仅半微秒多点。</p>
+<p>这是非常小的时间维度。对于大部分情况，使用指针和值的这点不同并不会影响到程序的性能。但如果在函数间传递数MB 的数据时，即使数据不可变也请考虑使用指针。</p>
+<p>以上数据均使用32GB内存i7-8700电脑进行采样。读者可使用<a target="_blank" rel="noopener" href="https://github.com/learning-go-book/pointer_performance">GitHub</a>上的代码自行进行性能测试。</p>
+<h2 id="零值和无值"><a href="#零值和无值" class="headerlink" title="零值和无值"></a>零值和无值</h2><p>Go中另一种指针的常见用途是区分赋零值和未赋值的变量或字段。如果在你的程序中这点很重要，使用<code>nil</code>指针表示未赋值的变量或结构体字段。</p>
+<p>因指针同时表示可变，使用时应注意。一般将指针设置为<code>nil</code>供函数返回，而时使用字典所用的逗号ok语法来返回一个值类型和一个布尔值。</p>
+<p>记信如果通过参数或参数中的字段向函数传递<code>nil</code>指针，则无法在函数中对其设置值，因为没有存储该值的空间。如果传入的是非nil值，仅在清楚后果时进行修改。</p>
+<p>同样的JSON转化是印证这一规则的特例。在数据与JSON进行互转时（在讲解Go的<a target="_blank" rel="noopener" href="https://alanhou.org/standard-library/">标准库</a>时会说到encoding&#x2F;json对JSON的支持），经常需要区别零值和未赋值的情况。这时对结构体中可为空的字段使用指针。</p>
+<p>在不操作JSON（或其它外部协议）时，抑制信使用指针字段表示无值的诱惑。虽然指针用于表示无值很方便，但在需要修改值时，应当使用值类型配合布尔值。</p>
+<h2 id="字典和切片的区别"><a href="#字典和切片的区别" class="headerlink" title="字典和切片的区别"></a>字典和切片的区别</h2><p>在前一章我们了解到，对传入函数的字典做任意修改都会体现在原始变量中。既然我们已经学习了指针，就来讲下原理：在Go运行时中，字典通过结构体的指针实现。传入字典也即向函数拷贝指针。</p>
+<p>因此，应避免使用字节作为入参或返回值，对外的API尤其如此。在API设计层面，字典是糟糕的选择，因其没有说明其中包含的是什么值，并没有显式定义字典中的键名，因此知晓的唯一方式是追踪代码。从不可变性的角度来看，字典很糟的原因是只要在追踪了所有与其交互过的函数后才知道其结果。这就达不到API自描述的效果了。如果读者习惯了动态语言，请不要因其它语言缺乏结构而使用字典来替代。Go是一种强类型语言，请使用结构体来替代字典传给函数。（在<strong>降低垃圾回收器的工作量</strong>一节中讨论内存布局时会讲到推荐使用结构体的另一个原因。）</p>
+<p>同时，将切片传递给函数情况更为复杂，对切片内容的任何修改都会体现在原变量中，但使用<code>append</code>修改切片的长度不会体现在原变量中，即使切片的容量本身大于这一长度。这是因为切片由三个字段实现：表示长度的<code>int</code>字段，表示容量的<code>int</code>字段以及一段内存块的指针。图6-5演示了其关系。</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/a1c8fa1c83a74b9dbe67000af8eda16d~tplv-k3u1fbpfcp-zoom-1.image" alt="图6-5 切片的内存布局"></p>
+<p>图6-5 切片的内存布局</p>
+<p>将切片拷贝给其它变量或是传入函数时，拷贝由长度、容量和指针组成。图6-6展示了两个切片变量指向同一块内存。</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/0aa0dc1276364e1a943466aaf73c7d5d~tplv-k3u1fbpfcp-zoom-1.image" alt="图6-6 切片及其拷贝的内存布局"></p>
+<p>图6-6 切片及其拷贝的内存布局</p>
+<p>修改切片中的值改变的是指针所指向的内存，因而变化对拷贝和原切片均可见。图6-7中为内存中的状况。</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/653fb40c8d7f41368860205bceac84f4~tplv-k3u1fbpfcp-zoom-1.image" alt="图6-7 修改切片的内容"></p>
+<p>图6-7 修改切片的内容</p>
+<p>对长度和容量的修改不会体现在原切片中，因为这只发生在拷贝上。修改容量表示指针指向了一段新的更大的内存块。图6-8展示了这两个切片变量分别指向了不同的内存块。</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/9d0d0497c8a745c09683feb293ad29a5~tplv-k3u1fbpfcp-zoom-1.image" alt="图6-8 修改容量改变了存储"></p>
+<p>图6-8 修改容量改变了存储</p>
+<p>如果对切片进行追加时容量足以放下新切片，拷贝的长度发生变化，新值存储于拷贝和原切片共享的内存块中。但原切片不发生改变。也就是说Go运行时不会让原切片看到这些值，因为它们在原切片的长度之外。图6-9表示了这些值在一个切片变量中可见，而在另一个中不可见。</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/5cd021727deb44f0ae55eed9579e129f~tplv-k3u1fbpfcp-zoom-1.image" alt="图6-9 修改切片长度对原切片不可见"></p>
+<p>图6-9 修改切片长度对原切片不可见</p>
+<p>结果就是传入函数的切片内容可修改，但无法重置大小。切片是Go中唯一适用的线性数据结构，经常在程序间进行传递。默认应假定切片未由函数修改。应在函数的文档中说明是否修改了切片的内容。</p>
+<p>注：可对函数传递任意大小的切片，原因在于传入函数的数据对于任意大小的切片都相同：两个<code>int</code>值和一个指针。而不能编写接收任意大小数组的函数，原因大于传递的是整个数组，而不是数据的指针。</p>
+<p>切片作为入参还有另一个用途：它们是可复用缓冲的理想载体。</p>
+<h2 id="将切片用作缓冲"><a href="#将切片用作缓冲" class="headerlink" title="将切片用作缓冲"></a>将切片用作缓冲</h2><p>在从外部（比如文件或网络连接）读取数据时，很多编程语言的代码如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">r = open_resource()</span><br><span class="line">while r.has_data() &#123;</span><br><span class="line">  data_chunk = r.next_chunk()</span><br><span class="line">  process(data_chunk)</span><br><span class="line">&#125;</span><br><span class="line">close(r)</span><br></pre></td></tr></table></figure>
+
+<p>这种方式的问题在于每次进行<code>while</code>循环的迭代时，虽然每一个只用了一次也要重新分配<code>data_chunk</code>。这会产生大量不必要的内存分配。带内存回收的语言会自动处理这些分配，但在完成操作后还是要进行清理。</p>
+<p>虽然Go是带垃圾回收的语言，编写地产的Go代码要求避免不必要的内存分配。我们不是在每次从数据源读取时返回新的分配，而是一次性创建一个切片，将其用作读取数据的缓冲：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">file, err := os.Open(fileName)</span><br><span class="line">if err != nil &#123;</span><br><span class="line">    return err</span><br><span class="line">&#125;</span><br><span class="line">defer file.Close()</span><br><span class="line">data := make([]byte, 100)</span><br><span class="line">for &#123;</span><br><span class="line">    count, err := file.Read(data)</span><br><span class="line">    if err != nil &#123;</span><br><span class="line">        return err</span><br><span class="line">    &#125;</span><br><span class="line">    if count == 0 &#123;</span><br><span class="line">        return nil</span><br><span class="line">    &#125;</span><br><span class="line">    process(data[:count])</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在将切片传递给函数时无法修改其长度或容量，但我们可以修改到当前升度的内容。在以上代码中，我们创建了一个100字节的缓冲，每次循环时，我们将下个字节块（最多100）拷贝入切片。然后将传入的缓冲交给<code>process</code>。在<a target="_blank" rel="noopener" href="https://alanhou.org/standard-library/">标准库</a>一章的<strong>io及其朋友们</strong>一节会讲到I&#x2F;O。</p>
+<h2 id="降低垃圾回收器的工作量"><a href="#降低垃圾回收器的工作量" class="headerlink" title="降低垃圾回收器的工作量"></a>降低垃圾回收器的工作量</h2><p>使用缓冲只是减少垃圾回收器工作量的一个例子。程序员眼中的“垃圾”是“不再有指针指向的数据”。一旦某一数据不再有指针指向它，数据所占用的内存即可被复用。如果不回收内存，程序的内存占用量会膨胀到内存溢出。内存回收器的任务是自动监测未使用的内存并进行回收以供复用。Go贴心地为我们提供了垃圾回收器，因为几十年的经验表明很难妥善地手动管理内存。但有了垃圾回收器并不表示可以随意制造垃圾。</p>
+<p>如果读者花时间研究过编程语言是如何实现的，就会知道堆和栈。对于不熟悉的读者，栈是一段连续的内存块，执行线程的每次函数调用共享相同的栈。栈上分配内存简单快速。栈指针追踪内存分配的最后位置，通过移动栈指针可分配额外的内存。在调用函数时，会为函数数据创建新的栈桢。本地变量以及传入函数的参数存储在栈上。每个新变量会导致栈指针移动该值的大小。函数退出时，返回值会通过栈拷贝回调用函数，栈指针则会移至退出函数的起始栈帧，回收函数本地变量和参数使用的所有栈内存。</p>
+<p>注：Go的不寻常在于它可以在程序运行期间增加栈的大小。这是因为每个协助有自己的栈，而协程由Go运行时而非底层操作系统管理（我们会在<a target="_blank" rel="noopener" href="https://alanhou.org/concurrency-in-go/">并发</a>一章中讨论协程）。这有其优势（Go的初始栈很小、占用更少内存）及劣势（栈需要扩容时，所有数据都会被拷贝，这是缓慢的）。这也使得可能会写出栈反复扩容和收缩的糟糕代码。</p>
+<p>要在栈上存储内容，需要知道其在编译时的具体大小。在学习Go中的值类型（原生类型、数组和结构体）时，会发现一个共同点：在编译时都能知道占用的具体内存大小。这也是为什么大小是成为了数组的一部分。因为其大小已知，可分配到栈上，不必放到堆上。指针类型的大小也是固定的，同样存储在栈上。</p>
+<p>对于指针指向的数据，规则就更为复杂。要在Go中将指针指向的数据分配到栈上，必须满足一些条件。必须为编译时大小已知的本地变量。不能是函数返回的指针。如果是传入函数的指针，必须要保证这些条件仍能满足。如果大小不固定，无法通过移动栈指针来获取空间。如果返回指针变量，指针指向的内存会在函数返回时失效。在编译器决定数据无法存储于栈上时，可以称为指针指向的数据<strong>逃逸</strong>出了栈，编译器将数据存储于堆上。</p>
+<p>堆是由垃圾回收器管理的内存（在C和C++等编程语言中手动管理）。我们不会讨论垃圾回收器算法的实现细节，但远比移动栈帧要复杂。只要能回溯到栈上的指针类型变量，堆所存储的数据就有效。一旦没有指针指向该数据（或指向该数据的数据），这段数据就会成为垃圾，将由垃圾回收器进行清理。</p>
+<p>注：C程序中常见的bug是返回本地变量指针。在C中，这会导致指针指向无效内存。Go编译器更为智能。在发现已返回本地变量的指针时，本地变量的值会存储到堆上。</p>
+<p>Go编译器的逃逸分配并不完美。有时可存储在栈上的数据逃逸到了堆上。但编译器要要保守些，不能冒需放到堆上的数据存储到栈上的风险，否则对无效数据的引用会导致内存崩溃。Go的新发行版中改良了逃逸分配。</p>
+<p>读者可能会想在堆上存储内容有什么坏处呢？有两个性能相关的问题。第一是垃圾回收器执行操作会耗费时间。追踪堆中所有空闲内存的可用块或哪些已用内存堆还持有有效指针消耗并不算小。这会占用程序执行本可使用的宝贵时间。编写了很多种内存回收算法，粗略分为两类：设计用于高吞吐（在单次扫描中发现尽可能多的垃圾）或低延时（尽快完成垃圾扫描）。<a target="_blank" rel="noopener" href="https://research.google/people/jeff/">Jeff Dean</a>，Google工程化成功的幕后大神，作为联合作者于2013年发表了名为<a target="_blank" rel="noopener" href="https://research.google/pubs/pub40801/">The Tail at Scale</a>的论文。其中论述到系统应优化延时，保持低响应时间。Go运行所使用的垃圾回收器更倾向低延时。每次垃圾回收周期被设计为小于500毫秒。但如果你的Go程序创建了大量的垃圾，那么在一个周期中就无法发现发现的垃圾，这会拖慢回收器并增加内存占用。</p>
+<p>注：如果读者对实现细节感兴趣，可以听一听Rick Hudson在2018内存管理国际研讨会上的演讲，讲到了Go垃圾回收器的<a target="_blank" rel="noopener" href="https://go.dev/blog/ismmkeynote">历史和实现</a>。</p>
+<p>第二个问题与计算机硬件性质有关。RAM虽然是“随机读取内存”，便读取内存最快速的方式是序列化读取。Go中的结构体切片将数据按序放于内存中。这样加载和处理数据都很快。结构体指针（或字段为指针的结构体）的切片的数据RAM中分散存储，读取和处理就会更慢。Forrest Smith写了一篇深入的<a target="_blank" rel="noopener" href="https://www.forrestthewoods.com/blog/memory-bandwidth-napkin-math/">博文</a>探讨了这会在多大程度上影响性能。他的数据表明通过指针访问随机存储在内存的数据会慢两个数量级。</p>
+<p>这种在写软件时考虑其所运行的硬件的方式称为机械同理（mechanical sympathy）。这个词来赛车界，意思是驾驶员熟知赛车可以压榨出其性能极限。2011年，Martin Thompson将这一词用于软件开发。遵守Go的最佳实践可以自动实现机械同理。</p>
+<p>比较下Go与Java的方式。Java中，本地变量和参数和Go一样存储于栈中。但前面也提到过，Java中的对象按指针实现。这表示对每个对象变量实例，仅会将指针分配到栈中，对象中的数据位于堆中。仅原生类型值（数字、布尔值、字符）存储于栈上。这就意味着Java的垃圾回收器要完成大量的工作。同时也表示Java中的列表实际上是一个指针数组的指针。虽然它看起来像是线性数据结构，读取时实际也在内存中横跳，效率打折。Python、Ruby和JavaScript中类似。为解决这一低效问题，Java虚拟机内置了一个智能的垃圾回收器，完成大量的工作，有些是优化吞量，有些优化延时，都具有配置项来完成最佳性能调优。Python、Ruby和JavaScript的虚拟机优化则不足，因而性能受到很大影响。</p>
+<p>现在读者已经明白Go为什么很少鼓励使用指针。我们尽可能将内容存放在栈上来减轻垃圾回收器的负载。结构体或原生类型切片的数据在内存按序排列以达到快速访问。在垃圾回收器运行时，对快速返回的优化要多于收集更多垃圾。这种方法的核心是一开始就创建尽量少的垃圾。虽然聚焦于优化内存分配可能看上去是不成熟的优化，Go中地道的方式也是最高效的。</p>
+<p>如果想学习堆栈以及Go中逃逸分析的更多知识，有一些很好的博客文章，比如<a target="_blank" rel="noopener" href="https://www.ardanlabs.com/blog/2017/05/language-mechanics-on-stacks-and-pointers.html">Arden Labs上</a><a target="_blank" rel="noopener" href="https://www.ardanlabs.com/blog/2017/05/language-mechanics-on-stacks-and-pointers.html">Bill Kennedy</a>和<a target="_blank" rel="noopener" href="https://segment.com/blog/allocation-efficiency-in-high-performance-go-services/">Segment上Achille Roussel和Rick Branson</a>的文章。</p>
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>本章稍微深入了一下底层来辅助我们理解指针，指针是什么、如何使用指针，以及最重要的，何时使用指针。下一章中，我们会学习Go语言中方法、接口和类型的实现，与其它语言的差别，以及所具备的能力。</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Golang/" rel="tag"># Golang</a>
+              <a href="/tags/Go-%E8%AF%AD%E8%A8%80/" rel="tag"># Go 语言</a>
+              <a href="/tags/%E4%BA%91%E5%8E%9F%E7%94%9F/" rel="tag"># 云原生</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2022/11/25/setting-up-go-environment/" rel="prev" title="云原生系列Go语言篇-Go环境配置">
+                  <i class="fa fa-chevron-left"></i> 云原生系列Go语言篇-Go环境配置
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Alan Hou</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
