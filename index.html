@@ -128,12 +128,12 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">17</span>
+          <span class="site-state-item-count">18</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
       <div class="site-state-item site-state-tags">
-        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-count">8</span>
         <span class="site-state-item-name">tags</span>
       </div>
   </nav>
@@ -730,6 +730,643 @@
 <p>注：从技术上来说，无需移动已有安装，只需要删除它再安装新版本即可。但这不能保证“万无一失”。如果在安装新版本时出现问题，最好还有旧版本可以使用。</p>
 <h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>本文中，我们学习了如何安装、配置Go开发环境。同时讨论了构建Go程序及保障代码质量的一些工具。至此我们已准备好了环境，下一篇文章中我们就开始探讨Go语言的内置类型以及如何声明变量。</p>
 
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://alanhou.github.io/2020/12/25/odoo-cookbook-14-chapter1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Alan Hou">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alan Hou的个人博客">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Alan Hou的个人博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2020/12/25/odoo-cookbook-14-chapter1/" class="post-title-link" itemprop="url">Odoo 14开发者指南第一章 安装Odoo开发环境</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-12-25 00:00:00" itemprop="dateCreated datePublished" datetime="2020-12-25T00:00:00+08:00">2020-12-25</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-02-20 22:17:40" itemprop="dateModified" datetime="2023-02-20T22:17:40+08:00">2023-02-20</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>配置Odoo开发环境有很多种方式。本章中提供了其中的一种，你肯定可以在网上找到其它的教程讲解其它方法。请记住本章中所讲解的是开发环境，与生产环境的要求是不同的。</p>
+<p>如果你是一个Odoo开发新手，必须要了解Odoo生态的方方面面。第一部分会给出这些方面的简短介绍，然后我们就会进入到Odoo开发所需的安装。</p>
+<p>本章中，我们将讲解如下主题：</p>
+<ul>
+<li>了解Odoo生态系统</li>
+<li>源码轻松安装Odoo</li>
+<li>管理Odoo服务端数据库</li>
+<li>在文件中存储实例配置</li>
+<li>启用Odoo开发者工具</li>
+<li>更新插件模块列表</li>
+</ul>
+<p>参考安装脚本：<a target="_blank" rel="noopener" href="https://github.com/alanhou/odoo14-cookbook/tree/main/Chapter01">Github</a></p>
+<h2 id="了解Odoo生态系统"><a href="#了解Odoo生态系统" class="headerlink" title="了解Odoo生态系统"></a>了解Odoo生态系统</h2><p>Odoo为开发者提供了开箱即用的模块结构。它强大的框架有助于开发者很快地构建项目。在开启成为成功的Odoo开发者之旅以前，应该要熟悉Odoo生态中的一些特性。</p>
+<h3 id="Odoo版本"><a href="#Odoo版本" class="headerlink" title="Odoo版本"></a>Odoo版本</h3><p>Odoo有两个版本。第一个是社区版，完全开源，另一个是企业版，需要支付授权证书费用。不同于其它软件供应商，Odoo企业版仅仅是在社区版基础上添加了一些附加特性或新应用的高级应用。基本上，企业版运行于社区版之上。社区版采用Lesser General Public License v3.0 (LGPLv3)许可证书，并带有企业版企业资源计划（ERP）的所有基础应用，如销售、客户关系管理（CRM）、发票、采购、网站构建器等等。而企业版采用 Odoo 企业版许可证书，这是一个自有证书。Odoo 企业版带有很多高级功能如完整的财务、studio、基于IP的语音传输（VoIP）、移动端响应式设计、电子签名、营销自动化、快递与银行的集成以及IoT等。企业版还为你提供无限的漏洞修复支持。下图显示了企业版依赖于社区版，这也是为什么使用企业版时需要用到社区版：</p>
+<p><a target="_blank" rel="noopener" href="http://alanhou.org/homepage/wp-content/uploads/2019/05/2019050403383533.png"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/129c5e10025a47e8ae4b26ccd889cf41~tplv-k3u1fbpfcp-zoom-1.image" alt="图1.1 – 社区版和企业版的差别"></a></p>
+<p> </p>
+<p>图1.1 – 社区版和企业版的差别</p>
+<p>读者可以访问<a target="_blank" rel="noopener" href="https://www.odoo.com/page/editions%E6%9F%A5%E7%9C%8B%E8%BF%99%E4%B8%A4%E4%B8%AA%E7%89%88%E6%9C%AC%E7%9A%84%E5%AE%8C%E6%95%B4%E5%AF%B9%E6%AF%94%E3%80%82">https://www.odoo.com/page/editions查看这两个版本的完整对比。</a></p>
+<blockquote>
+<p>📝Odoo有数量庞大的社区开发人员，这也是你在应用商店中看到有大量的第三方应用（模块）的原因。有些免费应用使用Affero General Public License version 3 (AGPLv3)许可证书。如果你的应用依赖于这些应用就不能使用其自有证书。Odoo自有证书的应用仅能在拥有LGPL或其它自有证书的模块基础上进行开发。</p>
+</blockquote>
+<h3 id="Git仓库"><a href="#Git仓库" class="headerlink" title="Git仓库"></a>Git仓库</h3><p>Odoo的完整代码托管在GitHub上。可以在这里对稳定版提交漏洞&#x2F;问题。还可以通过提交拉取请求（Pull Request - PR）来提议添加新功能。Odoo有许多个仓库，参见下表来获取更多信息：</p>
+<table>
+<thead>
+<tr>
+<th>仓库</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/odoo/odoo">https://github.com/odoo/odoo</a></td>
+<td>这是 Odoo 的社区版。对公众开放。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/odoo/enterprise">https://github.com/odoo/enterprise</a></td>
+<td>这是 Odoo 的企业版。仅对Odoo 官方合作伙伴开放。</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://github.com/odoo-dev/odoo">https://github.com/odoo-dev/odoo</a></td>
+<td>这是不断开发中的仓库。对公众开放。(已废弃)</td>
+</tr>
+</tbody></table>
+<p>每年，Odoo会发布一个大版本（长期支持(LTS)版本）和数个小版本。小版本多用于Odoo的在线SaaS服务，也就是说Odoo的SaaS用户可以更早地使用到这些功能。GitHub 上大版本分支的名称像14.0, 13.0和12.0，而小版本分支名称有saas-14.1和saas-14.2。小版本多用于Odoo 的SaaS平台。master分支处于开发中，不稳定，因此，不建议在生产环境中使用它，因为它可能导致数据库的崩溃。</p>
+<h3 id="Runbot"><a href="#Runbot" class="headerlink" title="Runbot"></a>Runbot</h3><p>Runbot是Odoo的自动化测试环境。在Odoo的Github 分支中有新提交时，Runbot会拉取最新的修改并并创建最近4个提交的构建。这里，你可以测试所有的稳定版和开发中的分支。甚至可以使用到企业版并测试它的开发分支。</p>
+<p>每个构建有不同的背景色，表明测试用例的状态。绿色背景表示所有的测试用例成功运行，用户可以测试该分支，而红色背景表示在这个分支上有些测试用例出错了，有些功能在该构建上可能出现崩溃。可以查看到所有测试用例的日志，会显示在安装过程中所发生的具体问题。每个构建有两个数据库。数据库all安装了所有的模块，而数据库base仅安装了Odoo的基础模块。每个构建均安装了基本演示数据，因此可以快速进行测试而无需额外的配置。</p>
+<blockquote>
+<p>ℹ️使用如下 URL 来访问runbot：<a target="_blank" rel="noopener" href="http://runbot.odoo.com/runbot">http://runbot.odoo.com/runbot</a></p>
+</blockquote>
+<p>以下账户信息可用于访问任一runbot构建：</p>
+<ul>
+<li>登录ID: admin 密码: admin</li>
+<li>登录ID:demo 密码: demo</li>
+<li>登录ID: portal 密码: portal</li>
+</ul>
+<blockquote>
+<p>📝这是公共测试环境，因此有时可能会有其它用户使用&#x2F;测试你所测试的相同分支。</p>
+</blockquote>
+<h3 id="Odoo应用商店"><a href="#Odoo应用商店" class="headerlink" title="Odoo应用商店"></a>Odoo应用商店</h3><p>Odoo在几年前发布了应用商店，当即大热。现在，那里托管着22,000多个不同的应用。在应用商店中，可以找到大量的针对不同版本的免费和付费应用。包含不同垂直业务领域的具体解决方案，如教育、食品行业和医药业。它还包含一些继承了已有Odoo应用或添加了新功能的应用。应用商店还为Odoo网站构建器提供了大量的美观的主题。在<a target="_blank" rel="noopener" href="https://alanhou.org/odoo-14-creating-odoo-add-on-modules/">第三章 创建Odoo插件模块</a>中，我们将学习如何为你的自定义模块设置价格和币种。</p>
+<p>可以通过如下链接访问Odoo应用商店：<a target="_blank" rel="noopener" href="https://www.odoo.com/apps%E3%80%82">https://www.odoo.com/apps。</a></p>
+<blockquote>
+<p>📝Odoo开源了很版本13和14的主题。在此前的版本均为付费主题。也就是在 Odoo 13和14中无需花费额外费用即可下载、使用这些漂亮的主题。</p>
+</blockquote>
+<h3 id="Odoo社区联盟（OCA）"><a href="#Odoo社区联盟（OCA）" class="headerlink" title="Odoo社区联盟（OCA）"></a>Odoo社区联盟（OCA）</h3><p>Odoo社区联盟（OCA）是一个开发&#x2F;管理Odoo社区模块的非营利组织。所有的OCA模块都开源并由Odoo社区成员维护。在OCA的GitHub账户下，可以找到针对不同Odoo应用的多个仓库。除Odoo模块外，它还包含很多工具、迁移库、会计本地化等等。</p>
+<p>以下是OCA官方GitHub账号的URL：<a target="_blank" rel="noopener" href="https://github.com/OCA%E3%80%82">https://github.com/OCA。</a></p>
+<h3 id="Odoo官方帮助论坛"><a href="#Odoo官方帮助论坛" class="headerlink" title="Odoo官方帮助论坛"></a>Odoo官方帮助论坛</h3><p>Odoo 拥有一个非常强大的框架，大量的操作只需通过使用&#x2F;激活选项或遵循指定的模式即可实现。因此，如果你碰到了一些技术问题或是对一些复杂用例不确定，那么就可以在Odoo官方帮助论坛上询问。这个论坛上有大量活跃的开发人员，包含一些Odoo官方的员工。</p>
+<p>在如下 URL 上可以搜索或提交你的问题：<a target="_blank" rel="noopener" href="https://help.odoo.com/%E3%80%82">https://help.odoo.com/。</a></p>
+<h3 id="Odoo的eLearning平台"><a href="#Odoo的eLearning平台" class="headerlink" title="Odoo的eLearning平台"></a>Odoo的eLearning平台</h3><p>最近Odoo发布了一个全新的eLearning平台。该平台上有大量的视频讲解如何使用各类Odoo应用。在编写本书时，平台上还没有技术相关视频，只是一些介绍功能的视频。</p>
+<p>eLearning平台的网址为：<a target="_blank" rel="noopener" href="https://www.odoo.com/slides%E3%80%82">https://www.odoo.com/slides。</a></p>
+<h2 id="通过源码轻松安装Odoo"><a href="#通过源码轻松安装Odoo" class="headerlink" title="通过源码轻松安装Odoo"></a>通过源码轻松安装Odoo</h2><p>强烈推荐使Linux Ubuntu操作系统来安装Odoo，因为这是Odoo测试、调试和安装Odoo企业版所使用的操作系统，此外大部分的Odoo开发人员都使用GNU&#x2F;Linux，使用GNU&#x2F;Linux而非Windows或macOS会更有机会获取操作系统相关问题的社区支持。</p>
+<p>也推荐使用和生产环境相同的环境（相同发行版和版本号）进行开发。这样可以避免讨厌的“彩蛋”，比如在部署当天发现有个库有一个预料外的版本，会有一些不同和不兼容的问题。如果你的工作站使用不同的操作系统，一种推荐的方式是在工作站上配置虚拟机（VM）并在 VM 上安装 GNU&#x2F;Linux发行版。</p>
+<blockquote>
+<p>📝Ubuntu已成为微软商店中的一个应用，如果不希望切换操作系统的话也可以使用它。</p>
+</blockquote>
+<p>本书假定读者使用的是Ubuntu 18.04 LTS版，但也可以使用其它的GNU&#x2F;Linux系统。不论你选择哪个Linux发行版，都应该要有一个从命令行使用它的概念，有系统运维相关知识显然会更好。</p>
+<p>相关文章：<a target="_blank" rel="noopener" href="https://alanhou.org/odoo14-installation/">Odoo 14安装简明教程（CentOS）</a></p>
+<h3 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h3><p>假设读者已运行了Ubuntu 18.04并已拥有 root 密码或配置了sudo拥有root访问权限。下面的部分中，我们将安装Odoo的相关依赖并通过GitHub下载Odoo源码。</p>
+<blockquote>
+<p>ℹ️有些配置需要使用到系统登录用户，这里我们在需要用到用户名时在命令行中使用$(whoami)。这个shell命令可以在所键入命令中替换为登录用户。</p>
+</blockquote>
+<p>如果你有GitHub账户的话有些操作一定会更容易。如果还没有GitHub账户，请访问<a target="_blank" rel="noopener" href="https://github.com并创建账户./">https://github.com并创建账户。</a></p>
+<h3 id="如何安装…"><a href="#如何安装…" class="headerlink" title="如何安装…"></a>如何安装…</h3><p>使用源码安装 Odoo，需要按照如下的步骤：</p>
+<ol>
+<li><p>运行如下命令来安装主要依赖：  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt-get update</span><br><span class="line">$ sudo apt install git python3-pip build-essential wget python3-dev python3-venv python3-wheel libxslt-dev libzip-dev libldap2-dev libsasl2-dev python3-setuptools libpq-dev -y</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>下载并安装wkhtmltopdf：  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ wget https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.bionic_amd64.deb</span><br><span class="line">$ sudo dpkg -i wkhtmltox_0.12.5-1.bionic_amd64.deb</span><br></pre></td></tr></table></figure>
+
+<p>如果以上命令出现了报错，通过如下命令可强制安装依赖：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt-get install -f</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>此时安装PostgreSQL数据库  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo apt install postgresql -y</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置PostgreSQL  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ sudo -u postgres createuser --superuser $(whoami)</span><br></pre></td></tr></table></figure>
+
+<p><strong>译者注：</strong> 如果报错说明服务未启动createuser: could not connect to database template1: could not connect to server: No such file or directory</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo systemctl start postgresql</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置git（以下信息请自行修改）：  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git config --global user.name &quot;Your Name&quot;</span><br><span class="line">$ git config --global user.email youremail@example.com</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>克隆 Odoo 基础代码：  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ mkdir ~/odoo-dev</span><br><span class="line">$ cd ~/odoo-dev</span><br><span class="line">$ git clone -b 14.0 --single-branch --depth 1 https://github.com/odoo/odoo.git</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建一个odoo-14.0 虚拟环境并启用：  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ python3 -m venv ~/venv-odoo-14.0</span><br><span class="line">$ source ~/venv-odoo-14.0/bin/activate</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在venv中安装Odoo的Python依赖：  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ cd ~/odoo-dev/odoo/</span><br><span class="line">$ pip3 install -r requirements.txt</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建并启动第一个Odoo实例：  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ createdb odoo-test</span><br><span class="line">$ python3 odoo-bin -d odoo-test -i base --addons-path=addons --db-filter=odoo-test$</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在浏览器中访问<a href="http://localhost:8069（虚拟机请修改为对应的">http://localhost:8069（虚拟机请修改为对应的</a> IP 地址），并使用admin账户和密码admin来进行登录  </p>
+<blockquote>
+<p>📝如需RTL（文字从右向左）的支持，请使用如下命令安装node 和 rtlcss ：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install nodejs npm -y</span><br><span class="line"> sudo npm install -g rtlcss</span><br></pre></td></tr></table></figure></blockquote>
+</li>
+</ol>
+<h3 id="运行原理…"><a href="#运行原理…" class="headerlink" title="运行原理…"></a>运行原理…</h3><p>第1步中，我们安装了一些核心依赖。这些依赖包含各类工具，如git, pip3, wget, Python设置工具等。这些核心工作帮助我们使用简单命令安装其它Odoo依赖。</p>
+<p>第2步中，我们下载并安装了wkhtmltopdf包，用于在Odoo中将销售订单、发票等报告打印为PDF文档。Odoo 14.0要求使用wkhtmltopdf的0.12.5版本，这一版本可能在当前Linux发行版中并未包含。所幸wkhtmltopdf的维护者在<a target="_blank" rel="noopener" href="http://wkhtmltopdf.org/downloads.html%E4%B8%BA%E6%88%91%E4%BB%AC%E6%8F%90%E4%BE%9B%E4%BA%86%E9%92%88%E5%AF%B9%E5%90%84%E5%8F%91%E8%A1%8C%E7%89%88%E7%9A%84%E9%A2%84%E6%9E%84%E5%BB%BA%E5%8C%85%EF%BC%8C%E9%80%9A%E8%BF%87%E8%AF%A5URL%E5%8F%AF%E8%BF%9B%E8%A1%8C%E4%B8%8B%E8%BD%BD%E5%8F%8A%E5%AE%89%E8%A3%85%E3%80%82">http://wkhtmltopdf.org/downloads.html为我们提供了针对各发行版的预构建包，通过该URL可进行下载及安装。</a></p>
+<h4 id="PostgreSQL配置"><a href="#PostgreSQL配置" class="headerlink" title="PostgreSQL配置"></a>PostgreSQL配置</h4><p>第3步中，我们安装了PostgreSQL数据库。</p>
+<p>第4步中，我们通过系统登录用户名新建了一个数据库。$(whoami) 用于获取系统用户名，-s选项用于授予超级用户权限。我们来了解下为什么需要这些配置。</p>
+<p>Odoo使用psycopg2 Python库来与PostgreSQL数据库建立连接。通过psycopg2库访问PostgreSQL数据库。Odoo使用如下的默认值：</p>
+<ul>
+<li>默认psycopg2尝试使用本地连接的当前用户相同的用户名来连接数据库，这会启动无密码认证（在开发环境中这样很好）</li>
+<li>本地连接使用Unix域套接字</li>
+<li>数据库服务监听5432端口</li>
+</ul>
+<p>这样就好了！PostgreSQL现在就做好了与Odoo建立连接的准备。</p>
+<p>因为这个是开发服务器，我们对用户授予了–superuser的权限。对生产实例，可以在命令行中使用–createdb来代替–createdb以进行权限限制。在生产服务上–superuser权限会给予黑客在一些部署代码中找到更多漏洞的机会。</p>
+<p>如果想使用不同的数据库用户，则需提供该用户的密码。通过在创建用户时在命令行传递–pwprompt标记来实现，此时命令行会提示你输入密码。</p>
+<p>如果用户已存在而你又想要为其设置密码（或修改已忘记的密码），可以使用如下命令：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ psql -c &quot;alter role $(whoami) with password &#x27;newpassword&#x27;&quot;</span><br></pre></td></tr></table></figure>
+
+<p>如果这个命令执行报错提示数据库不存在，那是因为你没按照操作步骤的第4步创建一个与当前登录名相同的数据库。不必担心，仅需使用 –dbname选项来添加已有数据库名，例如 –dbname template1。</p>
+<h4 id="Git配置"><a href="#Git配置" class="headerlink" title="Git配置"></a>Git配置</h4><p>开发环境我们使用GitHub上的Odoo源代码。借助于git可以轻松地在各个Odoo版本间进行切换。同时可以使用git pull命令拉取最新的修改。</p>
+<p>在第5步中，我们配置了git用户信息。</p>
+<p>第6步中，我们从Odoo官方GitHub仓库下载了源代码。使用的是git clone命令来下载Odoo源代码。指定了单分支这样只需要下载14.0版本的分支即可。同时还使用了–depth 1来避免下载该分支的完整历史提交。这些选项会让源代码下载变得快速，你也可以在需要的时候省略掉这些选项。</p>
+<p>Odoo开发者还推荐nightly构建，以tar文件和发行包的形式出现。使用git clone最主要的优势是在源代码树中提交了新的bug修复时可以对仓库直接进行更新。还能够轻松地测试所推荐的修复并追踪回退，这样会让bug报告更为精确、对开发者也更有帮助。</p>
+<blockquote>
+<p>📝如果你可以访问企业版源代码，也可以将其下载到~&#x2F;odoo-dev目录下面单独的文件夹中。</p>
+</blockquote>
+<h4 id="虚拟环境"><a href="#虚拟环境" class="headerlink" title="虚拟环境"></a>虚拟环境</h4><p>Python虚拟环境或简称virtualenv，是隔离的Python工作空间。这些对于Python开发者非常有用，因为它们允许在Python解释器版本上安装不同版本的Python库。</p>
+<p>你可以使用python3 -m venv ~&#x2F;newvenv命令来创建所需数量的环境。这会在指定位置创建一个newenv目录，其中包含一个bin&#x2F;子目录和一个lib&#x2F;python3.6（<strong>译者注：</strong> 或你安装的其它 Python 3版本）子目录。</p>
+<p>在第7步中，我们在~&#x2F;venv-odoo-14.0目录下新建了一个虚拟环境。这就是我们为Odoo准备的独立Python环境。Odoo的所有Python依赖都在这一环境中进行安装。</p>
+<p>要启用虚拟环境，我们需要使用source命令。通过source ~&#x2F;venv-odoo-14.0&#x2F;bin&#x2F;activate，我们激活了该虚拟环境。</p>
+<h4 id="安装-Python包"><a href="#安装-Python包" class="headerlink" title="安装 Python包"></a>安装 Python包</h4><p>Odoo的源代码中有一系列Python依赖，位于requirements.txt中。第8步中，我们通过pip3 install命令安装了所有这些依赖。</p>
+<p>这样就可以了，此时即可运行Odoo实例。</p>
+<h4 id="启动实例"><a href="#启动实例" class="headerlink" title="启动实例"></a>启动实例</h4><p>到了你期待已久的时刻了。要启动我们的第一个实例，第9步中首先我们新建了一个空数据库，然后使用odoo-bin以及如下命令行参数启动Odoo实例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 odoo-bin -d odoo-test -i base --addons-path=addons --db-filter=odoo-test$</span><br></pre></td></tr></table></figure>
+
+<p>可以通过在odoo-bin的前面添加.&#x2F;来省略掉python3，因其是一个可执行的Python脚本，如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./odoo-bin -d odoo-test –i base --addons-path=addons --db-filter=odoo-test$</span><br></pre></td></tr></table></figure>
+
+<p>odoo-bin后使用了如下命令行参数：</p>
+<ul>
+<li>-d database_name：默认使用这一数据库。</li>
+<li>–db-filter&#x3D;database_name$：仅尝试连接匹配所提供正则表达式的数据库。一个Odoo安装可以为使用不同数据库的多个实例提供服务，通过这一参数限制可用的数据库。最后的那个$很重要，因为在匹配模式中使用了正则表达式，这会避免选择以相同的指定字符串开头的名称。</li>
+<li>–addons-path&#x3D;directory1,directory2,…：Odoo通过这一逗号分隔列表中的目录来查找插件（add-on）。在实例创建的时候扫描该列表来添加实例中可用的插件模块列表。如果希望使用Odoo企业版，请在这一选项中添加其目录。</li>
+</ul>
+<!---->
+
+<ul>
+<li>-i base: 用于安装base模块。通过命令行创建数据库时需要使用到。</li>
+</ul>
+<p>如果你使用了与Linux当前登录用户不同的数据库用户，则需要再传递如下的参数：</p>
+<ul>
+<li>–db_host&#x3D;localhost: 使用TCP连接数据库服务</li>
+<li>–db_user&#x3D;database_username: 使用指定的数据库登录用户</li>
+<li>–db_password&#x3D;database_password: 这是用于认证PostgreSQL服务的密码</li>
+</ul>
+<p>使用–help可获取所有可用选项的一个总览。我们在本章后面还会来了解odoo-bin脚本更多的知识。</p>
+<p>Odoo在一个空数据库上启动时，它会首先创建一个支持其操作所需的数据库结构。还会扫描插件路径来查找可用的插件模块，并将一些内容插入到数据库的初始记录中。这包括admin用户及默认admin密码，在登录时将使用到。</p>
+<p>在浏览器中访问<a target="_blank" rel="noopener" href="http://localhost:8069/%EF%BC%88">http://localhost:8069/（</a> <strong>译者注：</strong> 非本地请自行修改为 IP 地址）会访问到你所新创建的实例的登录页面，如下图所示：</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/fe650f217c674dbc85c7943c7e2917b1~tplv-k3u1fbpfcp-zoom-1.image" alt="图1.2 - Odoo实例的登录页面"></p>
+<p>图1.2 - Odoo实例的登录页面</p>
+<p>这是因为Odoo内置有HTTP服务器。默认，它监听TCP端口8069上的所有本地网络接口。</p>
+<h2 id="管理Odoo服务端数据库"><a href="#管理Odoo服务端数据库" class="headerlink" title="管理Odoo服务端数据库"></a>管理Odoo服务端数据库</h2><p>在使用Odoo时，你的实例所有的数据都存储在PostgreSQL数据库中。可以使用你习惯的任意标准数据库管理工具，但Odoo为一些常用操作提供了一个网页界面。</p>
+<h3 id="准备工作-1"><a href="#准备工作-1" class="headerlink" title="准备工作"></a>准备工作</h3><p>我们假定你的工作环境已配置好，并且已运行了一个实例。</p>
+<h3 id="如何管理…"><a href="#如何管理…" class="headerlink" title="如何管理…"></a>如何管理…</h3><p>Odoo数据库管理界面提供创建、复制、删除、备份和恢复数据库的工具。还有一种修改主控密码（master密码）的方式，用于保护对数据库管理界面的访问。</p>
+<h4 id="访问数据库管理界面"><a href="#访问数据库管理界面" class="headerlink" title="访问数据库管理界面"></a>访问数据库管理界面</h4><p>需要执行如下步骤来访问数据库：</p>
+<ol>
+<li>进入实例的登录页面（如果已登录请先登出）。</li>
+<li>点击Manage Databases链接。这会导航至<a target="_blank" rel="noopener" href="http://localhost:8069/web/database/manager%EF%BC%88%E4%B9%9F%E5%8F%AF%E4%BB%A5%E5%9C%A8%E6%B5%8F%E8%A7%88%E5%99%A8%E4%B8%AD%E7%9B%B4%E6%8E%A5%E8%AE%BF%E9%97%AE%E8%BF%99%E4%B8%AAURL%EF%BC%89%E3%80%82">http://localhost:8069/web/database/manager（也可以在浏览器中直接访问这个URL）。</a></li>
+</ol>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/fe3d966e7b9b430881781d7fed68bdc2~tplv-k3u1fbpfcp-zoom-1.image" alt="图1.3 – 数据库管理器"></p>
+<p>图1.3 – 数据库管理器</p>
+<h4 id="设置或修改主控密码"><a href="#设置或修改主控密码" class="headerlink" title="设置或修改主控密码"></a>设置或修改主控密码</h4><p>如果已经以默认值设置了实例且尚未像下面讲解的那样做过修改，数据库管理页面会显示一条警告，告诉你还没有设置主控密码并建议你通过直接点击链接来进行设置：</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/7de77456ac6d4883b827d4f4a979659f~tplv-k3u1fbpfcp-zoom-1.image" alt="图1.4 – Master密码警告"></p>
+<p>图1.4 – 主控密码警告</p>
+<p>需要执行如下步骤来设置master：</p>
+<ol>
+<li>点击Set Master Password按钮。会弹出一个对话框来要求你提供新的主控密码：<br><a target="_blank" rel="noopener" href="https://alanhou.org/homepage/wp-content/uploads/2019/05/2019050505371024.jpg"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d0670e99fe8840428f3f02916e1be986~tplv-k3u1fbpfcp-zoom-1.image" alt="设置 Master 密码对话框"></a>图1.5 – 设置新主控密码对话框</li>
+<li>输入一个复杂的新密码并点击Continue</li>
+</ol>
+<p>如果已设置了主控密码，点击页面底部的Set Master Password按钮来进行修改。在弹出的对话框中输入老的主控密码再输入新密码，然后点击Continue。</p>
+<blockquote>
+<p>📝主控密码是在admin_password键下的服务端配置。如果启动服务时没有指定配置文件，会在~&#x2F;.odoorc中生成新的配置文件。查看下一部分获取更多有关配置文件的信息。</p>
+</blockquote>
+<h4 id="创建新数据库"><a href="#创建新数据库" class="headerlink" title="创建新数据库"></a>创建新数据库</h4><p>这个对话框用于创建一个由当前Odoo服务处理的新数据库实例：</p>
+<ol>
+<li><p>在数据库管理窗口中，点击页面底部的Create Database按钮。会弹出如下对话框：<br><a target="_blank" rel="noopener" href="https://alanhou.org/homepage/wp-content/uploads/2019/05/2019050505390961.jpg"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/90956616a91e497ab0475288f6904274~tplv-k3u1fbpfcp-zoom-1.image" alt="创建数据库页面"></a>图1.6 – 新建数据库对话框</p>
+</li>
+<li><p> 填写表单，如下：</p>
+<ul>
+<li>Master Password：这是这一实例的主控密码。</li>
+<li>Database Name：输入所想要创建的数据库名称。</li>
+<li>Email: 在此处添加email地址；在稍后用作用户名。</li>
+<li>Password：输入你想为新实例所设置的admin用户密码。</li>
+<li>Phone Number：设置电话号码（可选）。</li>
+<li>Language：在下拉列表中选择你希望新数据库默认安装的语言。Odoo会自动加载所选语言的翻译。</li>
+<li>Country：在下拉列表中选择主租户的国家。选择这一项后会自动做一些配置，如公司的币种。</li>
+<li>Demo data：勾选获取演示数据。这对于运行交互式测试或为用户设置演示项目非常有用，但针对包含生产数据的数据库设计时则不应勾选。</li>
+</ul>
+<blockquote>
+<p>ℹ️如果想要使用该数据库来运行模块的自动化测试（参见<a target="_blank" rel="noopener" href="https://alanhou.org/odoo-14-debugging/">第七章 调试</a>），则需要有演示数据，因为Odoo中的大多数自动化测试依赖于这些记录来成功运行。</p>
+</blockquote>
+</li>
+<li><p>点击Continue按钮并等待新数据库初始化完成。然后会被重定向到该实例并以管理员进行连接。</p>
+</li>
+</ol>
+<blockquote>
+<p>问题处理：如果被重定向到了登录页，这可能是因为向Odoo传递了–db-filter选项并且与新数据库名不匹配造成的。注意odoo-bin start会默默地进行这一操作，仅让当前数据库可用。解决这一问题，只需不使用start命令来对Odoo进行重启，在本章中的<em>通过源码轻松安装 Odoo</em> 一节展示过这一做法。如果你有一个配置文件（参见本章后面的<em>在一个文件中存储实例配置</em>一节），那么请检查db_filter未进行设置或设置一个与新数据库名称匹配的值。</p>
+</blockquote>
+<h4 id="复制数据库"><a href="#复制数据库" class="headerlink" title="复制数据库"></a>复制数据库</h4><p>通常你已经有一个数据库了，会希望使用它做一存储过程的试验或运行测试，但又不修改已有数据。这里的方案很简单：复制该数据库并在拷贝上运行测试。可以按需重复多次：</p>
+<ol>
+<li><p>在数据库管理页面，点击Duplicate Database：<br><a target="_blank" rel="noopener" href="https://alanhou.org/homepage/wp-content/uploads/2019/05/2019050515123745.jpg"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b9216e8203a046189c63d79353f232b4~tplv-k3u1fbpfcp-zoom-1.image" alt="Duplicate Database"></a>图1.7 – 复制数据库对话框</p>
+</li>
+<li><p>填写表单如下：</p>
+<ul>
+<li>Master Password:这是Odoo服务的主控密码</li>
+<li>New Name：给予拷贝的名称</li>
+</ul>
+</li>
+<li><p>点击Continue按钮。</p>
+</li>
+<li><p>可以在数据库管理页面点击新创建的数据库名称来访问该数据库的登录页面。</p>
+</li>
+</ol>
+<h4 id="删除数据库"><a href="#删除数据库" class="headerlink" title="删除数据库"></a>删除数据库</h4><p>在完成测试之后，如想要清理掉所复制的数据库。通过如下步骤来进行清理：</p>
+<ol>
+<li>在数据库管理页面，点击想删除的数据库名称旁的Delete Database链接，会出现下图中的对话框：<br><a target="_blank" rel="noopener" href="https://alanhou.org/homepage/wp-content/uploads/2019/05/2019050515230631.jpg"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/bc4e415ea9e941c1ab3bba2e8d4efd13~tplv-k3u1fbpfcp-zoom-1.image" alt="Delete Database"></a>图1.8 – 删除数据库弹窗</li>
+<li>填写表单并输入 Master Password，即Odoo服务的主控密码。</li>
+<li>点击Delete按钮。</li>
+</ol>
+<blockquote>
+<p>📝小心！数据丢失！</p>
+<p>如果你选择了错误的数据库，并且没有备份，则无法恢复损失的数据。</p>
+</blockquote>
+<h4 id="备份数据库"><a href="#备份数据库" class="headerlink" title="备份数据库"></a>备份数据库</h4><p>需执行如下步骤来创建备份：</p>
+<ol>
+<li><p>在数据库管理页面，点击想备份数据库名称旁的Backup按钮，会弹出下图这样的对话框：<br><a target="_blank" rel="noopener" href="https://alanhou.org/homepage/wp-content/uploads/2019/05/2019050516024419.jpg"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/7ca40ba288d44ff08c4f620f610831aa~tplv-k3u1fbpfcp-zoom-1.image" alt="Backup Database"></a>图1.9 – 备份数据库弹窗</p>
+</li>
+<li><p>填写表单</p>
+<ul>
+<li>Master Password：Odoo服务的主控密码。</li>
+<li>Backup Format：对生产数据库请保持使用zip，因为这是唯一真正的全量备份格式。仅在备份不关心文件存储的开发数据库时使用pg_dump格式。</li>
+</ul>
+</li>
+<li><p>点击Backup。然后浏览器会下载备份文件。</p>
+</li>
+</ol>
+<h4 id="还原数据库备份"><a href="#还原数据库备份" class="headerlink" title="还原数据库备份"></a>还原数据库备份</h4><p>如果需要还原一个备份，需要按如下步骤操作：</p>
+<ol>
+<li><p>在数据库管理页面，点击页面底部的Restore Database按钮，会弹出如下的对话框：<br><a target="_blank" rel="noopener" href="https://alanhou.org/homepage/wp-content/uploads/2019/05/2019050516123082.jpg"><img src="/" alt="Restore Database"></a>图1.10 – 还原数据库对话框</p>
+</li>
+<li><p>填写表单：</p>
+<ul>
+<li>Master Password：这是Odoo服务的主控密码。</li>
+<li>File：这是之前所下载的Odoo备份</li>
+<li>Database Name：提供你需进行备份还原的数据库名称。该数据库在服务器上一定不能存在。</li>
+<li>数据库可能进行了迁移或拷贝：如果原数据库在另一台服务器上或是为从当前服务器删除则选择This database was moved。否则选择This database is a copy，这也是安全的默认选项。</li>
+</ul>
+</li>
+<li><p>点击Continue按钮。</p>
+</li>
+</ol>
+<blockquote>
+<p>📝不能在数据库自身之上还原数据库。这么做会得到一条错误消息（Database restore error: Database already exists）。需要先删除该数据库。</p>
+</blockquote>
+<h3 id="运行原理…-1"><a href="#运行原理…-1" class="headerlink" title="运行原理…"></a>运行原理…</h3><p>除Change master password以外的这些页面上的功能，是在服务器上运行PostgreSQL运维命令并通过网页界面报告结果。</p>
+<p>主控密码是非常重要的信息，仅存储在Odoo服务的配置文件中，从不在数据库中进行存储。曾经有一个admin默认值，但使用这个值是一个广为人知的安全问题。在Odoo v9及之后的版本中，这被识别为一个未设置的主控密码，并在访问数据库管理页面时会敦促你修改密码。虽然这在配置文件中以admin_passwd进行存储，它与admin的密码是不同的，它们是两个不同的密码。主控密码是为Odoo服务进程设置的，进程本身可以处理多个数据库实例，每个实例都有一个独立的admin用户及其自己的密码。</p>
+<blockquote>
+<p>📝安全考虑：记住本章中我们所考虑的是开发环境。Odoo数据库管理界面在我们运行生产服务时是需要进行安全保护的，因为这里给到了过多敏感信息的访问权限，尤其是在服务器托管了多个不同客户端的Odoo实例时。</p>
+</blockquote>
+<p>Odoo使用PostgreSQL的createdb工具来新建数据库，它通过和以空数据库启动Odoo时相同的方式调用内部的Odoo函数来初始化新数据库。</p>
+<p>Odoo使用createdb的–template选项传递原数据库作为参数来复制数据库。这基本上使用内部优化的PostgreSQL例行程序在新数据库中复制模板数据库的结构，这比创建备份和还原备份的速度会快很多（尤其是在使用网页界面时，还要求你下载备份文件然后再重新上传）。</p>
+<p>备份和还原操作分别使用pg_dump和pg_restore工具。在使用zip格式时，备份还包含文件存储的拷贝，其中为配置Odoo不保存在数据库中的文档的拷贝，这是14.0中的默认选项。如果没做过修改的话，这些文件存放在~&#x2F;.local&#x2F;share&#x2F;Odoo&#x2F;filestore中。</p>
+<blockquote>
+<p>📝如果备份很大，下载时会失败。这可能是因为Odoo服务本身无法在内存中处理这么大的文件或者是因为服务在反向代理之后运行，而这个代理设置了HTTP响应大小的限制。反过来，出于某些原因，你可能会在还原数据库的操作中遇到问题。在碰到这些问题时，应当投入时间建立更健壮的外部备份方案。</p>
+</blockquote>
+<h3 id="更多内容…"><a href="#更多内容…" class="headerlink" title="更多内容…"></a>更多内容…</h3><p>有经验的Odoo开发者通常不使用数据库管理界面，而在命令行执行相关操作。比如使用演示数据初始化新数据库，可以使用如下的一行代码：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ createdb testdb &amp;&amp; odoo-bin -d testdb</span><br></pre></td></tr></table></figure>
+
+<p>命令行的另一个彩蛋是可以在使用时要求安装一些插件，比如 -i sale,purchase,stock。</p>
+<p>停止服务并运行如下这些命令来复制数据库：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ createdb -T dbname newdbname</span><br><span class="line">$ cd ~/.local/share/Odoo/filestore # 如果你修改了data_dir请调整此处</span><br><span class="line">$ cp -r dbname newdbname</span><br><span class="line">$ cd -</span><br></pre></td></tr></table></figure>
+
+<p>注意在开发的上下文中，文件存储通常会被省略。</p>
+<blockquote>
+<p>📝createdb -T 仅在数据库没有活跃会话时方能使用，这表示在通过命令行复制数据库之前你需要关闭Odoo服务。</p>
+</blockquote>
+<p>可运行如下命令来删除一个实例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ dropdb dbname</span><br><span class="line">$ rm -rf ~/.local/share/Odoo/filestore/dbname</span><br></pre></td></tr></table></figure>
+
+<p>可运行如下命令来创建一个备份（假设PostgreSQL服务在本地运行）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ pg_dump -Fc -f dbname.dump dbname</span><br><span class="line">$ tar cjf dbname.tgz dbname.dump ~/.local/share/Odoo/filestore/dbname</span><br></pre></td></tr></table></figure>
+
+<p>可运行如下命令来还原备份：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ tar xf dbname.tgz</span><br><span class="line">$ pg_restore -C -d dbname dbname.dump</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>📝<strong>当心！</strong></p>
+<p>如果你的Odoo实例使用了另一个用户连接数据库，需要传递-U username来使用正确的用户作为还原数据库的所有者。</p>
+</blockquote>
+<h2 id="在文件中存储实例配置"><a href="#在文件中存储实例配置" class="headerlink" title="在文件中存储实例配置"></a>在文件中存储实例配置</h2><p>odoo-bin脚本有几十个选项，记住所有这些以及记得在启动服务时适当地进行配置会非常单调费力。所幸可以将它们存储在一个配置文件中，只需对想要修改的选项进行手动修改，比如为开发环境做修改。</p>
+<h3 id="如何配置"><a href="#如何配置" class="headerlink" title="如何配置"></a>如何配置</h3><p>对于本小节可执行如下步骤：</p>
+<ol>
+<li><p>运行如下命令来为你的Odoo实例生成一个配置文件：  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ./odoo-bin --save --config myodoo.cfg --stop-after-init</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>还可以添加其它选项，它们的值会被保存到所生成的文件中。所有未设置的值都会以默认值进行保存。使用如下命令来获取可用的选项列表：  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ./odoo-bin --help | less</span><br></pre></td></tr></table></figure>
+
+<p>这会提供一些不同选项所执行内容的帮助文档。</p>
+</li>
+<li><p>要从命令行形式转化为配置形式，使用长选项名，删除前面的中间杠，并将中间的中间杠转换为下划线。–without-demo就变成了without_demo。对大多数选项都是如此，但有一些例外，在下一部分中会列出。</p>
+</li>
+<li><p>编辑myodoo.cfg文件（使用下一部分中的表格来查看所要修改的参数）。然后运行如下命令来以所保存的选项启动服务：  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ./odoo-bin -c myodoo.cfg</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>📝-config选项通常简写为-c。</p>
+</blockquote>
+</li>
+</ol>
+<h3 id="运行原理"><a href="#运行原理" class="headerlink" title="运行原理"></a>运行原理</h3><p>启动时，Odoo通过三个步骤来加载它的配置。首先，所有选项的一组默认值会从源码中进行初始化，然后解析配置文件，该文件中所定义的任意值会覆盖默认值。最后，会分析命令行选项，它们的值会覆盖前面步骤中所获取的配置。</p>
+<p>前面我们已提到，配置变量的名称可通过删除命令行选项的前置中间杠以及将中间的连接符转换为下划线来获取。其中有一些例外，特别是下面这些：</p>
+<table>
+<thead>
+<tr>
+<th>命令行</th>
+<th>配置文件</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>–db-filter</td>
+<td>dbfilter</td>
+</tr>
+<tr>
+<td>–no-http</td>
+<td>http_enable &#x3D; True&#x2F;False</td>
+</tr>
+<tr>
+<td>–database</td>
+<td>db_name</td>
+</tr>
+<tr>
+<td>–dev</td>
+<td>dev_mode</td>
+</tr>
+<tr>
+<td>–i18n-import&#x2F;–i18n-export</td>
+<td>不可用</td>
+</tr>
+</tbody></table>
+<p>表1.2</p>
+<p>以下是通过配置文件设置的常用选项列表：</p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>格式</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>without_demo</td>
+<td>逗号分隔的模块名列表</td>
+<td>该选项阻止模块演示数据被加载。 设置为all取消所有模块的演示数据，设为False为所有模块启用演示数据。对具体模块禁用演示数据，应提供模块名，如 sale,purchase,crm。</td>
+</tr>
+<tr>
+<td>addons_path</td>
+<td>逗号分隔的路径列表</td>
+<td>这是一个服务查找插件的路径名列表。</td>
+</tr>
+<tr>
+<td>admin_passwd</td>
+<td>文本</td>
+<td>这是 master 密码（参见前面部分的内容）</td>
+</tr>
+<tr>
+<td>data_dir</td>
+<td>一个目录路径</td>
+<td>这个目录中服务会存储session信息、从网上下载的插件以及在启用了文件存储时存放文档。</td>
+</tr>
+<tr>
+<td>http_interface</td>
+<td>网络接口的 IP 地址</td>
+<td>默认为0.0.0.0，表示服务监听所有接口。</td>
+</tr>
+<tr>
+<td>http_port longpolling_port</td>
+<td>端口号</td>
+<td>这些是 Odoo 服务所会监听的端口。你需要指定这两者来在同一台主机上运行多个 Odoo 服务；longpolling_port仅在workers不为0时使用。 http_port默认值为8069，longpolling_port默认为8072。</td>
+</tr>
+<tr>
+<td>logfile</td>
+<td>文件路径</td>
+<td>Odoo 写入日志的文件。</td>
+</tr>
+<tr>
+<td>log_level</td>
+<td>日志信息级别</td>
+<td>指定日志的级别。可接受的值（内容逐渐增加）包括critical, error, warn, info, debug, debug_rpc, debug_rpc_answer, debug_sql。</td>
+</tr>
+<tr>
+<td>workers</td>
+<td>整数</td>
+<td>worker进程的数量，更多信息参见<a target="_blank" rel="noopener" href="https://alanhou.org/server-deployment/">第三章 服务器部署</a>。</td>
+</tr>
+<tr>
+<td>proxy_mode</td>
+<td>True&#x2F;False</td>
+<td>激活反向代理WSGI封装。仅在运行于可信任的 web 代理后启用它。</td>
+</tr>
+</tbody></table>
+<p>表1.3</p>
+<p>以下是与数据库相关的配置选项列表：</p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>格式</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>db_host</td>
+<td>主机名</td>
+<td>这是运行PostgreSQL服务的服务器名。使用 False 来使用本地 Unix 域套接字，以及 localhost 来使用本地 TCP 套接字。</td>
+</tr>
+<tr>
+<td>db_user</td>
+<td>数据库登录用户</td>
+<td>在db_host为 False 时这通常为空。这将是用于连接数据库的用户。</td>
+</tr>
+<tr>
+<td>db_password</td>
+<td>数据库用户密码</td>
+<td>在db_host为 False以及 db_user 与运行服务的用户相同时通常为空。阅读pg_hba.conf的主页面来获取更多相关信息。</td>
+</tr>
+<tr>
+<td>db_name</td>
+<td>数据库名</td>
+<td>用于设置一些默认执行命令操作的数据库名。这不会限制服务所操作的数据库。参照下面的 dbfilter 参数。</td>
+</tr>
+<tr>
+<td>db_sslmode</td>
+<td>数据库SSL模式</td>
+<td>用于指定数据库SSL连接模式。</td>
+</tr>
+<tr>
+<td>dbfilter</td>
+<td>一个正则表达式</td>
+<td>该表达式应匹配服务所使用的数据库名。如果你运行网站，应该匹配单个数据库，类似^databasename$。更多相关信息请参见<a target="_blank" rel="noopener" href="https://alanhou.org/server-deployment/">第三章 服务器部署</a>。</td>
+</tr>
+<tr>
+<td>list_db</td>
+<td>True&#x2F;False</td>
+<td>设置为 True 来取消列出数据库。更多信息请参见<a target="_blank" rel="noopener" href="https://alanhou.org/server-deployment/">第三章 服务器部署</a>。</td>
+</tr>
+</tbody></table>
+<p>表1.4</p>
+<p><strong>译者注：</strong> 表中的pg_hba.conf文件位置：&#x2F;etc&#x2F;postgresql&#x2F;xxx&#x2F;main&#x2F;pg_hba.conf，另表中的<a target="_blank" rel="noopener" href="https://alanhou.org/server-deployment/">第三章 服务器部署</a>为上一版中的内容，在本书中已不再包含。</p>
+<p>Odoo对配置文件的解析现在使用Python的ConfigParser模块。但是在Odoo 11.0中的实现发生了变化，它不再支持使用变量插值。因此，如果你习惯了使用%(section.variable)s表达式通过其它变量的值定义变量值的话，需要改变这一习惯并恢复使用显式的值。</p>
+<p>有些选项不在配置文件使用，但广泛用于开发之中：</p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>格式</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>-i或–init</td>
+<td>逗号分隔的模块名列表</td>
+<td>它会在初始化数据库时默认安装给定的模块</td>
+</tr>
+<tr>
+<td>-u 或-update</td>
+<td>逗号分隔的模块名列表</td>
+<td>它会在重启服务时更新给定的模块。多在修改了源代码或从 git 更新了分支时使用</td>
+</tr>
+<tr>
+<td>–dev</td>
+<td>all, reload, qweb, werkzeug, xml</td>
+<td>这会启用开发者模式及自动重新加载功能。</td>
+</tr>
+</tbody></table>
+<p>表1.5</p>
+<h2 id="激活Odoo开发者工具"><a href="#激活Odoo开发者工具" class="headerlink" title="激活Odoo开发者工具"></a>激活Odoo开发者工具</h2><p>开发人员在使用Odoo时，应当知道如何在网页界面激活开发者模式，这样你就可以访问技术设置菜单及开发者信息。启动调试模式会暴露出一些高级配置项及字段。Odoo隐藏这些选项和字段来实现更好的易用性，因为日常不会使用到它们。</p>
+<h3 id="如何激活"><a href="#如何激活" class="headerlink" title="如何激活"></a>如何激活</h3><p>按照如下步骤来在网页界面中激活开发者模式：</p>
+<ol>
+<li>连接到你的实例并以 admin 登录</li>
+<li>访问Settings菜单</li>
+<li>滚动至页面底部，找到Developer Tools版块<br><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d6b4e9a1cba34a269167f9dece0c8ca6~tplv-k3u1fbpfcp-zoom-1.image" alt="图1.11 – 启用不同开发者模式的链接"><br>图1.11 – 启用不同开发者模式的链接</li>
+<li> 点击Activate the developer mode链接</li>
+<li>等待用户界面重载</li>
+</ol>
+<blockquote>
+<p>ℹ️<strong>其它方式：</strong> 也可以通过编辑 URL 来激活开发者模式。在链接的#号前，插入?debug&#x3D;1。例如，如果你的链接是<a target="_blank" rel="noopener" href="http://localhost:8069/web#menu_id=102&action=94%EF%BC%8C%E9%82%A3%E4%B9%88%E4%BD%A0%E9%9C%80%E8%A6%81%E5%B0%86%E5%85%B6%E4%BF%AE%E6%94%B9%E4%B8%BAhttp://localhost:8069/web?debug=1#menu_id=102&action=94%E3%80%82%E6%AD%A4%E5%A4%96%EF%BC%8C%E5%A6%82%E6%9E%9C%E4%BD%A0%E6%83%B3%E8%A6%81%E4%BD%BF%E7%94%A8%E5%B8%A6%E9%9D%99%E6%80%81%E6%96%87%E4%BB%B6%E7%9A%84%E8%B0%83%E8%AF%95%E6%A8%A1%E5%BC%8F%EF%BC%8C%E5%88%99%E5%B0%86">http://localhost:8069/web#menu_id=102&amp;action=94，那么你需要将其修改为http://localhost:8069/web?debug=1#menu_id=102&amp;action=94。此外，如果你想要使用带静态文件的调试模式，则将</a> URL修改为<a target="_blank" rel="noopener" href="http://localhost:8069/web?debug=assets#menu_id=102&action=94">http://localhost:8069/web?debug=assets#menu_id=102&amp;action=94</a></p>
+</blockquote>
+<p><strong>译者注：</strong> 加(with assets)的模式会将静态文件（css, js）分拆每一个具体文件，这将有助于调试，但相对于合并的静态文件而言会损失一些加载速度</p>
+<p>通过如下其中一种方式可退出开发者模式：</p>
+<ul>
+<li>编辑URL并在查询字符串中写入?debug&#x3D;0</li>
+<li>通过使用Settings菜单相同位置下的Deactivate the developer mode链接</li>
+<li>点击顶部调试小虫图标，在下拉菜单中点击Leave Developer Tools选项</li>
+</ul>
+<p>很多开发者使用浏览器插件来切换调试者模式。通过使用插件，可以无需访问settings菜单快速地切换调试模式。这些插件可在Firefox和Chrome浏览器中使用。参见如下截图，它有助于你在Chrome商店中找到该插件：</p>
+<p><a target="_blank" rel="noopener" href="https://alanhou.org/homepage/wp-content/uploads/2019/05/2019050613255271.jpg"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/edc5d20677594b7286abb158858cbccd~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo Debug Chrome 插件"></a></p>
+<p>图1.12 – 调试模式的浏览器插件</p>
+<blockquote>
+<p>📝调试模式的行为从Odoo v13开始发生了改变。从v13开始，调试模式的状态存储在会话中，那么即使在URL中删除掉?debug，调试模式依然处于启动状态。</p>
+</blockquote>
+<h3 id="运行原理-1"><a href="#运行原理-1" class="headerlink" title="运行原理"></a>运行原理</h3><p>开发者模式中，会发生两件事情：</p>
+<ul>
+<li>鼠标在表单视图的字段上或列表视图的列名上悬浮时会给出提示信息，提供该字段的技术信息（内部名称、类型等）。</li>
+<li>调试图标下拉菜单会显示在右上角用户菜单旁，给到显示的模型相关技术信息的访问，有各种关联的视图定义、工作流、自定义过滤管理等等。</li>
+</ul>
+<p>开发模式有一个变体：Developer mode (with assets)。这一模式和普通的开发者模式相似，但除此之外，发送到浏览器的JavaScript 和 CSS没有做最小化处理，这表示你浏览器的web开发者工具可以方便地用于调试JavaScript代码（更多内容请见<a target="_blank" rel="noopener" href="https://alanhou.org/odoo-14-web-client-development/">第十五章 网页客户端开发</a>）。</p>
+<blockquote>
+<p>📝<strong>注意！</strong></p>
+<p>使用非开发者模式及开发者模式来测试你的插件，因JavaScript库的非最小化版本会隐藏最小化版本中伤你至深的 bug。</p>
+</blockquote>
+<h2 id="更新插件模块列表"><a href="#更新插件模块列表" class="headerlink" title="更新插件模块列表"></a>更新插件模块列表</h2><p>在新增模块时，Odoo并不知道新模块的存在。为在Odoo中列出该模块，需要更新模块列表。本小节中学习如何更新应用列表。</p>
+<h3 id="准备工作-2"><a href="#准备工作-2" class="headerlink" title="准备工作"></a>准备工作</h3><p>启动实例并使用Administrator账号连接实例。然后启用开发者模式（如尚不知道如何启用开发者模式，参见<a target="_blank" rel="noopener" href="https://alanhou.org/odoo-14-installing-the-odoo-development-environment/">第一章 安装Odoo开发环境</a>）。</p>
+<h3 id="如何实现…"><a href="#如何实现…" class="headerlink" title="如何实现…"></a>如何实现…</h3><p>在实例中更新已有的插件模块列表，执行如下步骤：</p>
+<ol>
+<li>打开Apps菜单 <strong>。</strong></li>
+<li>点击Update Apps List。<br><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/a85d7d89a2b64768945bbf3200756ce2~tplv-k3u1fbpfcp-zoom-1.image" alt="图1.13 – 更新应用列表的菜单项"><br>图1.13 – 更新应用列表的菜单项</li>
+<li>在弹出的对话框中点击Update按钮：<br><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/14ac3806d4cd43d1abd63e017fd248b7~tplv-k3u1fbpfcp-zoom-1.image" alt="图1.14 – 更新应用列表对话框"><br>图1.14 – 更新应用列表对话框</li>
+<li>在更新结束时，可以点击Apps查看更新后的可用插件模块列表。需要删除掉Apps搜索框中默认的过滤器来查看所有模块。</li>
+</ol>
+<h3 id="运行原理…-2"><a href="#运行原理…-2" class="headerlink" title="运行原理…"></a>运行原理…</h3><p>在点击Update按钮时，Odoo会读取插件路径配置变量。对于列表中的每个路径，它会查找插件声明文件包含的直接子目录，声明文件__manifest__.py存储在插件模块目录下。Odoo读取声明内容，查找其中的Python字典。只要声明中键为installable的实例不设置为False，就会将插件模块元数据存储到数据库中。如果模块已存在，会更新信息。如不存在，会新建一条记录。如果此前可用的插件模块查找不到，也不会从列表中进行删除。</p>
+<blockquote>
+<p>📝仅在初始化数据库后新增插件路径时才需要更新应用列表。如果在初始化数据库之前在配置文件中新增了插件路径，则无需手动更新模块列表。</p>
+</blockquote>
+<p>总结一下我们目前所学到的知识，在完成安装后，我们使用如下命令启动Odoo服务(如果使用了虚拟环境，需要先激活该环境)：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python3 odoo-bin -d odoo-test -i base --addons-path=addons --db-filter=odoo-test</span><br></pre></td></tr></table></figure>
+
+<p>运行后，可以通过<a target="_blank" rel="noopener" href="http://localhost:8069/">http://localhost:8069</a> 来访问Odoo。</p>
+<p>还可以使用配置文件来运行Odoo，如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./odoo-bin -c myodoo.cfg</span><br></pre></td></tr></table></figure>
+
+<p>启动好Odoo服务后，可以在Apps 菜单下安装&#x2F;更新其中的模块。</p>
+<h2 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h2><p>1、Running setup.py install for psycopg2 … error<br>ERROR: Command errored out with exit status 1</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt install libpq-dev -y</span><br></pre></td></tr></table></figure>
       
     </div>
 
@@ -2769,525 +3406,6 @@
 <li>Odoo web 服务的<a target="_blank" rel="noopener" href="https://www.odoo.com/documentation/12.0/webservices/odoo.html">官方文档</a>中包含了 Python 以外的其它编程语言示例</li>
 <li><a target="_blank" rel="noopener" href="https://pythonhosted.org/OdooRPC/">OdooRPC文档</a></li>
 <li><a target="_blank" rel="noopener" href="https://erppeek.readthedocs.io/en/latest/">ERPpeek文档</a></li>
-</ul>
-<p>本文首发地址：<a target="_blank" rel="noopener" href="https://alanhou.org/developer-mode-odoo12/">Alan Hou 的个人博客</a></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://alanhou.github.io/2019/01/14/odoo-essentials-12-chapter8/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Alan Hou">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Alan Hou的个人博客">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Alan Hou的个人博客">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2019/01/14/odoo-essentials-12-chapter8/" class="post-title-link" itemprop="url">第八章 Odoo 12开发之业务逻辑 – 业务流程的支持</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2019-01-14 00:00:00" itemprop="dateCreated datePublished" datetime="2019-01-14T00:00:00+08:00">2019-01-14</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-02-03 14:19:24" itemprop="dateModified" datetime="2023-02-03T14:19:24+08:00">2023-02-03</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>本文为<a target="_blank" rel="noopener" href="https://alanhou.org/odoo-12-development/">最好用的免费ERP系统Odoo 12开发手册</a>系列文章第八篇。</p>
-<p>在前面的文章中，我们学习了模型层、如何创建应用数据结构以及如何使用 ORM API 来存储查看数据。本文中我们将利用前面所学的模型和记录集知识实现应用中常用的业务逻辑模式。</p>
-<p>本文的主要内容有：</p>
-<ul>
-<li>以文件为中心工作流的阶段(stage)</li>
-<li>ORM 方法装饰器：@api.multi, @api.one和@api.model</li>
-<li>onchange方法，与用户即时交互</li>
-<li>使用 ORM 内置方法，如create, write 和 unlink</li>
-<li>Mail 插件提供的消息和活动功能</li>
-<li>创建向导来帮助用户执行复杂操作</li>
-<li>使用日志消息优化系统监测</li>
-<li>抛出异常以在出错时给用户反馈</li>
-<li>使用单元测试来进行代码质量检查</li>
-<li>开发工具，调试器等开发者工具</li>
-</ul>
-<h2 id="开发准备"><a href="#开发准备" class="headerlink" title="开发准备"></a>开发准备</h2><p>本文中我们将创建一个依赖于之前文章创建的library_app和library_member模块的library_checkout插件模块。这些模块的代码请参见 <a target="_blank" rel="noopener" href="https://github.com/alanhou/odoo12-development/tree/master/chapter6">GitHub 仓库</a>。这两个插件模块都应放置在add-ons路径中(参见命令行–addons-path或~&#x2F;.odoorc 配置文件中的addons_path)，这样我们才能安装和使用。本文完成后的代码请见 <a target="_blank" rel="noopener" href="https://github.com/alanhou/odoo12-development/tree/master/chapter8">GitHub 仓库</a>。</p>
-<h2 id="学习项目-–-library-checkout模块"><a href="#学习项目-–-library-checkout模块" class="headerlink" title="学习项目 – library_checkout模块"></a>学习项目 – library_checkout模块</h2><p>在前面章节的学习中，我们为图书应用搭建了主数据结构。现在需要为图书会员添加借书的功能了。也就是说需要追踪图书是否可借以及归还的记录。每本书的借阅都有一个生命周期，从图书登记选中到图书被归还。这是一个可通过看板视图表示的简单工作流，看板视图中每个阶段(stage)可展现为一列，工作项和借阅请求流从左侧列到右侧列，直至完成为止。</p>
-<p>在本文中，我们集中学习实现这一功能的数据模型和业务逻辑。用户界面部分的详情将在第十章 <a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-backend-views/">Odoo 12开发之后台视图 - 设计用户界面</a>和第十一章 <a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-kanban-qweb/">Odoo 12开发之看板视图和用户端 QWeb</a>中讨论。</p>
-<p>图书借阅模型包含：</p>
-<ul>
-<li>借阅图书的会员（必填）</li>
-<li>借阅请求日期（默认为当天）</li>
-<li>负责借阅请求的图书管理员（默认为当前用户）</li>
-<li>借阅路线，包含请求借阅的一本或多本图书</li>
-</ul>
-<p>要支持并存档借阅生命周期，需要添加如下内容：</p>
-<ul>
-<li>请求的阶段：已选中、可借阅、已借出、已归还或已取消</li>
-<li>借阅日期，图书借出的日期</li>
-<li>关闭日期，图书归还的日期</li>
-</ul>
-<p>我们将开始创建一个新的模块library_checkout并实现图书借阅模型的初始版本。与此前章节相比此处并没有引入新的知识，用于提供一个基础供本文后续创建新功能。</p>
-<p>在其它图书插件模块的同级路径下创建一个library_checkout目录：</p>
-<p>1、首先添加__manifest__.py文件并加入如下内容：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &#x27;name&#x27;: &#x27;Library Book Borrowing&#x27;,</span><br><span class="line">    &#x27;description&#x27;: &#x27;Members can borrow books from the library.&#x27;,</span><br><span class="line">    &#x27;author&#x27;: &#x27;Alan Hou&#x27;,</span><br><span class="line">    &#x27;depends&#x27;: [&#x27;library_member&#x27;],</span><br><span class="line">    &#x27;data&#x27;:[</span><br><span class="line">        &#x27;security/ir.model.access.csv&#x27;,</span><br><span class="line">        &#x27;views/library_menu.xml&#x27;,</span><br><span class="line">        &#x27;views/checkout_view.xml&#x27;,</span><br><span class="line">    ],</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>2、在模块目录下创建__init__.py文件，并添加如下代码：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">from . import models</span><br></pre></td></tr></table></figure>
-
-<p>3、创建models&#x2F;<strong>init</strong>.py文件并添加：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">from . import library_checkout</span><br></pre></td></tr></table></figure>
-
-<p>4、在models&#x2F;library_checkout.py中添加如下代码：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">from odoo import api, exceptions, fields, models</span><br><span class="line"></span><br><span class="line">class Checkout(models.Model):</span><br><span class="line">    _name = &#x27;library.checkout&#x27;</span><br><span class="line">    _description = &#x27;Checkout Request&#x27;</span><br><span class="line">    member_id = fields.Many2one(</span><br><span class="line">        &#x27;library.member&#x27;,</span><br><span class="line">        required=True)</span><br><span class="line">    user_id = fields.Many2one(</span><br><span class="line">        &#x27;res.users&#x27;,</span><br><span class="line">        &#x27;Librarian&#x27;,</span><br><span class="line">        default=lambda s: s.env.uid)</span><br><span class="line">    request_date = fields.Date(</span><br><span class="line">        default=lambda s: fields.Date.today())</span><br><span class="line">    line_ids = fields.One2many(</span><br><span class="line">        &#x27;library.checkout.line&#x27;,</span><br><span class="line">        &#x27;checkout_id&#x27;,</span><br><span class="line">        string=&#x27;Borrowed Books&#x27;,)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">class CheckoutLine(models.Model):</span><br><span class="line">    _name = &#x27;library.checkout.line&#x27;</span><br><span class="line">    _description = &#x27;Borrow Request Line&#x27;</span><br><span class="line">    checkout_id = fields.Many2one(&#x27;library.checkout&#x27;)</span><br><span class="line">    book_id = fields.Many2one(&#x27;library.book&#x27;)</span><br></pre></td></tr></table></figure>
-
-<p>下面就要添加数据文件了，添加访问规则、菜单项和一些基础视图，这样模块可以最小化的运行起来。</p>
-<p>5、添加security&#x2F;ir.model.access.csv文件：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink</span><br><span class="line">checkout_user,Checkout User,model_library_checkout,library_app.library_group_user,1,1,1,0</span><br><span class="line">checkout_line_user,Checkout Line User ,model_library_checkout_line,library_app.library_group_user,1,1,1,1</span><br><span class="line">checkout_manager,Checkout Manager,model_library_checkout,library_app.library_group_manager,1,1,1,1</span><br></pre></td></tr></table></figure>
-
-<p>6、菜项项通过views&#x2F;library_menu.xml实现：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;odoo&gt;</span><br><span class="line">    &lt;act_window id=&quot;action_library_checkout&quot;</span><br><span class="line">        name=&quot;Checkouts&quot;</span><br><span class="line">        res_model=&quot;library.checkout&quot;</span><br><span class="line">        view_mode=&quot;tree,form&quot; /&gt;</span><br><span class="line">    &lt;menuitem id=&quot;menu_library_checkout&quot;</span><br><span class="line">        name=&quot;Checkout&quot;</span><br><span class="line">        action=&quot;action_library_checkout&quot;</span><br><span class="line">        parent=&quot;library_app.menu_library&quot; /&gt;</span><br><span class="line">&lt;/odoo&gt;</span><br></pre></td></tr></table></figure>
-
-<p>7、视图通过views&#x2F;checkout_view.xml文件实现：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot; ?&gt;</span><br><span class="line">&lt;odoo&gt;</span><br><span class="line">    &lt;record id=&quot;view_tree_checkout&quot; model=&quot;ir.ui.view&quot;&gt;</span><br><span class="line">        &lt;field name=&quot;name&quot;&gt;Checkout Tree&lt;/field&gt;</span><br><span class="line">        &lt;field name=&quot;model&quot;&gt;library.checkout&lt;/field&gt;</span><br><span class="line">        &lt;field name=&quot;arch&quot; type=&quot;xml&quot;&gt;</span><br><span class="line">            &lt;tree&gt;</span><br><span class="line">                &lt;field name=&quot;request_date&quot; /&gt;</span><br><span class="line">                &lt;field name=&quot;member_id&quot; /&gt;</span><br><span class="line">            &lt;/tree&gt;</span><br><span class="line">        &lt;/field&gt;</span><br><span class="line">    &lt;/record&gt;</span><br><span class="line"></span><br><span class="line">    &lt;record id=&quot;view_form_checkout&quot; model=&quot;ir.ui.view&quot;&gt;</span><br><span class="line">        &lt;field name=&quot;name&quot;&gt;Checkout Form&lt;/field&gt;</span><br><span class="line">        &lt;field name=&quot;model&quot;&gt;library.checkout&lt;/field&gt;</span><br><span class="line">        &lt;field name=&quot;arch&quot; type=&quot;xml&quot;&gt;</span><br><span class="line">            &lt;form&gt;</span><br><span class="line">                &lt;sheet&gt;</span><br><span class="line">                    &lt;group&gt;</span><br><span class="line">                        &lt;field name=&quot;member_id&quot; /&gt;</span><br><span class="line">                        &lt;field name=&quot;request_date&quot; /&gt;</span><br><span class="line">                        &lt;field name=&quot;user_id&quot; /&gt;</span><br><span class="line">                        &lt;field name=&quot;line_ids&quot; /&gt;</span><br><span class="line">                    &lt;/group&gt;</span><br><span class="line">                &lt;/sheet&gt;</span><br><span class="line">            &lt;/form&gt;</span><br><span class="line">        &lt;/field&gt;</span><br><span class="line">    &lt;/record&gt;</span><br><span class="line">&lt;/odoo&gt;</span><br></pre></td></tr></table></figure>
-
-<p>现在就可以在我们的 Odoo 工作数据库中安装这个模块，并准备开始添加更多功能了。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~/odoo-dev/odoo/odoo-bin -d dev12 -i library_checkout</span><br></pre></td></tr></table></figure>
-
-<h2 id="以文档为中心工作流的阶段-stage"><a href="#以文档为中心工作流的阶段-stage" class="headerlink" title="以文档为中心工作流的阶段(stage)"></a>以文档为中心工作流的阶段(stage)</h2><p>在 Odoo 中，我们可以实现以文档(document)为中心的工作流。我们这里说的文档包括销售订单、项目任务或人事申请。所有这些都遵循一个特定的生命周期，它们都在完成时才被创建。它们都被记录在一个文档中，按照一系列可能的阶段推进，直至完成。</p>
-<p>如果把各阶段以列展示在面板中，把文档作为这些列中的工作项，就可以得到一个看板(Kanban)，一个快速查看工作进度的视图。实现这些进度步骤有两种方法，通常称为状态和阶段。</p>
-<p>状态通过预定义的闭合选项列表来实现。它便于实现业务规则，并且模型和视图对 state 字段有特别的支持，根据当前状态来带有必填和隐藏属性集。状态列表有一个劣势，就是它是预定义并且闭合的，因此无法按具体流程需求来做调整。</p>
-<p>阶段通过关联模型实现，阶段列表是开放的，可被配置来满足当前流程需求。可以轻易地修改引用阶段列表：删除、添加或渲染这些阶段。它的劣势是对流程自动化不可靠，因为阶段列表可被修改，自动化规则就无法依赖于具体的阶段 ID 或描述。</p>
-<p>获取两种方法优势的方式是将阶段映射到状态中。文档组织到可配置的阶段中，然后间接关联到对于自动化业务逻辑可靠的状态码中。我们将在library_checkout&#x2F;models&#x2F;library_checkout_stage.py文件中实现library.checkout.stage模型，代码如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">from odoo import fields, models</span><br><span class="line"></span><br><span class="line">class CheckoutStage(models.Model):</span><br><span class="line">    _name = &#x27;library.checkout.stage&#x27;</span><br><span class="line">    _description = &#x27;Checkout Stage&#x27;</span><br><span class="line">    _order = &#x27;sequence,name&#x27;</span><br><span class="line"></span><br><span class="line">    name = fields.Char()</span><br><span class="line">    sequence = fields.Integer(default=10)</span><br><span class="line">    fold = fields.Boolean()</span><br><span class="line">    active = fields.Boolean(default=True)</span><br><span class="line">    state = fields.Selection(</span><br><span class="line">        [(&#x27;new&#x27;, &#x27;New&#x27;),</span><br><span class="line">        (&#x27;open&#x27;, &#x27;Borrowed&#x27;),</span><br><span class="line">        (&#x27;done&#x27;, &#x27;Returned&#x27;),</span><br><span class="line">        (&#x27;cancel&#x27;, &#x27;Cancelled&#x27;)],</span><br><span class="line">        default=&#x27;new&#x27;,</span><br><span class="line">    )</span><br></pre></td></tr></table></figure>
-
-<p>这里我们可以看到 state 字段，允许每个阶段与四个基本状态映射。sequence字段很重要，要配置顺序，阶段应在看板和阶段选择列表中展示。fold 布尔字段是看板用于将一些列默认折叠，这样其内容就不会马上显示出来。折叠通常用于已完成或取消的阶段。新的代码一定不要忘记加入到models&#x2F;<strong>init</strong>.py文件中，当前内容为：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">from . import library_checkout_stage</span><br><span class="line">from . import library_checkout</span><br></pre></td></tr></table></figure>
-
-<p>下一步，我们需要向图书借阅模型添加阶段字段stage。编辑library_checkout&#x2F;models&#x2F;library_checkout.py文件，在 Checkout 类的最后面(line_ids 字段后)添加如下代码：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">@api.model</span><br><span class="line">def _default_stage(self):</span><br><span class="line">    Stage = self.env[&#x27;library.checkout.stage&#x27;]</span><br><span class="line">    return Stage.search([], limit=1)</span><br><span class="line"></span><br><span class="line">@api.model</span><br><span class="line">def _group_expand_stage_id(self, stages, domain, order):</span><br><span class="line">    return stages.search([], order=order)</span><br><span class="line"></span><br><span class="line">stage_id = fields.Many2one(</span><br><span class="line">    &#x27;library.checkout.stage&#x27;,</span><br><span class="line">    default=_default_stage,</span><br><span class="line">    group_expand=&#x27;_group_expand_stage_id&#x27;)</span><br><span class="line">state = fields.Selection(related=&#x27;stage_id.state&#x27;)</span><br></pre></td></tr></table></figure>
-
-<p>stage_id是一个与阶段模型的 many-to-one关联。我们还添加了 state 字段，这是一个让阶段的 state 字段在当前模型中可用的关联字段，这样才能在视图中使用。阶段的默认值由_default_stage() 函数来计算，它返回阶段模型的第一条记录。因为阶段模型已通过 sequence 排序，所以返回的是 sequence 值最小的一条记录。</p>
-<p>group_expand参数重载字段的分组方式，默认的分组操作行为是仅能看到使用过的阶段，而不带有借阅文档的阶段不会显示。在我们的例子中，我们想要不同的效果：我们要看到所有的阶段，哪怕它没有文档。_group_expand_stage_id() 帮助函数返回分组操作需使用组记录列表。本例中返回所有已有阶段，不论其中是否包含图书借阅记录。</p>
-<blockquote>
-<p>ℹ️<strong>Odoo 10中的修改</strong><br>group_expand字段在Odoo 10中引入，但在官方文档中没有介绍。使用示例在 Odoo 的源代码中可以找到，比如在 Project 应用中：<a target="_blank" rel="noopener" href="https://github.com/odoo/odoo/blob/12.0/addons/project/models/project.py">GitHub 仓库</a>。</p>
-</blockquote>
-<p>既然我们添加了新模块，就应该在security&#x2F;ir.model.access.csv文件中加入对应的安全权限，代码如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">checkout_stage_user,Checkout Stage User,model_library_checkout_stage,library_app.library_group_user,1,0,0,0</span><br><span class="line">checkout_stage_manager,Checkout Stage Manager,model_library_checkout_stage,library_app.library_group_manager,1,1,1,1</span><br></pre></td></tr></table></figure>
-
-<p>我们需要一组阶段来进行操作，所以下面来为模块添加默认数据。创建data&#x2F;library_checkout_stage.xml文件并加入如下代码：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&lt;odoo noupdate=&quot;1&quot;&gt;</span><br><span class="line">    &lt;record id=&quot;stage_10&quot; model=&quot;library.checkout.stage&quot;&gt;</span><br><span class="line">        &lt;field name=&quot;name&quot;&gt;Draft&lt;/field&gt;</span><br><span class="line">        &lt;field name=&quot;sequence&quot;&gt;10&lt;/field&gt;</span><br><span class="line">        &lt;field name=&quot;state&quot;&gt;new&lt;/field&gt;</span><br><span class="line">    &lt;/record&gt;</span><br><span class="line">    &lt;record id=&quot;stage_20&quot; model=&quot;library.checkout.stage&quot;&gt;</span><br><span class="line">        &lt;field name=&quot;name&quot;&gt;Borrowed&lt;/field&gt;</span><br><span class="line">        &lt;field name=&quot;sequence&quot;&gt;20&lt;/field&gt;</span><br><span class="line">        &lt;field name=&quot;state&quot;&gt;open&lt;/field&gt;</span><br><span class="line">    &lt;/record&gt;</span><br><span class="line">    &lt;record id=&quot;stage_90&quot; model=&quot;library.checkout.stage&quot;&gt;</span><br><span class="line">        &lt;field name=&quot;name&quot;&gt;Completed&lt;/field&gt;</span><br><span class="line">        &lt;field name=&quot;sequence&quot;&gt;90&lt;/field&gt;</span><br><span class="line">        &lt;field name=&quot;state&quot;&gt;done&lt;/field&gt;</span><br><span class="line">    &lt;/record&gt;</span><br><span class="line">    &lt;record id=&quot;stage_95&quot; model=&quot;library.checkout.stage&quot;&gt;</span><br><span class="line">        &lt;field name=&quot;name&quot;&gt;Cacelled&lt;/field&gt;</span><br><span class="line">        &lt;field name=&quot;sequence&quot;&gt;95&lt;/field&gt;</span><br><span class="line">        &lt;field name=&quot;state&quot;&gt;cancel&lt;/field&gt;</span><br><span class="line">    &lt;/record&gt;</span><br><span class="line">&lt;/odoo&gt;</span><br></pre></td></tr></table></figure>
-
-<p>要使文件生效，需先在library_checkout&#x2F;<strong>manifest</strong>.py文件中添加该文件：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">    &#x27;data&#x27;:[</span><br><span class="line">...</span><br><span class="line">        &#x27;data/library_checkout_stage.xml&#x27;,</span><br><span class="line">    ],</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b4a3cb2556464c60b4e9084500306b8d~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12图书项目 stages"></p>
-<p>备注：上图为通过开发者菜单中Edit View: Form编辑添加了 stage_id 后的效果。</p>
-<h2 id="ORM-方法装饰器"><a href="#ORM-方法装饰器" class="headerlink" title="ORM 方法装饰器"></a>ORM 方法装饰器</h2><p>就我们目前碰到的 Odoo 中 Python 代码，装饰器，如@api.multi通常用于模型方法中。这对 ORM 非常重要，允许它给这些方法特殊用法。下面就来看看有哪些 ORM 装饰器以及如何使用。</p>
-<h3 id="记录集方法：-api-multi"><a href="#记录集方法：-api-multi" class="headerlink" title="记录集方法：@api.multi"></a>记录集方法：@api.multi</h3><p>大多数情况下，我们需要一个自定义方法来对记录集执行一些操作。此时就需要使用@api.multi，并且此处self参数就是要操作的记录集。方法的逻辑通常会包含对 self 的遍历。@api.multi是最常用的装饰器。</p>
-<blockquote>
-<p><strong>小贴士：</strong> 如果模型方法没有添加装饰器，默认就使用@api.multi。</p>
-</blockquote>
-<h3 id="单例记录方法：-api-one"><a href="#单例记录方法：-api-one" class="headerlink" title="单例记录方法：@api.one"></a>单例记录方法：@api.one</h3><p>有些情况下方法用于操作单条记录（单例），此时可使用@api.one装饰器。现在仍可使用@api.one，但在 Odoo 9中已声明为弃用。它包裹装饰的方法，进行 for 循环遍历，它调用装饰方法，一次一条记录，然后返回一个结果列表。因此在@api.one装饰的方法内，self 一定是单例。</p>
-<blockquote>
-<p><strong>小贴士：</strong> @api.one的返回值有些搞怪，它返回一个列表，而不实际方法返回的数据结构。比如方法代码如果返回字典，实际返回值是一个字典值列表。这种误导性也是该方法被弃用的主要原因。</p>
-</blockquote>
-<p>对于要操作单条记录的方法，我们应还是使用@api.multi，在代码顶部添加一行self.ensure_one()，来确保操作的是单条记录。</p>
-<h3 id="类静态方法：-api-model"><a href="#类静态方法：-api-model" class="headerlink" title="类静态方法：@api.model"></a>类静态方法：@api.model</h3><p>有时方法需要在类级别而不是具体记录上操作。面向对象编程语言中，这称之为静态方法。这些类级别的静态方法应由@api.model装饰。在这些情况下，self 应作为模型的引用 ，无需包含实际记录。</p>
-<blockquote>
-<p>ℹ️@api.model装饰的方法无法用于用户界面按钮，在这种情况下，应使用@api.multi。</p>
-</blockquote>
-<h3 id="onchange-方法"><a href="#onchange-方法" class="headerlink" title="onchange 方法"></a>onchange 方法</h3><p>onchange由用户界面表单视图触发，当用户编辑指定字段值时，立即执行一段业务逻辑。这可用于执行验证，向用户显示消息或修改表单中的其它字段。支持该逻辑的方法就使用@api.onchange(‘fld1’, ‘fld2’, …)装饰。装饰器的参数是用户界面通过编辑需触发方法的字段名。</p>
-<blockquote>
-<p><strong>小贴士：</strong> 通过为字段添加属性on_change&#x3D;”0”可在特定表单中关闭 on change 行为，比如<field name="fld1" on_change="0" /></p>
-</blockquote>
-<p>在方法内，self 参数是带有当前表单数据的一条虚拟记录。如果在记录上设置了值，就会在用户界面表单中被修改。注意它并没有向数据库实际写入记录，而是提供信息来修改 UI表单中的数据。无需返回信息，但可以返回一个字典结构的警告信息来显示在用户界面中。</p>
-<p>作为示例，我们可以使用它来执行借阅表单中的部分自动化：在图书会员变更时，请求日期设置为当天，并且显示一个警告信息告知用户。下面我们就在library_checkout&#x2F;models&#x2F;library_checkout.py文件中添加如下代码：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">@api.onchange(&#x27;member_id&#x27;)</span><br><span class="line">def onchange_member_id(self):</span><br><span class="line">    today = fields.Date.today()</span><br><span class="line">    if self.request_date != today:</span><br><span class="line">        self.request_date = fields.Date.today()</span><br><span class="line">        return &#123;</span><br><span class="line">            &#x27;warning&#x27;:&#123;</span><br><span class="line">                &#x27;title&#x27;: &#x27;Changed Request Date&#x27;,</span><br><span class="line">                &#x27;message&#x27;: &#x27;Request date changed to today.&#x27;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
-
-<p>通过用户界面修改member_id字段时，此处使用了@api.onchange装饰器来触发一些逻辑。实际方法不存在关联，但按照惯例名称应以onchange_开头，方法中我们更新了request_date的值并返回警告信息。在onchange方法内，self 表示一条虚拟记录，它包含当前正在编辑的记录的所有字段，我们可以与这些字段进行交互。大多数情况下我们想要根据修改字段设置的值自动在其它字段填充值。本例中，我们将request_date更新为当天。</p>
-<p>onchange 方法无需返回任何值，但可以返回一个包含警告或作用域键的字典：</p>
-<ul>
-<li>警告的键应描述显示在对话框中的消息，如{‘title’: ‘Message Title’, ‘message’: ‘Message Body’}</li>
-<li>作用域键可设置或修改其它字段的域属性。通过让to-many字段仅展示在当下有意义的字段，会使得用户界面更加友好。作用域键类似这样：{‘user_id’: [(‘email’, ‘!&#x3D;’, False)]}</li>
-</ul>
-<h3 id="其它模型方法装饰器"><a href="#其它模型方法装饰器" class="headerlink" title="其它模型方法装饰器"></a>其它模型方法装饰器</h3><p>以下装饰器也会经常使用到，它们与模型内部行为有关，在第六章 <a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-structuring-data/">Odoo 12开发之模型 - 结构化应用数据</a>中进行了详细讨论。罗列如下供您参考：</p>
-<ul>
-<li>@api.depends(fld1,…)用于计算字段函数，来识别(重新)计算应触发什么样的修改。必须设置在计算字段值上，否则会报错。</li>
-<li>@api.constrains(fld1,…)用于模型验证函数并在任意参数中包含的字段修改时执行检查。它不应向数据库写入修改，如检查失败，则抛出异常。</li>
-</ul>
-<h2 id="使用-ORM-内置方法"><a href="#使用-ORM-内置方法" class="headerlink" title="使用 ORM 内置方法"></a>使用 ORM 内置方法</h2><p>上一部分讨论的装饰器允许我们为模型添加一些功能，如实施验证或自动运算。</p>
-<p>ORM 提供对模型数据执行增删改查(CRUD)操作的方法。下面我们来探讨如何扩展写操作来支持自定义逻辑。读取数据的主要方法search()和browse()在中第七章 <a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-recordsets/">Odoo 12开发之记录集 - 使用模型数据</a>已进行讨论。</p>
-<h3 id="写入模型数据的方法"><a href="#写入模型数据的方法" class="headerlink" title="写入模型数据的方法"></a>写入模型数据的方法</h3><p>ORM 为三种基本写操作提供了三个方法，如下所示：</p>
-<ul>
-<li><Model>.create(values)在模型上创建新记录，它返回所创建记录。</li>
-<li><Recordset>.write(values) 更新记录集中的字段值，它不返回值。</li>
-<li><Recordset>.unlink()从数据库中删除记录，它不返回值。</li>
-</ul>
-<p>values参数是一个字典，映射要写入的字段名和值。这些方法由@api.multi装饰，除create()方法使用@api.model装饰器外。</p>
-<blockquote>
-<p>ℹ️<strong>Odoo 12中的修改</strong><br>create()现在也可批量创建数据，这通过把单个字典对象修改为字典对象列表来传参进行实现。这由带有@api.model_create_multi装饰器的create() 方法来进行支持。</p>
-</blockquote>
-<p>有些情况下，我们需要扩展这些方法来添加一些业务逻辑，在这些操作执行时触发。通过将逻辑放到自定义方法的适当位置，我们可以让代码在主操作执行之前或之后运行。</p>
-<p>我们将使用借阅模型类创建一个示例：添加两个日期字段来记录进入 open 状态的时间和进入 closed 状态的时间。这是计算字段所无法实现的，我们还将添加一个检查来阻止对已为 done 状态的创建借阅。</p>
-<p>因此我们应在 Checkout 类中添加两个新字段，在library_checkout&#x2F;models&#x2F;library_checkout.py文件中添加如下代码：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">checkout_date = fields.Date(readonly=True)</span><br><span class="line">closed_date = fields.Date(readonly=True)</span><br></pre></td></tr></table></figure>
-
-<p>现在就可以创建自定义的create()方法来设置checkout_date了，如果状态正确则创建，而如果已经是完成状态则不予创建，代码如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">@api.model</span><br><span class="line">def create(self, vals):</span><br><span class="line">    # Code before create: should use the `vals` dict</span><br><span class="line">    if &#x27;stage_id&#x27; in vals:</span><br><span class="line">        Stage = self.env[&#x27;library.checkout.stage&#x27;]</span><br><span class="line">        new_state = Stage.browse(vals[&#x27;stage_id&#x27;]).state</span><br><span class="line">        if new_state == &#x27;open&#x27;:</span><br><span class="line">            vals[&#x27;checkout_date&#x27;] = fields.Date.today()</span><br><span class="line">    new_record = super().create(vals)</span><br><span class="line">    # Code after create: can use the `new_record` created</span><br><span class="line">    if new_record.state == &#x27;done&#x27;:</span><br><span class="line">        raise exceptions.UserError(</span><br><span class="line">            &#x27;Not allowed to create a checkout in the done state.&#x27;)</span><br><span class="line">    return new_record</span><br></pre></td></tr></table></figure>
-
-<p>注意在实际新记录创建之前，不存在其它记录，仅带有用于创建记录的值的字典。这也就是我们使用browse()来获取新记录stage_id的原因，然后对值进行相应的检查。作为对比，一旦创建了新记录，相应的操作就变简单了，使用对象的点号标记即可：new_record.state。在执行super().create(vals)命令之前可以对值字典进行修改，我们使用它在状态合适的情况下写入checkout_date。</p>
-<blockquote>
-<p>ℹ️<strong>Odoo 11中的修改</strong><br>Python 3中有一种super()的简写方式，我们上例中使用的就是这种方式。而在 Python 2中则写成super(Checkout, self).create(vals)，其中 Checkout 为代码所在的 Python 类名。在 Python 3这种语法仍然可用，但同时带有简写语法：super().create(vals)。</p>
-</blockquote>
-<p>修改记录时，如果订阅进入的是合适的状态我们需要更新checkout_date和closed_date。实现这一功能需要使用自定义的write() 方法，代码如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">@api.multi</span><br><span class="line">def write(self, vals):</span><br><span class="line">    # Code before write: can use `self`, with the old values</span><br><span class="line">    if &#x27;stage_id&#x27; in vals:</span><br><span class="line">        Stage = self.env[&#x27;library.checkout.stage&#x27;]</span><br><span class="line">        new_state = Stage.browse(vals[&#x27;stage_id&#x27;]).state</span><br><span class="line">        if new_state == &#x27;open&#x27; and self.state != &#x27;open&#x27;:</span><br><span class="line">            vals[&#x27;checkout_date&#x27;] = fields.Date.today()</span><br><span class="line">        if new_state == &#x27;done&#x27; and self.state != &#x27;done&#x27;:</span><br><span class="line">            vals[&#x27;closed_date&#x27;] = fields.Date.today()</span><br><span class="line">    super().write(vals)</span><br><span class="line">    # Code after write: can use `self`, with the updated values</span><br><span class="line">    return True</span><br></pre></td></tr></table></figure>
-
-<p>我们一般会尽量在super().write(vals)之前修改写入的值。如果write()方法在同一模型中有其它的写操作，会导致递归循环，它在工作进程资源耗尽后结束并报错。请考虑是否需要这么做，如果需要，避免递归循环的一个技巧是在上下文中添加一个标记。作为示例，我们添加类似如下代码：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">if not self.env.context.get(&#x27;_library_checkout_writing&#x27;):</span><br><span class="line">            self.with_context(_library_checkout_writing=True).write(some_values)</span><br></pre></td></tr></table></figure>
-
-<p>通过这个技巧，具体的逻辑受到 if 语句的保护，仅在上下文中出现指定标记时才会运行。再深入一步，self.write()操作应使用with_context来设置标记。这种组合确保 if 语句中自定义登录(login)只执行一次，并且不会触发更多的write()调用，避免进入无限循环。</p>
-<p>在write()内运行write()方法会导致无限循环。要避免这一循环，我们需要在上下文中设置标记值来在代码中进行检查避免进入循环。</p>
-<p>应仔细考虑是否需要对create或write方法进行扩展。大多数情况下我们只需要在保存记录时执行一些验证或自动计算某些值：</p>
-<ul>
-<li>对于根据其它字段自动计算的字段值，我们应使用计算字段。这样的例子有在各行值修改时对头部汇总的计算。</li>
-<li>要使字段默认值动态计算，我们可以将字段赋值的默认值修改为一个函数绑定。</li>
-<li> 要让字段根据其它字段的修改来设置值，我们可以使用 onchange 函数。举个例子，在选定客户时，将用户的币种设置为文档的币种，但随后可由用户手动修改。记住 onchange 仅用于表单视图的交互，不直接进行写入调用。</li>
-<li>对于验证，我们应使用由@api.constraints(fld1,fld2,…)装饰的约束函数。这和计算字段相似，但不同处在于它会抛出错误。</li>
-</ul>
-<h3 id="数据导入、导出方法"><a href="#数据导入、导出方法" class="headerlink" title="数据导入、导出方法"></a>数据导入、导出方法</h3><p>导入、导出操作在第五章 <a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-import-export-data/">Odoo 12开发之导入、导出以及模块数据</a>已做讨论，也可以通过 ORM API 中的如下方法操作：</p>
-<ul>
-<li>load([fields], [data]) 用于导入从 CSV 文件中获取的数据。第一个参数是导入的字段列表，与 CSV 的第一行对应。第二个参数是记录列表，每条记录是一个待解析和导入的字符串列表，与 CSV 数据中的行和列直接对应。它实现了 CSV 数据导入的功能，比如对外部标识符的支持。它用于网页客户端的导入函数。</li>
-<li>export_data([fields], raw_data&#x3D;False)用于网页客户端导出函数。它返回一个字典，带有包含数据（一个行列表）的数据键。字段名可使用 CSV 文件使用的.id和&#x2F;id后缀，数据格式与需导入的 CSV 文件兼容。可选raw_data参数让数据值与 Python 类型一同导出，而不是 CSV 文件中的字符串形式。</li>
-</ul>
-<h3 id="用户界面的支持方法"><a href="#用户界面的支持方法" class="headerlink" title="用户界面的支持方法"></a>用户界面的支持方法</h3><p>以下方法最常用于网页客户端中渲染用户界面和执行基础交互：</p>
-<ul>
-<li>name_get()返回一个表示每条记录的文本的元组(ID, name)列表。它默认用于计算display_name值，来提供关联字段的文本表示。可扩展它来实现自定义的显示方式，如将仅显示名称改为显示记录编号和名称。</li>
-<li>name_search(name&#x3D;’’, args&#x3D;None, operator&#x3D;’ilike’, limit&#x3D;100)返回一个元组(ID, name)列表，其显示名与 name 参数的文本相匹配。它用于 UI 中，在关联字段中通过输入来生成带有匹配所输入文本推荐记录的列表。例如，它可用于在挑选产品的字段中输入时，实现通过名称和引用来查找产品。</li>
-<li>name_create(name)创建一条仅带有要使用的标题名的新记录。它用于在 UI 中快速创建(quick-create)功能，这里我们可以仅提供名称快速创建一条关联记录。可扩展来为通过此功能创建的新记录提供指定默认值。</li>
-<li>default_get([fields])返回一个带有要创建的新记录默认值的字典。默认值可使用变量，如当前用户或会话上下文。</li>
-<li>fields_get()用于描述模型字段的定义，在开发者菜单的View Fields选项中也可以看到。</li>
-<li>fields_view_get()在网页客户端中用于获取要渲染的 UI视图的结构。可传入视图的 ID或想要使用的视图类型(view_type&#x3D;’form’)作为参数。例如可使用self.fields_view_get(view_type&#x3D;’tree’)。</li>
-</ul>
-<h2 id="消息和活动-activity-功能"><a href="#消息和活动-activity-功能" class="headerlink" title="消息和活动(activity)功能"></a>消息和活动(activity)功能</h2><p>Odoo 自带全局的消息和活动规划功能，由 Discuss 应用提供，技术名称为 mail。mail 模块提供包含mail.thread抽象类，它让在任意模型中添加消息功能都变得很简单。还提供mail.activity.mixin用于添加规划活动功能。在第四章 <a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-extending-modules/">Odoo 12 开发之模块继承</a>中已讲解了如何从 mixin 抽象类中继承功能。</p>
-<p>要添加这些功能，我们需要在library_checkout中先添加对 mail 的依赖，然后在图书借阅模型中继承抽象类中提供的这些功能。编辑library_checkout&#x2F;<strong>manifest</strong>.py文件，在 depends 键下添加 mail 模块：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x27;depends&#x27;: [&#x27;library_member&#x27;, &#x27;mail&#x27;],</span><br></pre></td></tr></table></figure>
-
-<p>然后编辑library_checkout&#x2F;models&#x2F;library_checkout.py文件来继承 mixin 抽象模型，代码如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">class Checkout(models.Model):</span><br><span class="line">    _name = &#x27;library.checkout&#x27;</span><br><span class="line">    _description = &#x27;Checkout Request&#x27;</span><br><span class="line">    _inherit = [&#x27;mail.thread&#x27;, &#x27;mail.activity.mixin&#x27;]</span><br></pre></td></tr></table></figure>
-
-<p>然后我们的模型就会添加三个新字段，每条记录（有时也称文档）都包含：</p>
-<ul>
-<li>mail_follower_ids：存储 followers 和相应的通知首选项</li>
-<li>mail_message_ids：列出所有包含关联活动规划的关联messages.activity_id</li>
-</ul>
-<p>follower 可以是伙伴(partner)或频道(channel)。partner表示一个具体的人或组织，频道不是具体的人，而是体现为订阅列表。每个follower还有一个他们订阅的消息类型列表，仅有已选消息类型才会发送通知。</p>
-<h3 id="消息子类型"><a href="#消息子类型" class="headerlink" title="消息子类型"></a>消息子类型</h3><p>一些消息类型称为子类型，它们存储在mail.message.subtype模型中，可通过Settings &gt; Technical &gt; Email &gt; Subtypes菜单访问。默认我们有如下三种消息子类型：</p>
-<ul>
-<li>Discussions：带有mail.mt_comment XML ID，用于创建带有Send message链接的消息，默认会发送通知。</li>
-<li>Activities：带有mail.mt_activities XML ID，用于创建带有Schedule activity链接的消息，默认不会发送通知。</li>
-<li>Note：带有mail.mt_note XML ID，用于创建带有Log note链接的消息，默认不会发送通知。</li>
-</ul>
-<p>子类型默认通知设置如上所述，但用户可以就具体文档来进行调整，比如关闭他们不感兴趣的讨论的通知。除内置子类型之外，我们还可以添加自己的子类型并在应用中自定义通知。子类型既可以是通用的也可以只针对具体模型。对于后者，我们应将其所作用的模型名填入子类型的res_model字段中。</p>
-<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/998e29c9f6e9431883612f944404e7d0~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12消息子类型"></p>
-<h3 id="发送消息"><a href="#发送消息" class="headerlink" title="发送消息"></a>发送消息</h3><p>我们的业务逻辑可利用这个消息系统来向用户发送通知。可使用message_post() 方法来发送通知，示例如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">self.message_post(&#x27;Hello!&#x27;)</span><br></pre></td></tr></table></figure>
-
-<p>这会添加一个普通文本消息，但不会向follower发送通知。这是因为默认由mail.mt_note子类型发送消息。但我们可以通过指定的子类型来发送消息。要添加一条向follower发送通知的消息，应使用mt_comment子类型。另一个可选属性是消息标题，使用这两项的示例如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">self.message_post(&#x27;Hello again!&#x27;, subject=&#x27;Hello&#x27;, subtype=&#x27;mail.mt_comment&#x27;)</span><br></pre></td></tr></table></figure>
-
-<p>消息体是HTML格式的，所以我们可以添加标记来实现文本效果，如<b>为加粗，<i>为斜体。</p>
-<blockquote>
-<p>ℹ️出于安全原因消息体会被清洗，所以有些 HTML 元素可能最终无法出现在消息中。</p>
-</blockquote>
-<h3 id="添加-follower"><a href="#添加-follower" class="headerlink" title="添加 follower"></a>添加 follower</h3><p>从业务逻辑角度来看还有一个有意思的功能：可以向文档添加 follower，这样他们可以获取相应的通知。我们有以下几种方法来添加 follower：</p>
-<ul>
-<li>message_subscribe(partner_ids&#x3D;&lt;整型 id 列表&gt;)添加伙伴</li>
-<li>message_subscribe(channel_ids&#x3D;&lt;整型 id 列表&gt;) 添加频道</li>
-<li>message_subscribe_users(user_ids&#x3D;&lt;整型 id 列表&gt;) 添加用户</li>
-</ul>
-<p>默认的子类型会作用于每个订阅者。强制订阅指定的子类型列表，可添加subtype_ids&#x3D;&lt;整型 id 列表&gt;属性，来列出在订阅中使用指定子类型。</p>
-<h2 id="创建向导"><a href="#创建向导" class="headerlink" title="创建向导"></a>创建向导</h2><p>假定我们的图书馆用户需要向一组借阅者发送消息。比如他们可选择某本书最早的借阅者，向他们发送消息要求归还图书。这可通过向导来实现。向导是接受用户输入的一系列表单，然后使用输入来做进一步操作。</p>
-<p>我们的用户开始从借阅列表中选择待使用的记录，然后从视图顶级菜单中选择 wizard 选项。这会打开向导表单，可填入消息主题和内容。一旦点击 Send 就将会向所有已选借阅者发送消息。</p>
-<h3 id="向导模型"><a href="#向导模型" class="headerlink" title="向导模型"></a>向导模型</h3><p>向导对用户显示为一个表单视图，通常是一个对话窗口，可填入一些字段。这些字段会随后在向导逻辑中使用。这通过普通视图同样的模型&#x2F;视图结构实现，但支持的模型继承的是models.TransientMode而不是models.Model。这种类型的模型也会在数据库体现并存储状态，但数据仅在向导完成操作前有用。定时 job 会定期清除向导数据表中的老数据。</p>
-<p>我们将使用wizard&#x2F;checkout_mass_message.py 文件来定义与用户交互的字段：通知的订阅者列表，标题和消息体。</p>
-<p>首先编辑library_checkout&#x2F;<strong>init</strong>.py文件并导入wizard&#x2F;子目录：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">from . import models</span><br><span class="line">from . import wizard</span><br></pre></td></tr></table></figure>
-
-<p>添加wizard&#x2F;<strong>init</strong>.py文件并加入如下代码：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">from . import checkout_mass_message</span><br></pre></td></tr></table></figure>
-
-<p>然后创建实际的wizard&#x2F;checkout_mass_message.py文件，内容如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">from odoo import api, exceptions, fields, models</span><br><span class="line"></span><br><span class="line">class CheckoutMassMessage(models.TransientModel):</span><br><span class="line">    _name = &#x27;library.checkout.massmessage&#x27;</span><br><span class="line">    _description = &#x27;Send Message to Borrowers&#x27;</span><br><span class="line">    checkout_ids = fields.Many2many(</span><br><span class="line">        &#x27;library.checkout&#x27;,</span><br><span class="line">        string=&#x27;Checkouts&#x27;)</span><br><span class="line">    message_subject = fields.Char()</span><br><span class="line">    message_body = fields.Html()</span><br></pre></td></tr></table></figure>
-
-<p>值得注意的是普通模型中的one-to-many关联不能在临时模型中使用。这是因为那样就会要求普通模型中添加与临时模型的反向many-to-one关联。但这是不允许的，因为那样普通记录的已有引用会阻止对老的临时记录的清除。替代方案是使用many-to-many关联。</p>
-<blockquote>
-<p>ℹ️Many-to-many关联存储在独立的表中，会在关联任意一方被删除时自动删除表中对应行。</p>
-</blockquote>
-<p>临时模型无需安全规则 ，因为它们是用于辅助执行的一次性记录。那么也就不需要添加ecurity&#x2F;ir.model.access.csv权限控制列表文件。</p>
-<h3 id="向导表单"><a href="#向导表单" class="headerlink" title="向导表单"></a>向导表单</h3><p>向导表单视图与普通模型相同，只是它有两个特定元素：</p>
-<ul>
-<li>可使用<footer>元素来替换操作按钮</li>
-<li>special&#x3D;”cancel”按钮用于中断向导，不执行任何操作</li>
-</ul>
-<p>wizard&#x2F;checkout_mass_message_wizard.xml文件的内容如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version=&quot;1.0&quot;?&gt;</span><br><span class="line">&lt;odoo&gt;</span><br><span class="line">    &lt;record id=&quot;view_form_checkout_message&quot; model=&quot;ir.ui.view&quot;&gt;</span><br><span class="line">        &lt;field name=&quot;name&quot;&gt;Library Checkout Mass Message Wizard&lt;/field&gt;</span><br><span class="line">        &lt;field name=&quot;model&quot;&gt;library.checkout.massmessage&lt;/field&gt;</span><br><span class="line">        &lt;field name=&quot;arch&quot; type=&quot;xml&quot;&gt;</span><br><span class="line">            &lt;form&gt;</span><br><span class="line">                &lt;group&gt;</span><br><span class="line">                    &lt;field name=&quot;message_subject&quot; /&gt;</span><br><span class="line">                    &lt;field name=&quot;message_body&quot; /&gt;</span><br><span class="line">                    &lt;field name=&quot;checkout_ids&quot; /&gt;</span><br><span class="line">                &lt;/group&gt;</span><br><span class="line">                &lt;footer&gt;</span><br><span class="line">                    &lt;button type=&quot;object&quot;</span><br><span class="line">                        name=&quot;button_send&quot;</span><br><span class="line">                        string=&quot;Send Message&quot; /&gt;</span><br><span class="line">                    &lt;button special=&quot;cancel&quot;</span><br><span class="line">                        string=&quot;Cancel&quot;</span><br><span class="line">                        class=&quot;btn-secondary&quot; /&gt;</span><br><span class="line">                &lt;/footer&gt;</span><br><span class="line">            &lt;/form&gt;</span><br><span class="line">        &lt;/field&gt;</span><br><span class="line">    &lt;/record&gt;</span><br><span class="line"></span><br><span class="line">        &lt;act_window id=&quot;action_checkout_message&quot;</span><br><span class="line">            name=&quot;Send Messages&quot;</span><br><span class="line">            src_model=&quot;library.checkout&quot;</span><br><span class="line">            res_model=&quot;library.checkout.massmessage&quot;</span><br><span class="line">            view_type=&quot;form&quot;</span><br><span class="line">            view_mode=&quot;form&quot;</span><br><span class="line">            target=&quot;new&quot;</span><br><span class="line">            multi=&quot;True&quot;</span><br><span class="line">            /&gt;</span><br><span class="line">&lt;/odoo&gt;</span><br></pre></td></tr></table></figure>
-
-<p>XML 中的窗口操作使用src_model属性向图书借阅的Action按钮添加了一个选项。target&#x3D;”new”属性让它以对话窗口形式打开。打开向导，我们可以从借阅列表中选择一条或多条记录，然后从Action菜单中选择 Send Messages 选项，Action 菜单显示在列表顶部的Filters菜单旁。</p>
-<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/43407e5c88784836a2271907d628c604~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12图书项目发送消息菜单"></p>
-<p>现在这会打开向导表单，但从列表中所选的记录会被忽略。如果能在向导中任务列表中显示预选的记录会很棒。表单会调用default_get() 方法来计算要展示的默认值，这正是我们需要的功能。注意在打开向导表单时，有一条空记录并且还没有使用create()方法，该方法仅在点击按钮时才会触发，所以暂不能满足我们的需求。</p>
-<p>Odoo 视图向上下文字典添加一些元素，可在点击操作或跳到其它视图时使用。它们分别是：</p>
-<ul>
-<li>active_model：带有视图模型的技术名</li>
-<li>active_id：带有表单活跃记录或表中第一条记录的 ID</li>
-<li>active_ids：带有一个列表中活跃记录的列表（如果是表单则只有一个元素）</li>
-<li>active_domain：如果在表单视图中触发了该操作</li>
-</ul>
-<p>本例中，active_ids中保存任务列表中所选记录的 ID，可使用这些 ID 作为向导task_ids字段的默认值，相关代码如下(izard&#x2F;checkout_mass_message.py)：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">@api.model</span><br><span class="line">def default_get(self, field_names):</span><br><span class="line">    defaults = super().default_get(field_names)</span><br><span class="line">    checkout_ids = self.env.context.get(&#x27;active_ids&#x27;)</span><br><span class="line">    defaults[&#x27;checkout_ids&#x27;] = checkout_ids</span><br><span class="line">    return defaults</span><br></pre></td></tr></table></figure>
-
-<p>我们首先使用了super()来调用标准的default_get()运算，然后向默认值添加了一个checkout__id，而active_ids值从环境下文中读取。</p>
-<p>下面我们需要实现点击表单中Send按钮的操作。</p>
-<h3 id="向导业务逻辑"><a href="#向导业务逻辑" class="headerlink" title="向导业务逻辑"></a>向导业务逻辑</h3><p>除了无需进行任何操作仅仅关闭表单的 Cancel 按钮外，我们还有一个Send按钮的操作需要实现。该按钮调用的方法为button_send，需要在wizard&#x2F;checkout_mass_message.py文件中使用如下代码定义：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">@api.multi</span><br><span class="line">def button_send(self):</span><br><span class="line">    self.ensure_one()</span><br><span class="line">    for checkout in self.checkout_ids:</span><br><span class="line">        checkout.message_post(</span><br><span class="line">            body=self.message_body,</span><br><span class="line">            subject=self.message_subject,</span><br><span class="line">            subtype=&#x27;mail.mt_comment&#x27;,</span><br><span class="line">        )</span><br><span class="line">    return True</span><br></pre></td></tr></table></figure>
-
-<p>我们的代码一次仅需处理一个向导实例，所以这里通过self.ensure_one()以示清晰。这里的 self 表示向导表单里显示的数据。以上方法遍历已选借阅记录并向其中的每个借阅者发送消息。这里使用mt_comment子类型，因此会向每个 follower 发送消息通知。</p>
-<blockquote>
-<p>ℹ️让方法至少返回一个 True 值是一个很好的编程实践。主要是因为有些XML-RPC协议不支持 None 值，所以对于这些协议就用不了那些方法了。在实际工作中，我们可能不会遇到这个问题，因为网页客户端使用JSON-RPC而不是XML-RPC，但这仍是一个可遵循的良好实践。</p>
-</blockquote>
-<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/83fe9464617241ae8a95f6ce98392308~tplv-k3u1fbpfcp-zoom-1.image" alt="消息发送对话框"></p>
-<h2 id="使用日志消息"><a href="#使用日志消息" class="headerlink" title="使用日志消息"></a>使用日志消息</h2><p>向日志文件写入消息有助于监控和审计运行的系统。它还有助于代码维护，在无需修改代码的情况下可以从运行的进程中轻松获取调试信息。要让我们的代码能使用日志功能，首先要准备一个日志记录器(logger)，在library_checkout&#x2F;wizard&#x2F;checkout_mass_message.py文件的头部添加如下代码：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">import logging</span><br><span class="line">_logger = logging.getLogger(__name__)</span><br></pre></td></tr></table></figure>
-
-<p>这里使用了 Python标准库logging模块。_logger通过当前代码文件名__name__来进行初始化。这样日志信息就会带有生成日志文件的信息。有以下几种级别的日志信息：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">_logger.debug(&#x27;DEBUG调试消息&#x27;)</span><br><span class="line">_logger.info(&#x27;INFO信息日志&#x27;)</span><br><span class="line">_logger.warning(&#x27;WARNING警告消息&#x27;)</span><br><span class="line">_logger.error(&#x27;ERROR错误消息&#x27;)</span><br></pre></td></tr></table></figure>
-
-<p>现在就可以使用logger向日志中写入消息了，让我们为button_send向导方法来添加日志。在文件最后的return True前添加如下代码：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">_logger.info(</span><br><span class="line">    &#x27;Posted %d messages to Checkouts: %s&#x27;,</span><br><span class="line">    len(self.checkout_ids),</span><br><span class="line">    str(self.checkout_ids),</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
-
-<p>这样在使用向导发送消息时，服务器日志中会出现类似如下消息：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">INFO dev12 odoo.addons.library_checkout.wizard.checkout_mass_message: Posted 1 messages to Checkouts: library.checkout(30,)</span><br></pre></td></tr></table></figure>
-
-<p>注意我们没有在日志消息中使用 Python 内插字符串。我们没使用_logger.info(‘Hello %s’ % ‘World’)，而是使用了类似_logger.info(‘Hello %s’, ‘World’)。不使用内插使我们的代码少执行一个任务，让日志记录更为高效。因此我们应一直为额外的日志参数传入变量。</p>
-<blockquote>
-<p>ℹ️服务器日志的时间戳总是使用 UTC 时间。因此打印的日志消息中也是 UTC 时间。你可能会觉得意外 ，但 Odoo服务内部都是使用 UTC 来处理日期的。</p>
-</blockquote>
-<p>对于调试级别日志，我们使用_logger.debug()。例如，可以在checkout.message_post() 命令后添加如下调试日志消息：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">_logger.debug(</span><br><span class="line">    &#x27;Message on %d to followers: %s&#x27;,</span><br><span class="line">    checkout.id,</span><br><span class="line">    checkout.message_follower_ids)</span><br></pre></td></tr></table></figure>
-
-<p>这不会在服务器日志中显示任何消息，因为默认的日志级别是INFO。需要将日志级别设置为DEBUG才会输出调试日志消息。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">DEBUG dev12 odoo.api: call library.checkout(30,).read([&#x27;request_date&#x27;, &#x27;member_id&#x27;, &#x27;checkout_date&#x27;, &#x27;stage_id&#x27;])</span><br></pre></td></tr></table></figure>
-
-<p>Odoo 命令行选项–log-level&#x3D;debug可用于设置通用日志级别。我们还可以对指定模块设置日志级别。我们的向导的 Python 模块是odoo.addons.library_checkout.wizard.checkout_mass_message，这在 INFO 日志消息中也可以看到。要开启向导的调试消息，使用–loghandler 选项，该选项还可重复多次来对多个模块设置日志级别，示例如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">--loghandler=odoo.addons.library_checkout.wizard.checkout_mass_message:DEBUG</span><br></pre></td></tr></table></figure>
-
-<p>有关 Odoo 服务器日志选项的完整手册可参见<a target="_blank" rel="noopener" href="https://www.odoo.com/documentation/12.0/reference/cmdline.html#logging">官方文档</a>。如果想要了解原始的 Python 日志细节，可参见Python <a target="_blank" rel="noopener" href="https://docs.python.org/3.6/howto/logging.html">官方文档</a>。</p>
-<h2 id="抛出异常"><a href="#抛出异常" class="headerlink" title="抛出异常"></a>抛出异常</h2><p>在操作和预期不一致时，我们可能需要通知用户并中断程序，显示错误信息。这可通过抛出异常来实现。Odoo 中提供了一些异常类供我们使用。插件模块中最常用的 Odoo 异常有：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">from odoo import exceptions</span><br><span class="line">raise exceptions.ValidationError(&#x27;验证失败&#x27;)</span><br><span class="line">raise exceptions.UserError(&#x27;业务逻辑错误&#x27;)</span><br></pre></td></tr></table></figure>
-
-<p>ValidationError异常用于 Python 代码中的验证，比如使用@api.constrains装饰的方法。UserError应该用在其它所有操作不被允许的情况，因为这不符合业务逻辑。</p>
-<blockquote>
-<p>ℹ️<strong>Odoo 9中的修改</strong><br>引用了UserError异常来替换掉Warning异常，淘汰掉 Warning 异常的原因是因为它与 Python 内置异常冲突，但 Odoo 保留了它以保持向后兼容性。</p>
-</blockquote>
-<p>通常所有在方法执行期间的数据操纵在数据库事务中，发生异常时会进行回滚。也就是说在抛出异常时，所有此前对数据的修改都会被取消。</p>
-<p>下面就使用本例向导button_send方法来进行举例说明。试想一下如果执行发送消息逻辑时没有选中任何借阅文档是不是不合逻辑？同样如果没有消息体就发送消息也不合逻辑。下面就来在发生这些情况时向用户发出警告。</p>
-<p>编辑button_send()方法，在self.ensure_one()一行后加入如下代码：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">if not self.checkout_ids:</span><br><span class="line">    raise exceptions.UserError(</span><br><span class="line">        &#x27;请至少选择一条借阅记录来发送消息!&#x27;)</span><br><span class="line">if not self.message_body:</span><br><span class="line">    raise exceptions.UserError(</span><br><span class="line">        &#x27;请填写要发送的消息体!&#x27;)</span><br></pre></td></tr></table></figure>
-
-<p>补充：经测试发现消息体不填内容并不会抛出异常，因为默认的会发送<p><br></p>这段 html 标签</p>
-<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/78b81b7d64eb4fc2b4ebecbf78efd5c8~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12图书项目异常测试"></p>
-<h2 id="单元测试"><a href="#单元测试" class="headerlink" title="单元测试"></a>单元测试</h2><p>自动化测试是广泛接受的软件开发最佳实践。不仅可以帮助我们确保代码正确实施，更重要的为我们未来的代码修改和重写提供了一个安全保障。对于 Python 这样的动态编程语言，因为没有编译这一步，语法错误经常不容易注意到。这也使得单元测试愈发重要，覆盖的代码行数越多越好。</p>
-<p>以上两个目标是我们编写测试时的灯塔。测试的第一个目标应是提供更好的测试覆盖：设置测试用例运行所有代码行。单单这个就会为第二个目标迈出很大一步：显示代码有无功能性错误，因为在这之后，我们一定可以很好地开始为不显著的使用特例添加测试用例。</p>
-<blockquote>
-<p>ℹ️Odoo 12中的修改<br>在该版本之前，Odoo 还支持通过 YAML格式的数据文件进行测试。Odoo 12中删除了YAML数据文件引擎，不再支持该格式，有关该格式的最后一个文档请见<a target="_blank" rel="noopener" href="https://doc.odoo.com/v6.0/contribute/15_guidelines/coding_guidelines_testing/">官方网站</a>。</p>
-</blockquote>
-<h3 id="添加单元测试"><a href="#添加单元测试" class="headerlink" title="添加单元测试"></a>添加单元测试</h3><p>Python 测试文件添加在模块的tests&#x2F;子目录下，测试执行器会自动在该目录下查找测试文件。为测试library_checkout模块向导逻辑，我们可以创建tests&#x2F;test_checkout_mass_message.py，老规矩，需要添加tests&#x2F;<strong>init</strong>.py文件，内容如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">from . import test_checkout_mass_message</span><br></pre></td></tr></table></figure>
-
-<p>tests&#x2F;test_checkout_mass_message.py代码的基础框架如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">from odoo.tests.common import TransactionCase</span><br><span class="line"></span><br><span class="line">class TestWizard(TransactionCase):</span><br><span class="line">    def setUp(self, *args, **kwargs):</span><br><span class="line">        super(TestWizard, self).setUp(*args, **kwargs)</span><br><span class="line">        # Add test setup code here...</span><br><span class="line"></span><br><span class="line">    def test_button_send(self):</span><br><span class="line">        &quot;&quot;&quot;Send button should create messages on Checkouts&quot;&quot;&quot;</span><br><span class="line">        # Add test code</span><br></pre></td></tr></table></figure>
-
-<p>Odoo 提供了一些供测试使用的类：</p>
-<ul>
-<li>TransactionCase测试为每个测试使用不同的事务，在测试结束时自动回滚。</li>
-<li>SingleTransactionCase将所有测试放在一个事务中运行，在最后一条测试结束后才进行回滚。在每条测试的最终状态需作为下一条测试的初始状态时这会非常有用。</li>
-</ul>
-<p>setUp()方法用于准备数据以及待使用的变量。通常我们将数据和变量存放在类属性中，这样就可在测试方法中进行使用。测试应使用类方法实现，如test_button_send()。测试用例方法名必须以test_为前缀。这些方法被自动发现，该前缀就是用于辨别是否为实施测试用例的方法。根据测试方法名的顺序来运行。</p>
-<p>在使用TransactionCase类时，在每个测试用例运行完后都会进行回滚。在测试运行时会显示方法的文档字符串(docstring)，因此可以使用它来作为所执行测试的简短描述。</p>
-<blockquote>
-<p>ℹ️这些测试类是对Python 标准库中unittest测试用例的封装。有关unittest详细内容，请参见<a target="_blank" rel="noopener" href="https://docs.python.org/3/library/unittest.html">官方文档</a>。</p>
-</blockquote>
-<h3 id="运行测试"><a href="#运行测试" class="headerlink" title="运行测试"></a>运行测试</h3><p>下面就来运行已书写的测试。我们仅需在安装或升级(-i或-u)模块时在 Odoo 服务启动命令中添加– test-enable选项即可。具体命令如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~/odoo-dev/odoo/odoo-bin --test-enable -u library_checkout --stop-after-init</span><br></pre></td></tr></table></figure>
-
-<p>仅在安装或升级模块时才会运行测试，这也就是为会什么添加了-u 选项。如果需要安装一些依赖，它的测试也会运行。想要避免这一情况，可以像平常那样测试安装模块，然后在升级(-u)模块时运行测试。以上测试中实际没有做任何测试，但应该可以正常运行。仔细查看服务器日志可看到报告测试运行的INFO信息，例如：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">INFO dev12 odoo.modules.module: odoo.addons.library_checkout.tests.test_checkout_mass_message running tests.</span><br></pre></td></tr></table></figure>
-
-<h3 id="配置测试"><a href="#配置测试" class="headerlink" title="配置测试"></a>配置测试</h3><p>我们应开始在setUp方法中准备测试中将使用的数据。这里我们要创建一条在向导中使用的借阅记录。使用指定用户执行测试操作会很便捷，这样可以同时测试权限控制是否正常配置。这通过sudo(<user>)模型方法来实现。记录集中携带这一信息，因此在使用 sudo()创建后，相同记录集后续的操作都会使用相同上下文执行。以下是setUp方法中的代码：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">class TestWizard(TransactionCase):</span><br><span class="line"></span><br><span class="line">    def setUp(self, *args, **kwargs):</span><br><span class="line">        super(TestWizard, self).setUp(*args, **kwargs)</span><br><span class="line">        # Setup test data</span><br><span class="line">        admin_user = self.env.ref(&#x27;base.user_admin&#x27;)</span><br><span class="line">        self.Checkout = self.env[&#x27;library.checkout&#x27;].sudo(admin_user)</span><br><span class="line">        self.Wizard = self.env[&#x27;library.checkout.massmessage&#x27;].sudo(admin_user)</span><br><span class="line"></span><br><span class="line">        a_member = self.env[&#x27;library.member&#x27;].create(&#123;&#x27;name&#x27;: &#x27;John&#x27;&#125;)</span><br><span class="line">        self.checkout0 = self.Checkout.create(&#123;</span><br><span class="line">            &#x27;member_id&#x27;: a_member.id&#125;)</span><br></pre></td></tr></table></figure>
-
-<p>此时我们就可以在测试中使用self.checkout0记录和self.Wizard模型了。</p>
-<h3 id="编写测试用例"><a href="#编写测试用例" class="headerlink" title="编写测试用例"></a>编写测试用例</h3><p>现在让我们来扩展一下初始框架中的test_button_test()方法吧。最简单的测试是运行测试对象中的部分代码，获取结果，然后使用断言语句来与预期结果进行对比。</p>
-<p>要测试发送消息的方法，测试计算向导运行前后的消息条数来确定有没有增加新消息。要运行向导，需要在上下文中设置active_ids，像 UI 表单一样，创建带有填写向导表单（至少是消息体）的向导记录，然后运行button_send方法。完整代码如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">def test_button_send(self):</span><br><span class="line">    &quot;&quot;&quot;Send button should create messages on Checkouts&quot;&quot;&quot;</span><br><span class="line">    # Add test code</span><br><span class="line">    msgs_before = len(self.checkout0.message_ids)</span><br><span class="line"></span><br><span class="line">    Wizard0 = self.Wizard.with_context(active_ids=self.checkout0.ids)</span><br><span class="line">    wizard0 = Wizard0.create(&#123;&#x27;message_body&#x27;: &#x27;Hello&#x27;&#125;)</span><br><span class="line">    wizard0.button_send()</span><br><span class="line"></span><br><span class="line">    msgs_after = len(self.checkout0.message_ids)</span><br><span class="line">    self.assertEqual(</span><br><span class="line">        msgs_after,</span><br><span class="line">        msgs_before+1,</span><br><span class="line">        &#x27;Expected on additional message in the Checkout.&#x27;)</span><br></pre></td></tr></table></figure>
-
-<p>这一检测在self.assertEqual语句中验证测试成功还是失败。它对比运行向导前后的消息数，预期会比运行前多一条消息。最后一个参数在测试失败时作为信息提示，它是可选项，但推荐使用。</p>
-<p>assertEqual方法仅是断言方法的一种，我们应根据具体用例选择合适的断言方法，这样才更易于理解导致测试错误的原因。单元测试文档提供对所有这些方法的说明，参见 Python <a target="_blank" rel="noopener" href="https://docs.python.org/3/library/unittest.html#test-cases">官方文档</a>。</p>
-<p>要添加新的测试用例，在类中添加另一个实现方法。要记住TransactionCase测试，每次测试结束后都会回滚。因此，前一次测试的操作会被撤销，我需要重新打开向导表单。然后模拟用户填写消息内容，执行消息发送。最后检测消息条数来进行验证。</p>
-<p>补充：此处原文已惨不忍睹，通篇是任务清单项目的描述，笔者自行做了对应的调整。</p>
-<h3 id="测试异常"><a href="#测试异常" class="headerlink" title="测试异常"></a>测试异常</h3><p>有时我们需要测试来检查是否生成了异常，常用的情况是测试是否正确地进行了验证。本例中，我们可以测试向导的一些验证。例如，我们可以测试空消息体抛出错误。要检查是否抛出异常，我们将相应代码放在self.assertRaises()代码块中。</p>
-<p>首先在文件顶部导入 Odoo 的异常类：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">from odoo import exceptions</span><br></pre></td></tr></table></figure>
-
-<p>然后，在测试类中添加含有测试用例的另一个方法：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">def test_button_send_empty_body(self):</span><br><span class="line">    &quot;Send button errors on empty body message&quot;</span><br><span class="line">    wizard0 = self.Wizard.create(&#123;&#125;)</span><br><span class="line">    with self.assertRaises(exceptions.UserError) as e:</span><br><span class="line">        wizard0.button_send()</span><br></pre></td></tr></table></figure>
-
-<p>如果button_send()没有抛出异常，则检测失败。如果抛出了异常，检测成功并将异常存储在 e 变量中，我们可以使用它来做进一步的检测。</p>
-<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/4fda133ca1cc4d1ea90f689fd8d0d065~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12图书项目单元测试"></p>
-<h2 id="开发工具"><a href="#开发工具" class="headerlink" title="开发工具"></a>开发工具</h2><p>开发者应学习一些技巧有协助开发工作。本系列曾介绍过用户界面的开发者模式。也可以在服务端使用该选项来提供对开发者更友好的功能。这一部分就来进行详细说明。然后我们会讨论另一个开发者相关话题：如何对服务端代码进行调试。</p>
-<h3 id="服务端开发选项"><a href="#服务端开发选项" class="headerlink" title="服务端开发选项"></a>服务端开发选项</h3><p>Odoo服务提供一个–dev选项来开启开发者功能、加速开发流程，比如：</p>
-<ul>
-<li>在发现插件模块中有异常时进入调试器</li>
-<li>Python 文件保存时自动重新加载代码，避免反复手动重启服务</li>
-<li>直接从 XML 文件中读取视图定义，无需手动更新模块</li>
-</ul>
-<p>–dev参数接收一个逗号分隔列表选项，通常 all 选项可适用大多数情况。我们可以指定想要用的调试器。默认使用Python 调试器pdb，有些人可能喜欢安装使用其它调试器，Odoo 对ipdb和pudb都予以支持。</p>
-<blockquote>
-<p>ℹ️<strong>Odoo 9中的修改</strong><br>Odoo 9之前的版本中，可使用–debug 选项来对某一模块异常打开调试器。从Odoo 9开始不再支持改选项，改用– dev&#x3D;all选项了。</p>
-</blockquote>
-<p>在使用 Python 代码时，每次代码修改都需重启服务来重新加载代码。–dev命令选项会处理重新加载，在服务监测到 Python 代码被修改时，自动重复服务加载序列，让代码修改立即生效。使用它仅需在服务命令后添加–dev&#x3D;all 选项：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">~/odoo-dev/odoo/odoo-bin --dev=all</span><br></pre></td></tr></table></figure>
-
-<p>要正常运行，要求安装watchdog Python包，可通过 pip 命令来执行安装：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip install watchdog</span><br></pre></td></tr></table></figure>
-
-<p>注意这仅对 Python 代码和 XML 文件中视图结构的修改有益。对于其它修改，如模型数据结构，需要进行模块升级，仅仅重新加载是不够的。</p>
-<h3 id="调试"><a href="#调试" class="headerlink" title="调试"></a>调试</h3><p>我们都知道开发者的大部分工作是调试代码。我们通常使用代码编辑器打断点，运行程序来进行单步调试。如果使用 Windows 系统来开发，配置可运行 Odoo 源码的环境可不是个简单的工作。 Odoo是一个等待客户端调用的服务，然后才进行操作，这一事实让 Odoo 的调试与客户端程序截然不同。</p>
-<h4 id="Python-调试器"><a href="#Python-调试器" class="headerlink" title="Python 调试器"></a>Python 调试器</h4><p>对于初学者可能有点高山仰止的感觉，最实际的方法是使用 Pyhton 集成的调试器pdb来对 Odoo 进行调试。我们会介绍它的扩展，会提供丰富的用户界面，类似于高级 IDE那样。</p>
-<p>要使用调试器，最好的方法是在需要查看的代码（通常是模型方法）处插入断点。这通过在具体位置添加如下行来实现：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">import pdb; pdb.set_trace()</span><br></pre></td></tr></table></figure>
-
-<p>现在重启服务来加载修改代码。一旦程序运行到该行，服务运行窗口就会进入一个(pdb)Python 命令对话框，等待输入。这个对话框和 Python shell 一样，你可以输入当前执行上下文的任何表达式或命令来运行。这意味着可以检查甚至修改当前变量，以下是最常用的快捷命令：</p>
-<ul>
-<li>h (help) 显示可用 pdb 命令的汇总</li>
-<li>p (print) 运行并打印表达式</li>
-<li>pp (pretty print) 有助于打印数据结构，如字典或列表</li>
-<li>l (list) 列出下一步要执行的代码及周边代码</li>
-<li>n (next) 进入下一条命令</li>
-<li>s (step) 进入当前命令</li>
-<li>c (continue)继续正常执行</li>
-<li>u (up) 在执行栈中上移</li>
-<li>d (down)在执行栈中下移</li>
-<li>bt (backtrace)显示当前执行栈</li>
-</ul>
-<p>如果启动服务时使用了dev&#x3D;all选项，抛出异常时服务在对应行进行后验模式。这是一个pdb对话框，和前述的一样，允许我们检查在发现错误那一刻的程序状态。</p>
-<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/b849ec02d15a406d8db3a9c292b03e58~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12调试 pdb"></p>
-<h4 id="示例调试会话"><a href="#示例调试会话" class="headerlink" title="示例调试会话"></a>示例调试会话</h4><p>让我们来看看一个简单调试会长什么样。可以在button_send向导方法的第一行添加调试器断点：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">    def button_send(self):</span><br><span class="line">        import pdb; pdb.set_trace()</span><br><span class="line">        self.ensure_one()</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
-
-<p>现在重启服务，打开一个发送消息向导表单并点击 Send 按钮。这会触发服务器上的button_send ，客户端会保持在Still loading…的状态，等待服务端响应。查看运行服务的终端窗口，可看到类似如下信息：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt; /home/vagrant/odoo-dev/custom-addons/library_checkout/wizard/checkout_mass_message.py(24)button_send()</span><br><span class="line">-&gt; self.ensure_one()</span><br><span class="line">(Pdb)</span><br></pre></td></tr></table></figure>
-
-<p>这是pdb调试器对话框，第一行告诉我们 Python 代码执行的位置以及所在的函数名，第二行是要运行的下一行代码。在调试会话中，可能会跳出一些日志消息。这对于调试没有伤害，但会打扰到我们。可以通过减少日志输出来避免这一情况。大多数据情况下日志消息都来自werkzeug模块。我们可通过–log-handler&#x3D;werkzeug:CRITICAL 选项来停止日志输出。如果这还不够，可以使用–log-level&#x3D;warn来降低通用日志级别。另一种方法是启用–logfile&#x3D;&#x2F;path&#x2F;to&#x2F;log选项，这样会将日志消息从标准输出重定向到文件中。</p>
-<blockquote>
-<p><strong>小贴士：</strong> 如果终端不响应，在终端中的输入不被显示，这可能与终端会话的显示问题有关，通过输入<enter>reset<enter>有可能解决这一问题。</p>
-</blockquote>
-<p>此时输入 h，可以看到可用命令的一个快速指南。输入 l 显示当前行代码，以及其周边的代码。输入 n 会运行当前行代码并进入下一行。如果只按下 Enter，会重复上一条命令。执行三次应该就可以进入方法的 return 语句。我们可以查看任意变量或属性的内容，如向导中使用的checkout_ids字段：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">(Pdb) p self.checkout_ids</span><br><span class="line">library.checkout(30,)</span><br></pre></td></tr></table></figure>
-
-<p>它允许使用任何 Python 表达式，甚至是分配变量。我们可以逐行调试，在任意时刻按下 c 继续正常运行。</p>
-<h4 id="其它-Python-调试器"><a href="#其它-Python-调试器" class="headerlink" title="其它 Python 调试器"></a>其它 Python 调试器</h4><p>pdb 的优势是“开箱即用”，它简单但粗暴，还有一些使用上更舒适的选择。</p>
-<p>ipdb(Iron Python debugger)是一个常用的选择，它使用和 pdb 一样的命令，但做了一些改进，比如添加 Tab 补全和语法高亮来让使用更舒适。可通过如下命令安装：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo pip install ipdb</span><br></pre></td></tr></table></figure>
-
-<p>使用如下行添加断点：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">import ipdb; ipdb.set_trace()</span><br></pre></td></tr></table></figure>
-
-<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/3bb63c7e94cd4225ad99ff1f00376e61~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12调试工具 ipdb"></p>
-<p>另一个可选调试器是pudb，它也支持和pdb相同的命令，仅用在文本终端中，但使用了类似 IDE 调试器的图形化显示。当前上下文的变量及值这类有用信息，在屏幕上它自己的窗口中显示。可通过系统包管理器或 pip 来进行安装：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install python-pudb # 使用Debian系统包</span><br><span class="line">sudo pip install pudb # 使用 pip，可在虚拟环境中</span><br></pre></td></tr></table></figure>
-
-<p>添加pudb断点和其它调试器没什么分别：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">import pudb; pudb.set_trace()</span><br></pre></td></tr></table></figure>
-
-<p>也可以使用更短更易于记忆的方式：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">import pudb; pu.db</span><br></pre></td></tr></table></figure>
-
-<h3 id=""><a href="#" class="headerlink" title=""></a><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/1774a4113bc74c348786f8118706a8ce~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12调试工具 pudb"></h3><h3 id="打印消息和日志"><a href="#打印消息和日志" class="headerlink" title="打印消息和日志"></a>打印消息和日志</h3><p>有时我们只需要查看一些变量的值或者检查一些代码段是否被执行。Python的print()函数可以在不中断执行流的情况下完美解决这些问题。因为我们在服务器窗口中运行，打印的内容会显示在标准输出中，但如果日志是写入文件的打印内容不会存储到服务器日志中。</p>
-<p>print()仅用于开发辅助，不应出现最终部署的代码中。如果你可能需要代码执行的更多细节，请使用debug 级别日志消息。在代码敏感点添加调试级别日志消息让我们可以在部署实例中调查问题。只需将服务器日志级别提升为 debug，然后查看日志文件。</p>
-<h3 id="查看和关闭运行进程"><a href="#查看和关闭运行进程" class="headerlink" title="查看和关闭运行进程"></a>查看和关闭运行进程</h3><p>还有一些查看 Odoo 运行进程的小技巧。首先我们需要找到相应的进程ID (PID)，要找到 PID，再打开一个终端窗口并输入如下命令：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ps ax | grep odoo-bin</span><br></pre></td></tr></table></figure>
-
-<p>输入的第一列是进程的PID，记录下要查看进程的 PID，在下面会使用到。现在，我们要向进程发送信号。使用的命令是 kill，默认它发送一个终止进程的信号，但也可以发送其它更友好的信号。知道了运行中的 Odoo 服务进程 PID，我们可以通过向进程发送SIGQUIT信号打印正在执行的代码踪迹，命令如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kill -3 &lt;PID&gt;</span><br></pre></td></tr></table></figure>
-
-<p>然后如果我们查看终端窗口或写入服务输出的日志文件，就可以看到正常运行的一些线程的信息，以及它们运行所在行代码的细节栈踪迹。这用于一些代码性能分析中，追踪服务时间消耗在何处，来将代码执行性能归类。有关代码profiling的资料可参见<a target="_blank" rel="noopener" href="https://www.odoo.com/documentation/12.0/howtos/profilecode.html">官方文档</a>。其它可向 Odoo 服务器进程发送的信号有：HUP来重新加载服务，INT或TERM强制服务关闭：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kill -HUP &lt;PID&gt;</span><br><span class="line">kill -TERM &lt;PID&gt;</span><br></pre></td></tr></table></figure>
-
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>我们详细解释了ORM API 的功能，以及如何使用这些功能来创建动态应用与用户互动，这可以帮助用户避免错误并自动化一些单调的任务。</p>
-<p>模型验证和计算字段可以处理很多用例，但并不是所有的。我们学习了如何继承API的create, write和unlink 方法来处理更多用例。</p>
-<p>对更丰富的用户交互，我们使用了 mail 内核插件 mixin 来为用户添加功能，方便他们围绕文档和活动规则进行交流。向导让应用可以与用户对话，收集所需数据来运行具体进程。异常允许应用终止错误操作，通知用户存在的问题并回滚中间的修改，保持系统的一致性。</p>
-<p>我们还讨论了开发者可使用来创建和维护应用的工具：记录日志消息、调试工具和单元测试。</p>
-<p>在下一篇文章中，我们还将使用 ORM，但会从外部应用的视角来操作，将 Odoo 服务器作为存储数据和运行业务进程的后端。</p>
-<p> </p>
-<p>☞☞☞ 第九章 <a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-external-api/">Odoo 12开发之外部 API - 集成第三方系统</a></p>
-<p> </p>
-<h2 id="扩展阅读"><a href="#扩展阅读" class="headerlink" title="扩展阅读"></a>扩展阅读</h2><p>以下是本文所讨论的内容相关参考材料如下：</p>
-<ul>
-<li><a target="_blank" rel="noopener" href="https://www.odoo.com/documentation/12.0/reference/orm.html#common-orm-methods">ORM参考</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.odoo.com/documentation/12.0/reference/mixins.html">消息和活动功能</a></li>
-<li><a target="_blank" rel="noopener" href="https://www.odoo.com/documentation/12.0/reference/testing.html">Odoo 测试参考</a></li>
-<li>Python <a target="_blank" rel="noopener" href="https://docs.python.org/3/library/unittest.html#module-unittest">单元测试参考 </a></li>
 </ul>
 <p>本文首发地址：<a target="_blank" rel="noopener" href="https://alanhou.org/developer-mode-odoo12/">Alan Hou 的个人博客</a></p>
 
