@@ -128,7 +128,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">18</span>
+          <span class="site-state-item-count">19</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
@@ -730,6 +730,399 @@
 <p>注：从技术上来说，无需移动已有安装，只需要删除它再安装新版本即可。但这不能保证“万无一失”。如果在安装新版本时出现问题，最好还有旧版本可以使用。</p>
 <h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>本文中，我们学习了如何安装、配置Go开发环境。同时讨论了构建Go程序及保障代码质量的一些工具。至此我们已准备好了环境，下一篇文章中我们就开始探讨Go语言的内置类型以及如何声明变量。</p>
 
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="https://alanhou.github.io/2020/12/26/odoo-cookbook-14-chapter2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Alan Hou">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Alan Hou的个人博客">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="undefined | Alan Hou的个人博客">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2020/12/26/odoo-cookbook-14-chapter2/" class="post-title-link" itemprop="url">Odoo 14开发者指南第二章 管理Odoo服务端实例</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2020-12-26 00:00:00" itemprop="dateCreated datePublished" datetime="2020-12-26T00:00:00+08:00">2020-12-26</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar-check"></i>
+      </span>
+      <span class="post-meta-item-text">Edited on</span>
+      <time title="Modified: 2023-02-21 08:50:14" itemprop="dateModified" datetime="2023-02-21T08:50:14+08:00">2023-02-21</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>在<a target="_blank" rel="noopener" href="https://alanhou.org/odoo-14-installing-the-odoo-development-environment/">第一章 安装Odoo开发环境</a>中，我们学习了如何使用源码中所带的标准核心插件配置Odoo实例。本章主要讲解如何对Odoo实例添加非核心或自定义插件。在Odoo中，可以通过多个目录加载插件。此外，推荐使用单独的目录加载第三方插件或自定义的插件，以避免与Odoo核心模块产生冲突。甚至Odoo企业版也是一种类型的插件目录，需要像加载普通插件目录那样对其进行加载。</p>
+<p>本章中，我们将讲解如下内容：</p>
+<ul>
+<li>配置插件路径</li>
+<li>标准化你的实例目录布局</li>
+<li>安装及升级本地插件模块</li>
+<li>通过GitHub安装插件模块</li>
+<li>对插件应用修改</li>
+<li>应用及尝试建议的拉取请求</li>
+</ul>
+<blockquote>
+<p>📝<strong>有关用语</strong></p>
+<p>本书中，我们会交叉使用插件(<strong>add-on</strong>)、模块(<strong>module</strong>)、应用(<strong>app</strong>)或插件模块(<strong>add-on module</strong>)。它们都是指可通过用户界面在Odoo中安装的Odoo应用或扩展应用。</p>
+</blockquote>
+<h2 id="配置插件路径"><a href="#配置插件路径" class="headerlink" title="配置插件路径"></a>配置插件路径</h2><p>通过addons_path参数的配置，可以在 Odoo 中加载自己的插件模块。在Odoo初始化一个新数据库时，它会在addons_path配置参数中给定的这些目录中搜索插件模块。addons_path会在这些目录中搜索潜在的插件模块。</p>
+<p>addons_path中所列出的目录预期应包含子目录，每个子目录是一个插件模块。在数据库初始化完成后，将能够安装这些目录中所给出的模块。</p>
+<h3 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h3><p>这一部分假定你已经准备好了实例并生成了配置文件，如在<a target="_blank" rel="noopener" href="https://alanhou.org/odoo-14-installing-the-odoo-development-environment/">第一章 安装Odoo开发环境</a><em>在一个文件中存储实例配置</em>一节所描述。Odoo的源码存放在<del>&#x2F;odoo-dev&#x2F;odoo中，而配置文件存放在</del>&#x2F;odoo-dev&#x2F;myodoo.cfg中。</p>
+<h3 id="如何配置…"><a href="#如何配置…" class="headerlink" title="如何配置…"></a>如何配置…</h3><p>按如下步骤在实例的addons_path中添加~&#x2F;odoo-dev&#x2F;local-addons目录：</p>
+<ol>
+<li><p>编辑你的实例配置文件，即 ~&#x2F;odoo-dev&#x2F;myodoo.cfg。</p>
+</li>
+<li><p>定位到以addons_path &#x3D;开头的一行，默认应该会看到如下内容：  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">addons_path = ~/odoo-dev/odoo/addons</span><br></pre></td></tr></table></figure>
+
+<p><strong>译者注：</strong> 当前默认生成的配置文件中为绝对路径</p>
+</li>
+<li><p>修改该行，添加一个逗号（英文半角），并接你想要添加为addons_path的目录名称，如以下代码所示：  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">addons_path = ~/odoo-dev/odoo/addons,~/odoo-dev/local-addons</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在终端中重启实例  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ~/odoo-dev/odoo/odoo-bin -c my-instance.cfg</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="运行原理…"><a href="#运行原理…" class="headerlink" title="运行原理…"></a>运行原理…</h3><p>在重启 Odoo 时，会读取配置文件。addons_path变量的值应为一个逗号分隔的目录列表。可接受相对路径，但它们是相对于当前工作目录的，因此应在配置文件中尽量避免。</p>
+<p>至此，我们仅在Odoo中列出了插件目录，但~&#x2F;odoo-dev&#x2F;local-addons中尚不存在插件模块。即使在该目录中新增了插件模块，Odoo也不会在用户界面中显示这一模块。为此，你需要执行一个额外的操作，在下一部分<em>更新插件模块列表</em>中会进行讲解。</p>
+<blockquote>
+<p>📝这背后的原因是在初始化新数据库时，Odoo在可用模块中自动列举了自定义模块，但如若在数据库初始化之后新增模块，就需要像<em>更新插件模块列表</em>一节中那样手动更新可用模块列表。</p>
+</blockquote>
+<h3 id="扩展知识…"><a href="#扩展知识…" class="headerlink" title="扩展知识…"></a>扩展知识…</h3><p>在首次调用 odoo-bin脚本来初始化新数据库时，可以传递一个带逗号分隔目录列表的–addons-path命令行参数。这会以所提供插件路径中所找到的所有插件来初始化可用插件模块列表。这么做时，要显式地包含基础插件目录（odoo&#x2F;odoo&#x2F;addons）以及核心插件目录（odoo&#x2F;addons）。与前面稍有不同的是本地插件目录不能为空（<strong>译者注：</strong> 请先阅读下面的小贴士），它必须要至少包含一个子目录，并包含插件模块的最小化结构。</p>
+<p>在<a target="_blank" rel="noopener" href="https://alanhou.org/odoo-14-creating-odoo-add-on-modules/">第三章 创建Odoo插件模块</a>中，我们会来看如何编写你自己的模块。同时，这里有一个生成内容来满足Odoo要求的快捷版黑科技：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ mkdir -p ~/odoo-dev/local-addons/dummy</span><br><span class="line">$ touch ~/odoo-dev/local-addons/dummy/__init__.py</span><br><span class="line">$ echo &#x27;&#123;&quot;name&quot;: &quot;dummy&quot;, &quot;installable&quot;: False&#125;&#x27; &gt; \</span><br><span class="line">~/odoo-dev/local-addons/dummy/__manifest__.py</span><br></pre></td></tr></table></figure>
+
+<p>你可以使用–save选项来保存路径至配置文件中：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ odoo/odoo-bin -d mydatabase \</span><br><span class="line">--addons-path=&quot;odoo/odoo/addons,odoo/addons,~/odoo-dev/local-addons&quot; \</span><br><span class="line">--save -c ~/odoo-dev/my-instance.cfg --stop-after-init</span><br></pre></td></tr></table></figure>
+
+<p>本例中，使用相对路径不会有问题，因为它们会在配置文件中转化为绝对路径。</p>
+<blockquote>
+<p><strong>📝注：</strong> 因为Odoo仅当从命令行中设置路径时在插件路径的目录中查看插件，而不是在从配置文件中加载路径的时候，dummy已不再必要。因此，你可以删除它（或保留到你确定不需要新建一个配置文件时）。</p>
+</blockquote>
+<h2 id="标准化你的实例目录布局"><a href="#标准化你的实例目录布局" class="headerlink" title="标准化你的实例目录布局"></a>标准化你的实例目录布局</h2><p>我们推荐你在开发和生产环境都使用相似的目录布局。这一标准化会在你要执行运维时体现出用处，它也会缓解你日常工作的压力。</p>
+<p>这一部分创建将相似生命周期或相似用途的文件分组放在标准化子目录中的目录结构。</p>
+<blockquote>
+<p>📝仅在希望以相似的文件结构管理开发和生产环境时才需要学习本节。如果不需要，可以跳过本节。</p>
+</blockquote>
+<p>此外，不必严格按照本节中相同的目录结构。请自由按照自己的需求来调整这一结构。</p>
+<h3 id="如何标准化…"><a href="#如何标准化…" class="headerlink" title="如何标准化…"></a>如何标准化…</h3><p>创建所推荐实例布局，需要执行如下步骤：</p>
+<ol>
+<li><p>为每个实例创建一个目录：  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ mkdir ~/odoo-dev/projectname</span><br><span class="line">$ cd ~/odoo-dev/projectname</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在名为env&#x2F;的子目录中创建一个Python虚拟环境对象：  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ python3 -m venv env</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建一些子目录，如下：  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ mkdir src local bin filestore logs</span><br></pre></td></tr></table></figure>
+
+<p>这些子目录的功能如下：</p>
+<ul>
+<li>src&#x2F;：包含Odoo本身的一个拷贝，以及一些第三方插件项目（我们在下一步中添加了Odoo源码）</li>
+<li>local&#x2F;：用于保存你针对具体实例的插件</li>
+<li>bin&#x2F;：包含各类帮助可执行shell脚本</li>
+<li>filestore&#x2F;：用于文件存储</li>
+<li>logs&#x2F;（可选）：用于存储服务日志文件</li>
+</ul>
+</li>
+<li><p>克隆Odoo并安装所需依赖包（参见<a target="_blank" rel="noopener" href="https://alanhou.org/odoo-14-installing-the-odoo-development-environment/">第一章 安装Odoo开发环境</a>获取更多内容）：  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git clone -b 14.0 --single-branch --depth 1 https://github.com/odoo/odoo.git src/odoo</span><br><span class="line">$ env/bin/pip3 install -r src/odoo/requirements.txt</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>以bin&#x2F;odoo保存如下shell脚本：  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#!/bin/sh</span><br><span class="line">ROOT=$(dirname $0)/..</span><br><span class="line">PYTHON=$ROOT/env/bin/python3</span><br><span class="line">ODOO=$ROOT/src/odoo/odoo-bin</span><br><span class="line">$PYTHON $ODOO -c $ROOT/projectname.cfg &quot;$@&quot;</span><br><span class="line">exit $?</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>让该脚本可执行：  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ chmod +x bin/odoo</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>创建一个空的本地模块dummy：  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">$ mkdir -p local/dummy</span><br><span class="line">$ touch local/dummy/__init__.py</span><br><span class="line">$ echo &#x27;&#123;&quot;name&quot;: &quot;dummy&quot;, &quot;installable&quot;: False&#125;&#x27; &gt;\</span><br><span class="line">local/dummy/__manifest__.py</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>为你的实例生成配置文件：  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ bin/odoo --stop-after-init --save \</span><br><span class="line"> --addons-path src/odoo/odoo/addons,src/odoo/addons,local \</span><br><span class="line"> --data-dir filestore</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>添加一个.gitignore文件，用于告诉GitHub排除这些给定目录，这样Git在提交代码时就会忽略掉这些目录，例如 filestore&#x2F;, env&#x2F;, logs&#x2F;和src&#x2F;：  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"># dotfiles, with exceptions:</span><br><span class="line">.*</span><br><span class="line">!.gitignore</span><br><span class="line"># python compiled files</span><br><span class="line">*.py[co]</span><br><span class="line"># emacs backup files</span><br><span class="line">*~</span><br><span class="line"># not tracked subdirectories</span><br><span class="line">/env/</span><br><span class="line">/src/</span><br><span class="line">/filestore/</span><br><span class="line">/logs/</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>为这个实例创建一个Git仓库并将已添加的文件添加到Git中：  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">$ git init</span><br><span class="line">$ git add .</span><br><span class="line">$ git commit -m &quot;initial version of projectname&quot;</span><br></pre></td></tr></table></figure></li>
+</ol>
+<h3 id="运行原理…-1"><a href="#运行原理…-1" class="headerlink" title="运行原理…"></a>运行原理…</h3><p>我们生成了一个有明确标签目录和独立角色的干净目录结构。我们使用了不同的目录来存储如下内容：</p>
+<ul>
+<li>由其它人所维护的代码（src&#x2F;中）</li>
+<li>本地相关的具体代码</li>
+<li>实例的文件存储(filestore)</li>
+</ul>
+<p>通过为每个项目建一个virtualenv环境，我们可以确保该项目的依赖文件不会与其它项目的依赖产生冲突，这些项目你可能运行着不同的Odoo版本或使用了不同的第三方插件模块，这将需要不同版本的Python依赖。当然也会带来一部分磁盘空间的开销。</p>
+<p>以类似的方式，通过为我们不同的项目使用不同的Odoo拷贝以及第三方插件模块，我们可以让每个项目单独的进行演化并仅在需要时在这些实例上安装更新，因此也减少了引入回退的风险。</p>
+<p>bin&#x2F;odoo允许我们不用记住各个路径或激活虚拟环境就可以运行服务。这还为我们设置了配置文件。你可以在其中添加其它脚本来协助日常工作。例如，可以添加一个脚本来检查运行实例所需的第三方项目。</p>
+<p>有关配置文件，我们仅展示了这里需要设置的最小化选项，但很明显可以做更多设置，例如数据库名、数据库过滤器或项目所监听的端口。有关这一话题的更多信息，请参见<a target="_blank" rel="noopener" href="https://alanhou.org/odoo-14-installing-the-odoo-development-environment/">第一章 安装Odoo开发环境</a>。</p>
+<p>最后，通过在Git仓库中管理所有这些，在不同的电脑上复制这一设置及在团队中分享开发内容变得相当容易。</p>
+<blockquote>
+<p><strong>📝</strong>加速贴士</p>
+<p>要加速项目的创建，可以创建一个包含空结构的模板仓库，并为每个新项目复制（fork）该仓库。这会省却你重新输入bin&#x2F;odoo脚本、.gitignore及其它所需模板文件（持续集成配置、README.md、ChangeLog等等）所花费的时间。</p>
+</blockquote>
+<h3 id="参见内容"><a href="#参见内容" class="headerlink" title="参见内容"></a>参见内容</h3><p>如果你喜欢这种方法，我们建议你尝试<a target="_blank" rel="noopener" href="https://alanhou.org/server-deployment/">第三章 服务器部署</a>中的使用 Docker 运行 Odoo 一部分的内容。</p>
+<h3 id="扩展知识…-1"><a href="#扩展知识…-1" class="headerlink" title="扩展知识…"></a>扩展知识…</h3><p>复杂模块的开发要求有各类配置选项，在想要尝试任何配置选项时都会要更新配置文件。更新配置文件常常是一件头痛的事，避免它的一种方式是通过命令行传递所有配置选项，如下：</p>
+<ol>
+<li><p>手动激活虚拟环境：  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ source env/bin/activate</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>进入Odoo源代码目录：  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ cd src/odoo</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>运行服务：  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./odoo-bin --addons-path=addons,../../local -d test-14 -i account,sale,purchase --log-level=debug</span><br></pre></td></tr></table></figure></li>
+</ol>
+<p>第3步中，我们直接通过命令行传递了一些参数。第一个是–addons-path，它加载Odoo的核心插件目录addons，以及你自己的插件目录local，在其中你可以放自己的插件模块。选项-d会使用test-14数据库或者在该数据库不存在时新建一个数据库。选项-i 会安装会计、销售和采购模块。接着，我们传递了log-level选项来将日志级别提升为debug，这样日志中会显示更多的信息。</p>
+<blockquote>
+<p>📝通过使用命令行，你可以快速地修改配置选项。也可以在Terminal中查看实时日志。所有可用选项可参见<a target="_blank" rel="noopener" href="https://alanhou.org/odoo-14-installing-the-odoo-development-environment/">第一章 安装Odoo开发环境</a>，或使用-help命令来查看所有的选项及各个选项的描述。</p>
+</blockquote>
+<h2 id="安装并升级本地插件模块"><a href="#安装并升级本地插件模块" class="headerlink" title="安装并升级本地插件模块"></a>安装并升级本地插件模块</h2><p>Odoo 功能的核心来自于它的插件模块。Odoo自带的插件是你所拥有的财富，同时你也可以从应用商店下载一些插件模块或者自己写插件。</p>
+<p>这一节中，我们将展示如何通过网页界面及命令行来安装和升级插件模块。</p>
+<p>对这些操作使用命令行的主要好处有可以同时作用于一个以上的插件以及在安装或升级的过程中可以清晰地浏览到服务端日志，对于开发模式或编写脚本安装实例时都非常有用。</p>
+<h3 id="准备工作-1"><a href="#准备工作-1" class="headerlink" title="准备工作"></a>准备工作</h3><p>确保你有一个运行中的 Odoo 实例，且数据库已初始化、插件路径已进行恰当地设置。在这一部分中，我们将安装&#x2F;升级一些插件模块。</p>
+<h3 id="如何安装升级…"><a href="#如何安装升级…" class="headerlink" title="如何安装升级…"></a>如何安装升级…</h3><p>安装或升级插件有两种方法-可以使用网页界面或命令行。</p>
+<h4 id="通过网页界面"><a href="#通过网页界面" class="headerlink" title="通过网页界面"></a>通过网页界面</h4><p>可按照如下步骤来使用网页界面安装新的插件模块到数据库中：</p>
+<ol>
+<li><p>使用管理员账户连接实例并打开Apps菜单<br><a target="_blank" rel="noopener" href="https://alanhou.org/homepage/wp-content/uploads/2019/05/2019050906002399.jpg"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/1c66575a6d24401c97735ac64bffe373~tplv-k3u1fbpfcp-zoom-1.image" alt="Apps 页面"></a>图2.1 – Odoo应用列表</p>
+</li>
+<li><p>使用搜索框来定位你想要安装的插件。这里有一些帮助你完成该任务的操作指南：</p>
+<ul>
+<li>激活Not Installed过滤器</li>
+<li>如果你要查找一个具体的功能插件而不是广泛的功能插件，删除Apps过滤器</li>
+<li>在搜索框中输入模块名的一部分并使用它来作为模块过滤器</li>
+<li>你会发现使用列表视图可以阅读到更多的信息</li>
+</ul>
+</li>
+<li><p>点击卡片中模块名下的Install按钮。</p>
+</li>
+</ol>
+<p>注意有些Odoo插件模块具有外部Python依赖，如果你的系统中未安装该Python依赖，那么 Odoo 会中止安装并显示如下的对话框：</p>
+<p><a target="_blank" rel="noopener" href="https://alanhou.org/homepage/wp-content/uploads/2019/05/2019050906125210.jpg"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/dca7688da2b7421d82702eca72530b1a~tplv-k3u1fbpfcp-zoom-1.image" alt="pyldap 安装依赖"></a>图2.2 – 外部库依赖的警告<br><strong>译者注：</strong> 按正常安装不会出现一错误，需通过 pip uninstall pyldap 才能复现这一错误</p>
+<p>修复这一问题，仅需在你的系统中安装相关的Python依赖即可。</p>
+<p>要升级已安装到数据库的模块，使用如下步骤：</p>
+<ol>
+<li><p>使用管理员账户连接到实例</p>
+</li>
+<li><p>打开Apps菜单</p>
+</li>
+<li><p>点击Apps:<br><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/cdc90ff9a2264b2dadabea6da6a23a40~tplv-k3u1fbpfcp-zoom-1.image" alt="图2.3 – Odoo应用列表"><br>图2.3 – Odoo应用列表</p>
+</li>
+<li><p>使用搜索框来定位你所安装的插件。有如下的小贴士：</p>
+<ul>
+<li>激活Installed过滤器</li>
+<li>如果你要查找一个具体的功能插件而不是广义的功能插件，删除Apps过滤器</li>
+<li>在搜索框中输入部分插件模块的名称并按下 Enter 来使用它作为模块过滤器。例如，输入CRM并按下 Enter 来搜索CRM应用</li>
+<li>你会发现使用列表视图可以阅读到更多的信息</li>
+</ul>
+</li>
+<li><p>点击卡片右上角的的三个点，然后点击Upgrade选项：</p>
+</li>
+</ol>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/490ce5d0c0434150b5d54a540fbfc539~tplv-k3u1fbpfcp-zoom-1.image" alt="图2.4 – 升级模块的下拉链接 "></p>
+<p>图2.4 – 升级模块的下拉链接</p>
+<p>激活开发者模式来查看模块的技术名称。如果你不知道如何激活开发者模式，请参见<a target="_blank" rel="noopener" href="https://alanhou.org/odoo-14-installing-the-odoo-development-environment/">第一章 安装Odoo开发环境</a>：</p>
+<p><a target="_blank" rel="noopener" href="https://alanhou.org/homepage/wp-content/uploads/2019/05/2019050906302261.jpg"><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/fcd6301aab3247159081111c07297b5f~tplv-k3u1fbpfcp-zoom-1.image" alt="查看模块技术名称"></a></p>
+<p>图2.5 – 应用的技术名称</p>
+<p>在激活开发者模式之后，它会以红色显示模块的技术名称。如果你使用的是Odoo社区版，会看到一些带有Upgrade按钮的应用。这些是Odoo企业版的应用，要想安装&#x2F;使用它们，需要购买一个证书。</p>
+<h4 id="通过命令行"><a href="#通过命令行" class="headerlink" title="通过命令行"></a>通过命令行</h4><p>在数据库中安装新插件，可执行如下步骤：</p>
+<ol>
+<li><p>查找插件的名称。这是包含__manifest__.py文件的目录名，不带前面的路径。</p>
+</li>
+<li><p>停止实例。如果你在操作生产数据库，请进行备份。</p>
+</li>
+<li><p>运行如下命令：  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ odoo/odoo-bin -c instance.cfg -d dbname -i addon1,addon2 --stop-after-init</span><br></pre></td></tr></table></figure>
+
+<p>如果在配置文件中进行过设置可以省略掉-d dbname。<br><strong>译者注：</strong> 请将addon1,addon2替换为你所要安装的插件名</p>
+</li>
+<li><p>重启实例</p>
+</li>
+</ol>
+<p>升级数据库中已安装的插件，可执行如下步骤：</p>
+<ol>
+<li><p>查找待更新的插件模块名称。这是包含__manifest__.py文件的目录名，不带前面的路径。</p>
+</li>
+<li><p>停止实例。如果你在操作生产数据库，请进行备份。</p>
+</li>
+<li><p>运行如下命令：  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ odoo/odoo-bin -c instance.cfg -d dbname - u addon1 --stop-after-init</span><br></pre></td></tr></table></figure>
+
+<p>如果在配置文件中进行过设置可以省略掉-d dbname。</p>
+</li>
+<li><p>重启实例</p>
+</li>
+</ol>
+<h3 id="运行原理…-2"><a href="#运行原理…-2" class="headerlink" title="运行原理…"></a>运行原理…</h3><p>插件模块的安装和升级是两个紧密关联的操作，但有一些重要的区别，在下面两部分中进行了强调：</p>
+<h4 id="插件安装"><a href="#插件安装" class="headerlink" title="插件安装"></a>插件安装</h4><p>在安装插件时，Odoo以提供的名称检查它的可用插件列表中未安装插件。它还会检查该插件的依赖，并且如果有依赖的话，它会在安装插件前递归安装这些依赖。</p>
+<p>单个模块的安装包含如下步骤：</p>
+<ol>
+<li>如果存在，运行插件preinit钩子</li>
+<li>从Python源代码中加载模型定义并在必要时更新数据库结构（参见<a target="_blank" rel="noopener" href="https://alanhou.org/odoo-14-application-models/">第四章 应用模型</a>了解更多信息）</li>
+<li>加载插件的数据文件并在必要时更新数据库内容（参见<a target="_blank" rel="noopener" href="https://alanhou.org/odoo-14-module-data/">第六章 管理模块数据</a>了解更多信息）</li>
+<li>如果实例中启用了演示数据则安装插件演示数据</li>
+<li>如果存在，运行插件postinit钩子</li>
+<li>运行对插件视图定义的验证</li>
+<li>如果启用了演示数据及测试，运行该插件的测试（参见<a target="_blank" rel="noopener" href="https://alanhou.org/odoo-14-automated-test-cases/">第十八章 自动化测试用例</a>了解更多信息）</li>
+<li>在数据库中更新模块状态</li>
+<li>从插件的翻译文件中更新数据库中的翻译（参见<a target="_blank" rel="noopener" href="https://alanhou.org/odoo-14-internationalization/">第十一章 国际化</a>了解更多信息）</li>
+</ol>
+<blockquote>
+<p>📝preinit和postinit钩子分别使用pre_init_hook和post_init_hook键名在__manifest__.py文件中定义。这些钩子用于在插件模块的安装之前及之后触发Python函数。参见<a target="_blank" rel="noopener" href="https://alanhou.org/odoo-14-creating-odoo-add-on-modules/">第三章 创建Odoo插件模块</a>了解更多有关 init 钩子的知识。</p>
+</blockquote>
+<h4 id="插件升级"><a href="#插件升级" class="headerlink" title="插件升级"></a>插件升级</h4><p>升级插件时，Odoo以给定的名称在可用的插件模块列表中检查已安装插件。它还会检查该插件的反向依赖（即依赖于所升级插件的那些插件）。如果存在，则也会对它们进行递归升级。</p>
+<p>单个插件模块的升级过程包含如下步骤：</p>
+<ol>
+<li>如果存在，先运行插件模块的预迁移步骤（参见<a target="_blank" rel="noopener" href="https://alanhou.org/odoo-14-module-data/">第六章 管理模块数据</a>了解更多信息）</li>
+<li>从Python源码中加载模型定义并在必要时更新数据库结构（参见<a target="_blank" rel="noopener" href="https://alanhou.org/odoo-14-application-models/">第四章 应用模型</a>了解更多信息）</li>
+<li>加载插件的数据文件并在必要时更新数据库内容（参见<a target="_blank" rel="noopener" href="https://alanhou.org/odoo-14-module-data/">第六章 管理模块数据</a>了解更多信息）</li>
+<li>如果实例中启用了演示数据更新插件演示数据</li>
+<li>如果模块有任何迁移方法的话，运行插件模块的后置迁移步骤（参见<a target="_blank" rel="noopener" href="https://alanhou.org/odoo-14-module-data/">第六章 管理模块数据</a>了解更多信息）</li>
+<li>运行对插件视图定义的验证</li>
+<li>如果启用了演示数据并启用了测试，运行该插件的测试（参见<a target="_blank" rel="noopener" href="https://alanhou.org/odoo-14-automated-test-cases/">第十八章 自动化测试用例</a>了解更多信息）</li>
+<li>在数据库中更新模块状态</li>
+<li>从插件的翻译文件中更新数据库中的翻译（参见<a target="_blank" rel="noopener" href="https://alanhou.org/odoo-14-internationalization/">第十一章 国际化</a>了解更多信息）</li>
+</ol>
+<blockquote>
+<p>📝注意更新未安装的插件模块时什么也不会做。但是安装已安装的插件模块会重新安装该插件，这会通过一些包含数据的数据文件产生一些预期外的问题，这些文件应由用户进行更新而非在常规的模块升级处理时进行更新（参见<a target="_blank" rel="noopener" href="https://alanhou.org/odoo-14-module-data/">第六章 管理模块数据</a>中使用noupdate和forcecreate标记部分的内容）。通过用户界面不存在错误的风险，但通过命令行时则有可能发生。</p>
+</blockquote>
+<h3 id="扩展知识…-2"><a href="#扩展知识…-2" class="headerlink" title="扩展知识…"></a>扩展知识…</h3><p>要当心依赖的处理。假定有一个实例你想要对其安装sale、sale_stock和sale_specific插件，sale_specific依赖于sale_stock，而sale_stock依赖于sale。要安装这三者，你只需要安装sale_specific，因为它会递归安装sale_stock和sale这两个依赖。要升级这三者，需要升级sale，因为这样会递归升级其反向依赖，sale_stock和sale_specific。</p>
+<p>管理依赖另一个比较搞的地方是在你向已经安装了一个版本的插件添加依赖的时候。我们继续通过前例来理解这一问题。想像一下在sale_specific中添加了一个对stock_dropshipping的依赖。更新sale_specific插件不会自动安装新的依赖，也不会要求安装sale_specific。在这种情况下，你会收到非常糟糕的错误消息，因为插件的Python代码没有成功加载，而插件的数据和模型表则已存在于数据库中。要解决这一问题，你需要停止该实例并手动安装新的依赖。</p>
+<h2 id="从GitHub安装插件模块"><a href="#从GitHub安装插件模块" class="headerlink" title="从GitHub安装插件模块"></a>从GitHub安装插件模块</h2><p>GitHub是第三方插件一个很好的来源。很多Odoo合作伙伴使用GitHub来分享他们内部维护的插件，而Odoo社区联盟（OCA）在GitHub上共同维护着几百个插件。在你开始编写自己的插件之前，确保查看是否已有可直接使用的插件或者作为初始以继续扩展的插件。</p>
+<p>这一部分向你展示如何从GitHub上克隆OCA的partner-contact项目并让其中所包含的插件模块在我们实例中可用。</p>
+<h3 id="准备工作-2"><a href="#准备工作-2" class="headerlink" title="准备工作"></a>准备工作</h3><p>假设你希望对客户(partner) 表单添加新的字段。默认Odoo客户模型不包含gender字段。如果要添加gender字段，需要新建一个模块。所幸邮件列表中有人告诉你有partner_contact_gender这么一个插件模块，由OCA作为partner-contact项目的一部分进行维护。</p>
+<p>本部分中所使用的路径反映了我们在<em>标准化你的实例目录布局</em>一节中所推荐的布局。</p>
+<h3 id="如何安装…"><a href="#如何安装…" class="headerlink" title="如何安装…"></a>如何安装…</h3><p>按照如下步骤来安装partner_contact_gender：</p>
+<ol>
+<li><p>进入项目目录：  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ cd ~/odoo-dev/my-odoo/src</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在src&#x2F;目录中克隆partner-contact项目的14.0分支：  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git clone --branch 14.0 \</span><br><span class="line">https://github.com/OCA/partner-contact.git src/partner-contact</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改插件路径来包含该目录并更新你的实例中的插件列表（参见本章中的<em>配置插件路径</em>和<em>更新插件模块列表</em>小节）。instance.cfg中的addons_path一行应该是这样的：  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">addons_path = ~/odoo-dev/my-odoo/src/odoo/odoo/addons, \</span><br><span class="line">~/odoo-dev/my-odoo/src/odoo/addons, \</span><br><span class="line">~/odoo-dev/my-odoo/src/, \</span><br><span class="line">~/odoo-dev/local-addons</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>安装partner_contact_gender插件（如果你不知道如何安装该模块，参见前面的小节，<em>安装并升级本地插件模块</em>）</p>
+</li>
+</ol>
+<h3 id="运行原理…-3"><a href="#运行原理…-3" class="headerlink" title="运行原理…"></a>运行原理…</h3><p>Odoo社区联盟的所有代码仓库都将他们自己的插件放在单独的子目录中，这与Odoo对插件路径中目录的要求是一致的。因此，只需复制某处的仓库并将其添加到插件路径中就够了。</p>
+<h3 id="扩展知识…-3"><a href="#扩展知识…-3" class="headerlink" title="扩展知识…"></a>扩展知识…</h3><p>有些维护者遵循不同的方法，每个插件模块一个仓库，放在仓库的根目录下。这种情况下，需要新建一个目录，在这个目录中添加插件路径并克隆所需维护者的插件到该目录中。记住在每次添加一个新仓库克隆时要更新插件模块列表。</p>
+<h2 id="对插件应用修改"><a href="#对插件应用修改" class="headerlink" title="对插件应用修改"></a>对插件应用修改</h2><p>GitHub上可用的大部分插件需要进行修改并且不遵循Odoo对其稳定发行版所强制的规则。它们可能进行漏洞修复或改善，包含你提交的问题或功能请求，这些修改可能会带来数据库模式的修改或数据文件和视图中的更新。这一部分讲解如何安装升级后的版本。</p>
+<h3 id="准备工作-3"><a href="#准备工作-3" class="headerlink" title="准备工作"></a>准备工作</h3><p>假定你对partner_contact_gender报告了一个问题并收到通知说该问题已在partner-contact项目14.0分支的最近一次修订中得以解决。这种情况下，你可以使用最新版本来更新实例。</p>
+<h3 id="如何修改…"><a href="#如何修改…" class="headerlink" title="如何修改…"></a>如何修改…</h3><p>要对来自GitHub的插件进行源的变更，需执行如下步骤：</p>
+<ol>
+<li><p>停止使用该插件的实例。</p>
+</li>
+<li><p>如果是生产实例请进行备份（参见<a target="_blank" rel="noopener" href="https://alanhou.org/odoo-14-installing-the-odoo-development-environment/">第一章 安装Odoo开发环境</a>中<em>管理Odoo服务端数据库</em>一节）。</p>
+</li>
+<li><p>进入克隆了partner-contact的目录：  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ cd ~/odoo-dev/my-odoo/src/partner-contact</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>为该项目创建一个本地标签，这样万一出现了崩溃还可以进行回退：  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git checkout 14.0</span><br><span class="line">$ git tag 14.0-before-update-$(date --iso)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>获取源码的最新版本：  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git pull --ff-only</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在数据库中更新partner_contact_gender插件（参见<em>安装并升级本地插件模块</em>一节）</p>
+</li>
+<li><p>重启实例</p>
+</li>
+</ol>
+<h3 id="运行原理…-4"><a href="#运行原理…-4" class="headerlink" title="运行原理…"></a>运行原理…</h3><p>通常，插件模块的开发者不时会发布插件的最新版本。这一更新一般包含漏洞修复及新功能。这里，我们将获取一个插件的新版本并在我们的实例中更新它。</p>
+<p>如果git pull –ff-only失败的话，可以使用如下命令回退到前一个版本：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git reset --hard 14.0-before-update-$(date --iso)</span><br></pre></td></tr></table></figure>
+
+<p>然后，可以尝试git pull（不添加–ff-only），它会产生一个合并，但这表示你对插件做了本地修改。</p>
+<h3 id="其它内容…"><a href="#其它内容…" class="headerlink" title="其它内容…"></a>其它内容…</h3><p>如果更新这一步崩溃了，参见<a target="_blank" rel="noopener" href="https://alanhou.org/odoo-14-installing-the-odoo-development-environment/">第一章 安装Odoo开发环境</a><em>从源码更新Odoo</em>一节获取恢复的操作指南。记住要保持首先在生产数据库的拷贝上进行测试。</p>
+<h2 id="应用及尝试建议的拉取请求"><a href="#应用及尝试建议的拉取请求" class="headerlink" title="应用及尝试建议的拉取请求"></a>应用及尝试建议的拉取请求</h2><p>在GitHub的世界中，拉取请求（PR）是由开发者所提交的请求，这样项目维护人员可以添加一些新的开发。比如一个 PR 可能包含漏洞修复或新功能。这些请求在拉取到主分支之前会进行审核和测试。</p>
+<p>这一部分讲解如何对你的 Odoo 项目应用一个PR来测试漏洞修复的改进。</p>
+<h3 id="准备工作-4"><a href="#准备工作-4" class="headerlink" title="准备工作"></a>准备工作</h3><p>在前一节中，假定你对partner_contact_gender 报告了一个问题并收到一条通知在拉取请求中问题已修复，尚未合并到项目的14.0分支中。开发人员要求你验证PR #123中的修复状况。你需要使用这一分支更新一个测试实例。</p>
+<p>不应在生产数据库直接使用该分支，因此先创建一个带有生产数据库拷贝的测试环境（参见<a target="_blank" rel="noopener" href="https://alanhou.org/odoo-14-installing-the-odoo-development-environment/">第一章 安装Odoo开发环境</a>）。</p>
+<h3 id="如何操作…"><a href="#如何操作…" class="headerlink" title="如何操作…"></a>如何操作…</h3><p>应用并测试一个插件的GitHub拉取请求，需要执行如下步骤：</p>
+<ol>
+<li><p>停止实例</p>
+</li>
+<li><p>进入partner-contact所被克隆的目录：  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ cd ~/odoo-dev/my-odoo/src/partner-contact</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>为该项目创建一个本地标签，这样万一出现崩溃时你可以回退：  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">$ git checkout 14.0</span><br><span class="line">$ git tag 14.0-before-update-$(date --iso)</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>拉取pull请求的分支。这么做最容易的方式是使用PR编号，在开发者与你沟通时你应该可以看到。在本例中，这个拉取请求编号是123：  </p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git pull origin pull/123/head</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在你的数据库中更新partner_contact_gender1插件模块并重启该实例（如果你不知道如何更新该模块的话请参见<em>安装并升级本地插件模块</em>一节）</p>
+</li>
+<li><p>测试该更新 - 尝试重现问题，或测试你想要的功能。</p>
+</li>
+</ol>
+<p>如果这不能运行，在GitHub的PR页面进行评论，说明你做了什么以及什么不能运行，这样开发者可以更新这个拉取请求。</p>
+<p>如果它没有问题，也在PR页面说下；这是PR验证流程中非常重要的一部分；这会加速主分支中的合并。</p>
+<h3 id="运行原理…-5"><a href="#运行原理…-5" class="headerlink" title="运行原理…"></a>运行原理…</h3><p>我们在使用一个GitHub功能，使用pull&#x2F;nnnn&#x2F;head分支名称来通过编号进行拉取请求的拉取，其中nnnn是PR的编号。Git pull命令会合并远程分支到我们的分支，在我们基础代码中应用修改。在这之后，我们更新插件模块、对其测试并向作者报告修改是成功或是失败。</p>
+<h3 id="扩展知识…-4"><a href="#扩展知识…-4" class="headerlink" title="扩展知识…"></a>扩展知识…</h3><p>如果你想要同步测试它们，你可以针对相同仓库的不同拉取请求重复本节中的第4步。如果你对结果很满意，可以创建一个分支来保留对应用了改变的结果的引用：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git checkout -b 14.0-custom</span><br></pre></td></tr></table></figure>
+
+<p>使用一个不同的分支会有助于记住你没有使用GitHub的版本，而是一个自定义的版本。</p>
+<blockquote>
+<p>📝git branch命令可用于列出你仓库中的所有本地分支。</p>
+</blockquote>
+<p>从这开始，如果需要应用来自GitHub中14.0分支的最近一个审核版本，需要在拉取时不使用–ff-only：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ git pull origin 14.0</span><br></pre></td></tr></table></figure>
       
     </div>
 
@@ -3140,272 +3533,6 @@
 </li>
 <li><p>Font Awesome<a target="_blank" rel="noopener" href="https://fontawesome.com/v4.7.0/icons/">图标索引</a></p>
 </li>
-</ul>
-<p>本文首发地址：<a target="_blank" rel="noopener" href="https://alanhou.org/developer-mode-odoo12/">Alan Hou 的个人博客</a></p>
-
-      
-    </div>
-
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="https://alanhou.github.io/2019/01/15/odoo-essentials-12-chapter9/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="Alan Hou">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Alan Hou的个人博客">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Alan Hou的个人博客">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2019/01/15/odoo-essentials-12-chapter9/" class="post-title-link" itemprop="url">第九章 Odoo 12开发之外部 API – 集成第三方系统</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2019-01-15 00:00:00" itemprop="dateCreated datePublished" datetime="2019-01-15T00:00:00+08:00">2019-01-15</time>
-    </span>
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar-check"></i>
-      </span>
-      <span class="post-meta-item-text">Edited on</span>
-      <time title="Modified: 2023-02-03 14:19:30" itemprop="dateModified" datetime="2023-02-03T14:19:30+08:00">2023-02-03</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>本文为<a target="_blank" rel="noopener" href="https://alanhou.org/odoo-12-development/">最好用的免费ERP系统Odoo 12开发手册</a>系列文章第九篇。</p>
-<p>Odoo 服务器端带有外部 API，可供网页客户端和其它客户端应用使用。本文中我们将学习如何在我们的客户端程序中使用 Odoo 的外部 API。为避免引入大家所不熟悉的编程语言，此处我们将使用基于 Python 的客户端，但这种 RPC 调用的处理方法也适用于其它编程语言。</p>
-<p>我们将一起了解如何使用 Odoo RPC调用，然后根据所学知识使用 Python创建一个简单的图书命令行应用。</p>
-<p>本文主要内容有：</p>
-<ul>
-<li>在客户端机器上安装 Python</li>
-<li>使用XML-RPC连接 Odoo</li>
-<li>使用XML-RPC运行服务器端方法</li>
-<li>搜索和读取 API 方法</li>
-<li>图书客户端XML-RPC 接口</li>
-<li>图书客户端用户界面</li>
-<li>使用OdooRPC库</li>
-<li>了解ERPpeek客户端</li>
-</ul>
-<h2 id="开发准备"><a href="#开发准备" class="headerlink" title="开发准备"></a>开发准备</h2><p>本文基于第三章 <a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-first-application/">Odoo 12 开发之创建第一个 Odoo 应用</a>创建的代码，具体代码请参见<a target="_blank" rel="noopener" href="https://github.com/alanhou/odoo12-development/tree/master/library_app"> GitHub 仓库</a>。应将library_app模块放在addons路径下并进行安装。为保持前后一致，我们将使用第二章 <a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-development-environment/">Odoo 12开发之开发环境准备</a>所进行安装并使用12-library数据库。本章完成后的代码请参见 <a target="_blank" rel="noopener" href="https://github.com/alanhou/odoo12-development/tree/master/chapter9">GitHub 仓库</a>。</p>
-<p>补充：因原书前后曾使用过多个数据库，本文中Alan将使用系列中一直使用的 dev12数据库，并在前一篇文章的基础上进行开发。</p>
-<h2 id="学习项目-图书目录客户端"><a href="#学习项目-图书目录客户端" class="headerlink" title="学习项目-图书目录客户端"></a>学习项目-图书目录客户端</h2><p>本文中，我们将开发一个简单的客户端应用来管理图书目录。这是一个命令行接口(CLI) 应用，使用 Odoo 来作为后端。应用的功能非常有限，这样我们可以聚焦在用于与 Odoo服务端交互的技术，而不是具体应用的实现细节。我们的简单应用可以完成如下功能：</p>
-<ul>
-<li>通过标题搜索并列出图书</li>
-<li>向目录添加新标题</li>
-<li>修正图书标题</li>
-<li>从目录中删除图书</li>
-</ul>
-<p>这个应用是一个 Python 脚本，等待输入命令来执行操作。使用会话示例如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">$ python3 library.py add &quot;Moby-Dick&quot;</span><br><span class="line">$ python3 library.py list &quot;moby&quot;</span><br><span class="line">60 Moby-Dick</span><br><span class="line">$ python3 library.py set-title 60 &quot;Moby Dick&quot;</span><br><span class="line">$ python3 library.py del 60</span><br></pre></td></tr></table></figure>
-
-<h2 id="在客户端机器上安装-Python"><a href="#在客户端机器上安装-Python" class="headerlink" title="在客户端机器上安装 Python"></a>在客户端机器上安装 Python</h2><p>Odoo API 可以在外部通过两种协议访问：XML-RPC和JSON-RPC。任意外部程序，只要能实施其中一种协议的客户端，就可以与 Odoo 服务端进行交互。为避免引入其它编程语言，我们将保持使用 Python 来研究外部 API。</p>
-<p>到目前为止我们仅在服务端运行了 Python 代码。现在我们要在客户端上使用 Python，所以你可能需要在电脑上做一些额外设置。要学习本文的示例，你需要能在操作电脑上运行 Python 文件。可通过在命令行终端运行python3 –version命令来进行确认。如果没有安装，请参考官方网站针对你所使用的平台的<a target="_blank" rel="noopener" href="https://www.python.org/downloads/">安装包</a>。</p>
-<p>对于 Ubuntu，你可能已经安装了 Python 3，如果没有安装，可通过以下命令进行安装：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt-get install python3 python3-pip</span><br></pre></td></tr></table></figure>
-
-<p>如果你使用的是 Windows 并且已安装了 Odoo，可能会奇怪为什么没有 Python 解释器，还需要进行额外安装。简单地说是因为 Odoo 安装带有一个内嵌的 Python 解释器，无法在外部使用。</p>
-<h2 id="使用XML-RPC连接-Odoo-API"><a href="#使用XML-RPC连接-Odoo-API" class="headerlink" title="使用XML-RPC连接 Odoo API"></a>使用XML-RPC连接 Odoo API</h2><p>访问服务的最简单方法是使用XML-RPC，我们可以使用 Python 标准库中的xmlrpclib来实现。不要忘记我们是在编写客户端程序连接服务端，因此需运行 Odoo 服务端实例来供连接。本例中我们假设 Odoo 服务端实例在同一台机器上运行，但你可以使用任意运行服务的其它机器，只要能连接其IP 地址或服务器名。</p>
-<p>让我们来初次连接 Odoo 外部 API。打开 Python 3终端并输入如下代码：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; from xmlrpc import client</span><br><span class="line">&gt;&gt;&gt; srv = &#x27;http://localhost:8069&#x27;</span><br><span class="line">&gt;&gt;&gt; common = client.ServerProxy(&#x27;%s/xmlrpc/2/common&#x27; % srv)</span><br><span class="line">&gt;&gt;&gt; common.version()</span><br><span class="line">&#123;&#x27;server_version&#x27;: &#x27;12.0&#x27;, &#x27;server_version_info&#x27;: [12, 0, 0, &#x27;final&#x27;, 0, &#x27;&#x27;], &#x27;server_serie&#x27;: &#x27;12.0&#x27;, &#x27;protocol_version&#x27;: 1&#125;</span><br></pre></td></tr></table></figure>
-
-<p>这里我们导入了xmlrpc.client库，然后创建了一个包含服务地址和监听端口信息的变量。请根据自身状况进行修改（如 Alan 使用srv &#x3D; ‘<a target="_blank" rel="noopener" href="http://192.168.16.161:8069'）。">http://192.168.16.161:8069&#39;）。</a></p>
-<p>下一步访问服务端公共服务（无需登录），在终端地址&#x2F;xmlrpc&#x2F;2&#x2F;common上暴露。其中一个可用方法是version()，用于查看服务端版本。我们使用它来确认可与服务端进行通讯。</p>
-<p>另一个公共方法是authenticate()。你可能你会以为它会创建会话，但实际上不会。该方法仅仅确认用户名和密码可被接受，请求不使用用户名而是它返回的用户 ID。示例如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; db = &#x27;dev12&#x27;</span><br><span class="line">&gt;&gt;&gt; user, pwd = &#x27;admin&#x27;, &#x27;admin&#x27;</span><br><span class="line">&gt;&gt;&gt; uid = common.authenticate(db, user, pwd, &#123;&#125;)</span><br><span class="line">&gt;&gt;&gt; print(uid)</span><br><span class="line">2</span><br></pre></td></tr></table></figure>
-
-<p>首先创建变量 db，来存储使用的数据库名。本例中为 dev12，但可以修改为任意其它你所使用的数据库名。如果登录信息错误，将不会返回用户 ID，而是返回 False 值。authenticate()最后一个参数是用户代理(User Agent)环境，用于提供客户端的一些元数据(metadata)，它是必填的，但可以是一个空字典。</p>
-<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/dbc0881b09484c0998d44eaee58743b1~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12 Python 客户端访问XML RPC"></p>
-<h2 id="使用XML-RPC运行服务器端方法"><a href="#使用XML-RPC运行服务器端方法" class="headerlink" title="使用XML-RPC运行服务器端方法"></a>使用XML-RPC运行服务器端方法</h2><p>使用XML-RPC，不会维护任何会话，每次请求都会发送验证信息。这让协议过重，但使用简单。下一步我们设置访问需登录才能访问的服务端方法。暴露的终端地址为&#x2F;xmlrpc&#x2F;2&#x2F;object，示例如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; api = client.ServerProxy(&#x27;%s/xmlrpc/2/object&#x27; % srv)</span><br><span class="line">&gt;&gt;&gt; api.execute_kw(db, uid, pwd, &#x27;res.partner&#x27;, &#x27;search_count&#x27;, [[]])</span><br><span class="line">48</span><br></pre></td></tr></table></figure>
-
-<p>此处我们第一次访问了服务端 API，执行了Partner 记录的计数。通过 execute_kw() 方法来调用方法，接收如下参数：</p>
-<ul>
-<li>连接的数据库名</li>
-<li>连接用户ID</li>
-<li>用户密码</li>
-<li>目标模型标识符名称</li>
-<li>调用的方法</li>
-<li>位置参数列表</li>
-<li>可选的关键字参数字典(本例中未使用)</li>
-</ul>
-<p>上面的例子中对res.partner模型调用了search_count方法，仅一个位置参数[]，没有关键字参数。该位置参数是一个搜索域，因我们传入的是一个空列表，它对所有伙伴进行计数。常用的操作有搜索和读取。在使用RPC调用时，search方法返回一个区块的 ID 列表。browse方法不可用于RPC，而应使用read来得到记录 ID 列表并获取相应数据，示例如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; domain = [(&#x27;is_company&#x27;, &#x27;=&#x27;, True)]</span><br><span class="line">&gt;&gt;&gt; api.execute_kw(db, uid, pwd, &#x27;res.partner&#x27;, &#x27;search&#x27;, [domain])</span><br><span class="line">[14, 10, 11, 15, 12, 13, 9, 1]</span><br><span class="line">&gt;&gt;&gt; api.execute_kw(db, uid, pwd, &#x27;res.partner&#x27;, &#x27;read&#x27;, [[14]], &#123;&#x27;fields&#x27;: [&#x27;id&#x27;, &#x27;name&#x27;, &#x27;country_id&#x27;]&#125;)</span><br><span class="line">[&#123;&#x27;id&#x27;: 14, &#x27;name&#x27;: &#x27;Azure Interior&#x27;, &#x27;country_id&#x27;: [233, &#x27;United States&#x27;]&#125;]</span><br></pre></td></tr></table></figure>
-
-<p>对于 read 方法，我们使用了一个位置参数[14]来作为 ID 列表，以及一个关键字参数fields。还可以看到many-to-one关联字段如country_id，被成对获取，包含关联的记录 ID 和显示名称。在代码中处理数据时应记住这一点。</p>
-<p>经常会使用search和 read 的组合，所以提供了一个search_read方法来在同一步中执行两者的操作。可通过如下命令来获取以上两段代码的同样结果：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">api.execute_kw(db, uid, pwd, &#x27;res.partner&#x27;, &#x27;search_read&#x27;, [domain], &#123;&#x27;fields&#x27;: [&#x27;id&#x27;, &#x27;name&#x27;, &#x27;country_id&#x27;]&#125;)</span><br></pre></td></tr></table></figure>
-
-<p>补充：以上代码会为 read 方法传入所有 search 方法的结果，因此内容要较仅传入[14]多</p>
-<p>search_read方法和 read 相似，但需要 domain代替 id 列表来作为第一个位置参数。需要说明在 read 和search_read中fields参数并非必须。如果不传入，则获取所有字段。这可能会带来对函数字段的大量计算，并且获取大量可能从来都不会用到的数据，所以通常建议明确传入字段列表。</p>
-<h2 id="搜索和读取-API-方法"><a href="#搜索和读取-API-方法" class="headerlink" title="搜索和读取 API 方法"></a>搜索和读取 API 方法</h2><p>在第七章 <a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-recordsets/">Odoo 12开发之记录集 - 使用模型数据</a>我们学习了用于生成记录的最重要的模型方法以及代码书写。但还有一些其它模型方法可用于更具体的操作，如：</p>
-<ul>
-<li>read([fields]) 类似于browse方法，但返回的不是记录集，而是包含按参数指定的字段的各行数据列表。每一行是一个字典。它提供可供 RPC 协议使用的数据的序列化展示，设计用于客户端程序中而非服务端逻辑中。</li>
-<li>search_read([domain], [fields], offset&#x3D;0, limit&#x3D;None, order&#x3D;None)在读取结果记录列表之后执行搜索操作。设计用于 RPC 客户端，避免了反复进行读取结果和搜索的操作。</li>
-</ul>
-<p>所有其它模型方法都对 RPC 暴露，但以下划线开头的除外，这些是私有方法。也就是说我们可以像下面这样使用create, write,和unlink修改服务端数据：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; x = api.execute_kw(db, uid, pwd, &#x27;res.partner&#x27;, &#x27;create&#x27;, [&#123;&#x27;name&#x27;: &#x27;Packt Pub&#x27;&#125;])</span><br><span class="line">&gt;&gt;&gt; print(x)</span><br><span class="line">69</span><br><span class="line">&gt;&gt;&gt; api.execute_kw(db, uid, pwd, &#x27;res.partner&#x27;, &#x27;write&#x27;, [[x], &#123;&#x27;name&#x27;: &#x27;Packt Publishing&#x27;&#125;])</span><br><span class="line">True</span><br><span class="line">&gt;&gt;&gt; api.execute_kw(db, uid, pwd, &#x27;res.partner&#x27;, &#x27;read&#x27;,  [[x], [&#x27;id&#x27;, &#x27;name&#x27;]])</span><br><span class="line">[&#123;&#x27;id&#x27;: 69, &#x27;name&#x27;: &#x27;Packt Publishing&#x27;&#125;]</span><br><span class="line">&gt;&gt;&gt; api.execute_kw(db, uid, pwd, &#x27;res.partner&#x27;, &#x27;unlink&#x27;, [[x]])</span><br><span class="line">True</span><br><span class="line">&gt;&gt;&gt; api.execute_kw(db, uid, pwd, &#x27;res.partner&#x27;, &#x27;read&#x27;,  [[x], [&#x27;id&#x27;, &#x27;name&#x27;]])</span><br><span class="line">[]</span><br></pre></td></tr></table></figure>
-
-<p>XML-RPC的一个缺陷是它不支持 None 值。有一个XML-RPC扩展可以支持 None 值，但这取决于我们客户端所依赖的具体XML-RPC库。不返回任何值的方法不能在XML-RPC中使用，因为默认返回的是 None。这也是为什么方法在结束时至少会带有一个return True语句。另一个方案是使用 Odoo 同时支持的JSON-RPC。OdooRPC对其进行运行，在稍后的<a href="#odoorpc">使用OdooRPC库</a>一节会进行使用。</p>
-<p>应反复强调 Odoo 的外部 API 可在大部分编程语言中使用。<a target="_blank" rel="noopener" href="https://www.odoo.com/documentation/12.0/webservices/odoo.html">官方文档</a>中我们可以看到Ruby, PHP和Java实际示例。</p>
-<blockquote>
-<p>ℹ️以下划线开头的模块方法被认为是私有方法，不对XML-RPC暴露。</p>
-</blockquote>
-<h2 id="图书客户端XML-RPC-接口"><a href="#图书客户端XML-RPC-接口" class="headerlink" title="图书客户端XML-RPC 接口"></a>图书客户端XML-RPC 接口</h2><p>下面就来实现图书客户端应用。我们将使用两个文件：一个处理服务端的接口：library_api.py，另一个处理应用的用户界面：library.py。然后我们会使用现有的OdooRPC库来提供一个替代的实现方法。</p>
-<p>我们将创建类来配置与 Odoo 服务端的连接，以及读取&#x2F;写入图书数据。这将暴露基本的增删改查方法：</p>
-<ul>
-<li>search_read()获取图书数据</li>
-<li>create()创建图书</li>
-<li>write()更新图书</li>
-<li>unlink()删除图书</li>
-</ul>
-<p>选择一个目录来放置应用文件并创建library_api.py文件。首先添加类的构造方法，代码如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">from xmlrpc import client</span><br><span class="line"></span><br><span class="line">class LibraryAPI():</span><br><span class="line">	def __init__(self, srv, port, db, user, pwd):</span><br><span class="line">		common = client.ServerProxy(</span><br><span class="line">			&#x27;http://%s:%d/xmlrpc/2/common&#x27; % (srv, port))</span><br><span class="line">		self.api = client.ServerProxy(</span><br><span class="line">			&#x27;http://%s:%d/xmlrpc/2/object&#x27; % (srv, port))</span><br><span class="line">		self.uid = common.authenticate(db, user, pwd, &#123;&#125;)</span><br><span class="line">		self.pwd = pwd</span><br><span class="line">		self.db = db</span><br><span class="line">		self.model = &#x27;library.book&#x27;</span><br></pre></td></tr></table></figure>
-
-<p>此处我们存储了所有创建执行模型调用的对象的所有信息：API引用、uid、密码、数据库名和要使用的模型。接下来我们定义一个帮助方法来执行调用。有赖于前面对象存储的数据该方法可以很精炼：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">def execute(self, method, arg_list, kwarg_dict=None):</span><br><span class="line">	return self.api.execute_kw(</span><br><span class="line">		self.db, self.uid, self.pwd, self.model,</span><br><span class="line">		method, arg_list, kwarg_dict or &#123;&#125;)</span><br></pre></td></tr></table></figure>
-
-<p>现在就可以使用它来实现更高级的方法了。search_read()方法接收一个可选的 ID 列表来获取数据。如果没传入数据，则返回所有记录：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">def search_read(self, text=None):</span><br><span class="line">	domain = [(&#x27;name&#x27;, &#x27;ilike&#x27;, text)] if text else []</span><br><span class="line">	fields = [&#x27;id&#x27;, &#x27;name&#x27;]</span><br><span class="line">	return self.execute(&#x27;search_read&#x27;, [domain, fields])</span><br></pre></td></tr></table></figure>
-
-<p>create()方法用于创建给定书名的新书并返回所创建记录的 ID：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">def create(self, title):</span><br><span class="line">	vals = &#123;&#x27;name&#x27;: title&#125;</span><br><span class="line">	return self.execute(&#x27;create&#x27;, [vals])</span><br></pre></td></tr></table></figure>
-
-<p>write()方法中传入新书名和图书 ID 作为参数，并对该书执行写操作：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">def write(self, title, id):</span><br><span class="line">	vals = &#123;&#x27;name&#x27;: title&#125;</span><br><span class="line">	return self.execute(&#x27;write&#x27;, [[id], vals])</span><br></pre></td></tr></table></figure>
-
-<p>然后我们可以实现unlink()方法，非常简单：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">def unlink(self, id):</span><br><span class="line">	return self.execute(&#x27;unlink&#x27;, [[id]])</span><br></pre></td></tr></table></figure>
-
-<p>在该Python文件最后添加一段测试代码在运行时执行：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">if __name__ == &#x27;__main__&#x27;:</span><br><span class="line">	# 测试配置</span><br><span class="line">	srv, db, port = &#x27;localhost&#x27;, &#x27;dev12&#x27;, 8069</span><br><span class="line">	user, pwd = &#x27;admin&#x27;, &#x27;admin&#x27;</span><br><span class="line">	api = LibraryAPI(srv, port, db, user, pwd)</span><br><span class="line">	from pprint import pprint</span><br><span class="line">	pprint(api.search_read())</span><br></pre></td></tr></table></figure>
-
-<p>如果执行以上 Python 脚本，我们可以打印出图书的内容：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">$ python3 library_api.py</span><br><span class="line">[&#123;&#x27;id&#x27;: 56, &#x27;name&#x27;: &#x27;Brave New World&#x27;&#125;,</span><br><span class="line"> &#123;&#x27;id&#x27;: 40, &#x27;name&#x27;: &#x27;Hands-On System Programming with Linux&#x27;&#125;,</span><br><span class="line"> &#123;&#x27;id&#x27;: 41, &#x27;name&#x27;: &#x27;Lord of the Flies&#x27;&#125;,</span><br><span class="line"> &#123;&#x27;id&#x27;: 39, &#x27;name&#x27;: &#x27;Mastering Docker - Third Edition&#x27;&#125;,</span><br><span class="line"> &#123;&#x27;id&#x27;: 38, &#x27;name&#x27;: &#x27;Mastering Reverse Engineering&#x27;&#125;,</span><br><span class="line"> &#123;&#x27;id&#x27;: 55, &#x27;name&#x27;: &#x27;Odoo 11 Development Cookbook&#x27;&#125;,</span><br><span class="line"> &#123;&#x27;id&#x27;: 54, &#x27;name&#x27;: &#x27;Odoo Development Essentials 11&#x27;&#125;]</span><br></pre></td></tr></table></figure>
-
-<p>现在已经有了对 Odoo 后端的简单封装，下面就可以处理命令行用户界面了。</p>
-<h2 id="图书客户端用户界面"><a href="#图书客户端用户界面" class="headerlink" title="图书客户端用户界面"></a>图书客户端用户界面</h2><p>我的目标是学习如何写外部应用和 Odoo 服务之间的接口，前面已经实现了。但不能止步于此，我们还应让终端用户可以使用它。为使设置尽量简单，我们将使用 Python 内置功能来实现这个命令行应用。该功能是标准库自带的，因此不需要进行额外的安装。</p>
-<p>在library_api.py 同目录，新建一个library.py文件。首先导入命令行参数解析器，然后导入LibraryAPI类，代码如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">from argparse import ArgumentParser</span><br><span class="line">from library_api import LibraryAPI</span><br></pre></td></tr></table></figure>
-
-<p>下面我们来看看参数解析器接收的命令，有以下四个命令：</p>
-<ul>
-<li>搜索并列出图书</li>
-<li>添加图书</li>
-<li>设置(修改)书名</li>
-<li>删除图书</li>
-</ul>
-<p>在命令行解析器中添加这些命令的代码如下：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">parser = ArgumentParser()</span><br><span class="line">parser.add_argument(</span><br><span class="line">	&#x27;command&#x27;,</span><br><span class="line">	choices=[&#x27;list&#x27;, &#x27;add&#x27;, &#x27;set-title&#x27;, &#x27;del&#x27;])</span><br><span class="line">parser.add_argument(&#x27;params&#x27;, nargs=&#x27;*&#x27;) # 可选参数</span><br><span class="line">args = parser.parse_args()</span><br></pre></td></tr></table></figure>
-
-<p>这里 args 是一个包含传入脚本参数的对象，args.command是提供的命令，args.params是可选项，用于存放命令所需的其它参数。如果使用了不存在或错误的命令，参数解析器会进行处理并提示用户应输入的内容。有关argparse更完整的说明，请参考<a target="_blank" rel="noopener" href="https://docs.python.org/3/library/argparse.html">官方文档</a>。</p>
-<p>下一步是执行所计划的操作。首先为 Odoo服务准备连接：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">srv, port, db = &#x27;localhost&#x27;, 8069, &#x27;dev12&#x27;</span><br><span class="line">user, pwd = &#x27;admin&#x27;, &#x27;admin&#x27;</span><br><span class="line">api = LibraryAPI(srv, port, db, user, pwd)</span><br></pre></td></tr></table></figure>
-
-<p>第一行代码设置服务实例的一些固定参数以及要连接的数据库。本例中，我们连接 Odoo 服务本机(localhost)，监听8069默认端口，并使用 dev12数据库。如需连接其它服务器和数据库，请对参数进行相应调整。</p>
-<p>这里硬编码了服务器地址并且密码使用了明文，显然与最佳实施相差甚远。我们应该包含配置步骤让客户提供相关设置信息，并以安全的方式进行存储。但此处我们的目标是学习使用 Odoo RPC，所以可把它看作概念代码，而非已完成的产品。下面写代码来利用 api 对象处理所支持的命令。我们可以先写list命令来列出图书：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">if args.command == &#x27;list&#x27;:</span><br><span class="line">	text = args.params[0] if args.params else None</span><br><span class="line">	books = api.search_read(text)</span><br><span class="line">	for book in books:</span><br><span class="line">		print(&#x27;%(id)d %(name)s&#x27; % book)</span><br></pre></td></tr></table></figure>
-
-<p>这里我们使用了LibraryAPI.search_read()来从服务端获取图书记录列表。然后遍历列表中每个元素并打印。我们使用 Python 字符串格式化来向用户显示每条图书记录，记录是一个键值对字典。下面添加add命令，这里使用了额外的书名作为参数：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">if args.command == &#x27;add&#x27;:</span><br><span class="line">	for title in args.params:</span><br><span class="line">		new_id = api.create(title)</span><br><span class="line">		print(&#x27;Book added with ID %d.&#x27; % new_id)</span><br></pre></td></tr></table></figure>
-
-<p>因为主要的工作已经在LibraryAPI对象中完成，下面我们只要调用write()方法并向终端用户显示结果即可。 set-title命令允许我们修改已有图书的书名，应传入两个参数，新的书名和图书的 ID：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">if args.command == &#x27;set-title&#x27;:</span><br><span class="line">	if len(args.params) != 2:</span><br><span class="line">		print(&quot;set command requires a title and ID.&quot;)</span><br><span class="line">	else:</span><br><span class="line">		book_id, title = int(args.params[0]), args.params[1]</span><br><span class="line">		api.write(title, book_id)</span><br><span class="line">		print(&#x27;Title set for Book ID %d.&#x27; % book_id)</span><br></pre></td></tr></table></figure>
-
-<p>最终我们要实现 del 命令来删除图书记录，学到这里应该不再有任何挑战性了：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">if args.command == &#x27;del&#x27;:</span><br><span class="line">	for param in args.params:</span><br><span class="line">		api.unlink(int(param))</span><br><span class="line">		print(&#x27;Book with ID %s deleted.&#x27; % param)</span><br></pre></td></tr></table></figure>
-
-<p>到这里我们就完成了基础的 API CLI (命令行接口)了，读者可以尝试执行命令来查看效果。比如，我们可以运行本文开头<a href="#catalog">学习项目-图书目录客户端</a>中的命令。通过普通客户端来访问图书中的数据也会有助于确认该CLI是否如预想般运行。这是一个非常基础的应用，查看代码你应该可以想到一些改进它的方式。但要记住我们这里的目的是以相对有趣的方式举例说明Odoo RPC API的使用。</p>
-<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/1515b0259da04f108b3ad0ce5645aa02~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12 客户端RPC命令行接口"></p>
-<h2 id="使用OdooRPC库"><a href="#使用OdooRPC库" class="headerlink" title="使用OdooRPC库"></a>使用OdooRPC库</h2><p>另一个可以考虑的客户端库是OdooRPC。它是一个更流行的客户端库，使用JSON-RPC 协议而不是XML-RPC。事实上 Odoo 官方客户端使用的就是JSON-RPC，XML-RPC更多是用于支持向后兼容性。</p>
-<blockquote>
-<p>ℹ️OdooRPC库现在由 OCA 管理和持续维护。了解更多请参见<a target="_blank" rel="noopener" href="https://github.com/OCA/odoorpc">OCA</a>。</p>
-</blockquote>
-<p>OdooRPC库可通过PyPI安装：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip3 install --user odoorpc</span><br></pre></td></tr></table></figure>
-
-<p>不管是使用JSON-RPC还是XML-RPC，Odoo API的使用方式并没什么分别。所以在下面我们可以看一些细节可能有区别，但这些客户端库的使用方式并没有什么分别。</p>
-<p>OdooRPC库在创建新的odoorpc.ODOO对象时建立服务端连接，然后应使用ODOO.login()方法来创建用户会话。和服务端相似，会话有一个带有会话环境的 env 属性，包含用户 ID-uid 和上下文。我们可以使用OdooRPC来重新实现library_api.py对服务端的接口。它应提供相同的功能，但使用JSON-RPC代替XML-RPC来实施。在相同目录下创建library_odoorpc.py文件并加入如下代码：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">from odoorpc import ODOO</span><br><span class="line"></span><br><span class="line">class LibraryAPI():</span><br><span class="line">	def __init__(self, srv, port, db, user, pwd):</span><br><span class="line">		self.api = ODOO(srv, port=port)</span><br><span class="line">		self.api.login(db, user, pwd)</span><br><span class="line">		self.uid = self.api.env.uid</span><br><span class="line">		self.model = &#x27;library.book&#x27;</span><br><span class="line">		self.Model = self.api.env[self.model]</span><br><span class="line"></span><br><span class="line">	def execute(self, method, arg_list, kwarg_dict=None):</span><br><span class="line">		return self.api.execute(</span><br><span class="line">			self.model,</span><br><span class="line">			method, *arg_list, **kwarg_dict)</span><br></pre></td></tr></table></figure>
-
-<p>OdooRPC库实现Model和Recordset对象来模仿服务端对应的功能。目标是在客户端编程与服务端编程应基本一致。客户端使用的方法将通过存储在self.Model属性中的图书模型来利用这点。这里实现的execute()方法并不会在我们客户端中使用，仅用于与本文中讨论的其它实现进行对比。</p>
-<p>下面我们来实现search_read(), create(), write()和unlink()这些客户端方法。在相同文件的LibraryAPI()类中添加如下方法：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">def search_read(self, text=None):</span><br><span class="line">	domain = [(&#x27;name&#x27;, &#x27;ilike&#x27;, text)] if text else []</span><br><span class="line">	fields = [&#x27;id&#x27;, &#x27;name&#x27;]</span><br><span class="line">	return self.Model.search_read(domain, fields)</span><br><span class="line"></span><br><span class="line">def create(self, title):</span><br><span class="line">	vals = &#123;&#x27;name&#x27;: title&#125;</span><br><span class="line">	return self.Model.create(vals)</span><br><span class="line"></span><br><span class="line">def write(self, title, id):</span><br><span class="line">	vals = &#123;&#x27;name&#x27;: title&#125;</span><br><span class="line">	self.Model.write(id, vals)</span><br><span class="line"></span><br><span class="line">def unlink(self, id):</span><br><span class="line">	return self.Model.unlink(id)</span><br></pre></td></tr></table></figure>
-
-<p>注意这段代码和 Odoo 服务端代码相似，因为它使用了与 Odoo 中插件写法相近的 API。然后可以将library.py文件中的from library_api import LibraryAPI一行修改为library_odoorpc import LibraryAPI。现在再次运行library.py客户端应用进行测试，执行的效果和之前应该一致。</p>
-<h2 id="了解ERPpeek客户端"><a href="#了解ERPpeek客户端" class="headerlink" title="了解ERPpeek客户端"></a>了解ERPpeek客户端</h2><p>ERPpeek是一个多功能工具，既可以作为交互式命令行接口(CLI)也可以作为 Python库，它提供了比xmlrpc库更便捷的 API。它在PyPi索引中，可通过如下命令安装：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">pip3 install --user erppeek</span><br></pre></td></tr></table></figure>
-
-<p>ERPpeek不仅可用作 Python 库，它还可作为 CLI 来在服务器上执行管理操作。Odoo shell 命令在主机上提供了一个本地交互式会话功能，而erppeek库则为网络上的客户端提供了一个远程交互式会话。打开命令行，通过以下命令可查看能够使用的选项：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">erppeek --help</span><br></pre></td></tr></table></figure>
-
-<p>下面一起来看看一个示例会话：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">$ erppeek --server=&#x27;http://192.168.16.161:8069&#x27; -d dev12 -uadmin</span><br><span class="line">Usage (some commands):</span><br><span class="line">    models(name)                    # List models matching pattern</span><br><span class="line">    model(name)                     # Return a Model instance</span><br><span class="line">... </span><br><span class="line"></span><br><span class="line">Password for &#x27;admin&#x27;:</span><br><span class="line">Logged in as &#x27;admin&#x27;</span><br><span class="line">dev12 &gt;&gt;&gt; model(&#x27;res.users&#x27;).count()</span><br><span class="line">3</span><br><span class="line">dev12 &gt;&gt;&gt; rec = model(&#x27;res.partner&#x27;).browse(14)</span><br><span class="line">dev12 &gt;&gt;&gt; rec.name</span><br><span class="line">&#x27;Azure Interior&#x27;</span><br></pre></td></tr></table></figure>
-
-<p>如上所见，建立了服务端的连接，执行上下文引用了model() 方法来获得模型实例并对其进行操作。连接使用的erppeek.Client实例也可通过客户端变量来使用。 值得一提的是它可替代网页客户端来管理所安装的插件模块：</p>
-<ul>
-<li>client.modules()列出可用或已安装模块</li>
-<li>client.install()执行模块安装</li>
-<li>client.upgrade()执行模块升级</li>
-<li>client.uninstall()卸载模块</li>
-</ul>
-<p>因此ERPpeek可作为 Odoo 服务端远程管理的很好的服务。有关ERPpeek的更多细节请见 <a target="_blank" rel="noopener" href="https://github.com/tinyerp/erppeek">GitHub</a>。</p>
-<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/0a340ec4fe0e4eb388da1d3adea46334~tplv-k3u1fbpfcp-zoom-1.image" alt="Odoo 12 ERPpeek"></p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>本文的目标是学习外部 API 如何运作以及它们能做些什么。一开始我们通过一个简单的Python XML-RPC客户端来进行探讨，但外部 API 可用于其它编程语言。事实上官方文档中包含了Java, PHP和Ruby的代码示例。</p>
-<p>有很多库可处理XML-RPC或JSON-RPC，有些是通用的，有些仅适用于 Odoo。我们使用了一个指定库OdooRPC。</p>
-<p>以上我们就完结了本文有关编程 API 和业务逻辑的学习。是时候深入视图和用户界面了。在下一篇文章中，我们进一步学习网页客户端所提供的后台视图和用户体验。</p>
-<p> </p>
-<p>☞☞☞第十章 <a target="_blank" rel="noopener" href="https://alanhou.org/odoo12-backend-views/">Odoo 12开发之后台视图 - 设计用户界面</a></p>
-<p> </p>
-<h2 id="扩展阅读"><a href="#扩展阅读" class="headerlink" title="扩展阅读"></a>扩展阅读</h2><p>以下参考资料可用于补充本文所学习的内容：</p>
-<ul>
-<li>Odoo web 服务的<a target="_blank" rel="noopener" href="https://www.odoo.com/documentation/12.0/webservices/odoo.html">官方文档</a>中包含了 Python 以外的其它编程语言示例</li>
-<li><a target="_blank" rel="noopener" href="https://pythonhosted.org/OdooRPC/">OdooRPC文档</a></li>
-<li><a target="_blank" rel="noopener" href="https://erppeek.readthedocs.io/en/latest/">ERPpeek文档</a></li>
 </ul>
 <p>本文首发地址：<a target="_blank" rel="noopener" href="https://alanhou.org/developer-mode-odoo12/">Alan Hou 的个人博客</a></p>
 
